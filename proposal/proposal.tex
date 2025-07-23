@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\title{
+Analog Gauge Driver with CAN Interface \\
+\large COMP490 Project Proposal
+}
+\author{
+Sam Anthony 40271987 \\
+Concordia University
+}
+
+\begin{document}
+
+\maketitle
+
+Installing aftermarket gauges in a car typically requires installing sensors as well.
+However, such sensors are often already present, and are used by the ECU (engine control unit).
+Thus, the installation of aftermarket gauges can result in duplicate sensors which add complexity without augmenting the functionality or reliability of the vehicle.
+Sensors installed like this are not redundant.
+In fact, they reduce reliability, because each is a single point of failure.
+
+The proposed device allows gauges to use the sensors already on the car.
+It retrieves sensor data from the ECU via the CAN bus (controller area network bus) and transforms the data into a format that the gauges can understand: a 0--5V analog signal in the case of a temperature or pressure gauge, or a square wave in the case of a tachometer or speedometer.
+
+The device is an embedded system comprising a microcontroller, a CAN controller and transceiver, several DACs (digital-to-analog converters), and PROM (programmable read-only memory).
+The CAN interface is used for retrieving data from the ECU via the bus.
+The DACs drive analog signals to the temperature and/or pressure gauges.
+The microcontroller has an integrated PWM peripheral for driving a square wave to the tachometer and/or speedometer.
+The PROM stores the calibration: a table that maps CAN data values to voltages or frequencies.
+The microcontroller has a USB interface for programming the PROM from a computer.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{diagram.png}
+	\caption{System diagram}
+\end{figure}
+
+The project has three parts: hardware design, software development, and testing.
+The hardware and software development can be carried out concurrently.
+Testing is the final step.
+
+Hardware design involves selecting ICs (integrated circuits), creating a circuit schematic, and designing a PCB (printed circuit board).
+Once the board design is finalized, it can be sent for manufacturing.
+
+Two pieces of sofware must be written.
+The first runs on the microcontroller.
+Essentially, it must communicate with the various peripherals by transforming and transfering data between them.
+It must fetch frames from the CAN controller and decipher them.
+The CAN data are used to lookup the output value in the ROM.
+Either the PWM peripheral or a DAC is used to send the appropriate signal to the gauge.
+The microcontroller uses SPI (serial peripheral interface) to communicate with the peripherals.
+
+The second piece of software runs on the user's computer.
+It programs the PROM with calibration data.
+It communicates with the microcontroller using a simple text-based protocol over USB.
+
+\end{document}
