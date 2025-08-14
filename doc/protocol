@@ -1,0 +1,20 @@
+<command> ::= <opcode> " " <args> "\n"
+<response> ::= <retval> "\n"
+
+Write EEPROM:
+<opcode> ::= "w"
+<args> ::= <addr> <bytes>{:pagesize}
+<retval> ::= ""
+
+Read EEPROM:
+<opcode> ::= "r"
+<args> ::= <addr> <size>
+<retval> ::= <bytes>{size}
+
+<addr> ::= "0"--"2047"
+<bytes> ::= <byte> <bytetail> | ""
+<bytetail> ::= " " <byte> <bytetail> | ""
+<byte> ::= "0"--"FF"
+<size> ::= "0"--"2048"
+
+pagesize := 16
