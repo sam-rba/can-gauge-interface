@@ -1,5 +1,11 @@
 #include <xc.h>
 
+#include <stdint.h>
+
+#include "types.h"
+#include "spi.h"
+#include "eeprom.h"
+
 // CONFIG1
 #pragma config FOSC = INTOSC // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
 #pragma config WDTE = OFF // Watchdog Timer Enable (WDT disabled)
@@ -23,22 +29,32 @@
 #pragma config LVP = ON // Low-Voltage Programming Enable
 
 static void
-clock_init(void) {
+clockInit(void) {
 	OSCCON = 0xFC; // HFINTOSC @ 16MHz, 3x PLL, PLL enabled
 	ACTCON = 0x90; // active clock tuning enabled for USB
 }
 
 static void
-gpio_init(void) {
-
+pinsInit(void) {
+	// Disable all analog pin functions
+	ANSELA = 0;
+	ANSELB = 0;
+	ANSELC = 0;
 }
 
 void
 main(void) {
-	clock_init();
-	gpio_init();
+	clockInit();
+	pinsInit();
+	spiInit();
+	eepromInit();
 
 	for (;;) {
 
 	}
+}
+
+void
+__interrupt() isr(void) {
+
 }
