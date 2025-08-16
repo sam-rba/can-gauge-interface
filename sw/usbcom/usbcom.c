@@ -6,86 +6,93 @@
 
 #include <libusb-1.0/libusb.h>
 
-#define VENDOR_ID 0x04d8
-#define PRODUCT_ID 0x000a
-
-#define ACM_CTRL_DTR 0x01
-#define ACM_CTRL_RTS 0x02
-
-#define TIMEOUT 1000
+#define TIMEOUT_MS 1000
 
 #define BUF_SIZE 64
+
+#define INTERFACE 0
+
+enum {
+	VENDOR_ID = 0x04d8,
+	PRODUCT_ID = 0x000a,
+};
+
+enum {
+	SET_LINE_CODING = 0x20,
+	SET_CONTROL_LINE_STATE = 0x22,
+};
+
+enum {
+	ACM_CTRL_DTR = 0x01,
+	ACM_CTRL_RTS = 0x02,
+};
+
+enum {
+	EP_OUT_ADDR = 0x02,
+	EP_IN_ADDR = 0x82,
+};
 
 // line encoding: 9600 8N1
 // 9600 = 0x2580 LE
 static unsigned char encoding[] = {0x80, 0x25, 0x00, 0x00, 0x00, 0x00, 0x08};
 
-static struct libusb_device_handle *devh = NULL;
-
-static int ep_in_addr = 0x82;
-static int ep_out_addr = 0x02;
-
-// Returns 0 on success
-static int
+// Returns NULL on error
+static libusb_device_handle *
 setup(void) {
 	int res;
+	libusb_device_handle *devh;
 
-	res = libusb_init(NULL);
+	res = libusb_init_context(NULL, NULL, 0);
 	if (res < 0) {
-		fprintf(stderr, "Error initializing libusb: %s\n", libusb_error_name(res));
-		return -1;
+		fprintf(stderr, "Error initializing libusb: %s\n", libusb_strerror(res));
+		return NULL;
 	}
-
-	libusb_set_debug(NULL, 3);
 
 	devh = libusb_open_device_with_vid_pid(NULL, VENDOR_ID, PRODUCT_ID);
 	if (!devh) {
 		fprintf(stderr, "Error finding USB device\n");
-		return -1;
+		return NULL;
 	}
 
-	for (int ifNum = 0; ifNum < 2; ifNum++) {
-		if (libusb_kernel_driver_active(devh, ifNum)) {
-			libusb_detach_kernel_driver(devh, ifNum);
-		}
-		res = libusb_claim_interface(devh, ifNum);
-		if (res < 0) {
-			fprintf(stderr, "error claiming interface: %s\n", libusb_error_name(res));
-			return -1;
-		}
-	}
-
-	res = libusb_control_transfer(devh, 0x21, 0x22, ACM_CTRL_DTR | ACM_CTRL_RTS, 0, NULL, 0, 0);
+	res = libusb_claim_interface(devh, INTERFACE);
 	if (res < 0) {
-		fprintf(stderr, "Error during control transfer: %s\n", libusb_error_name(res));
-		return -1;
+		fprintf(stderr, "Failed to claim interface: %s\n", libusb_strerror(res));
+		libusb_close(devh);
+		return NULL;
 	}
 
-	res = libusb_control_transfer(devh, 0x21, 0x20, 0, 0, encoding, sizeof(encoding), 0);
+	res = libusb_control_transfer(devh, 0x21, SET_CONTROL_LINE_STATE, ACM_CTRL_DTR | ACM_CTRL_RTS, 0, NULL, 0, TIMEOUT_MS);
 	if (res < 0) {
-		fprintf(stderr, "Error during control transfer: %s\n", libusb_error_name(res));
-		return -1;
+		fprintf(stderr, "Error during control transfer: %s\n", libusb_strerror(res));
+		libusb_close(devh);
+		return NULL;
 	}
 
-	return 0;
+	res = libusb_control_transfer(devh, 0x21, SET_LINE_CODING, 0, 0, encoding, sizeof(encoding), TIMEOUT_MS);
+	if (res < 0) {
+		fprintf(stderr, "Error during control transfer: %s\n", libusb_strerror(res));
+		libusb_close(devh);
+		return NULL;
+	}
+
+	return devh;
 }
 
 static void
-teardown(void) {
-	if (devh) {
-		libusb_close(devh);
-	}
+teardown(libusb_device_handle *devh) {
+	libusb_release_interface(devh, INTERFACE);
+	libusb_close(devh);
 	libusb_exit(NULL);
 }
 
 // Send bytes to USB
 static void
-txChars(unsigned char *data, int n) {
+txChars(libusb_device_handle *devh, unsigned char *data, int n) {
 	int actualLen, res;
 
 	actualLen = 0;
 	while (actualLen < n) {
-		res = libusb_bulk_transfer(devh, ep_out_addr, data, n, &actualLen, TIMEOUT);
+		res = libusb_bulk_transfer(devh, EP_OUT_ADDR, data, n, &actualLen, TIMEOUT_MS);
 		if (res == LIBUSB_ERROR_TIMEOUT) {
 			printf("Timeout (%d)\n", actualLen);
 		} else if (res < 0) {
@@ -100,10 +107,10 @@ txChars(unsigned char *data, int n) {
 // Read data from USB
 // Returns number of bytes read, or -1 on error
 static int
-rxChars(unsigned char *data, int size) {
+rxChars(libusb_device_handle *devh, unsigned char *data, int size) {
 	int res, actualLen;
 
-	res = libusb_bulk_transfer(devh, ep_in_addr, data, size, &actualLen, TIMEOUT);
+	res = libusb_bulk_transfer(devh, EP_IN_ADDR, data, size, &actualLen, TIMEOUT_MS);
 	if (res == LIBUSB_ERROR_TIMEOUT) {
 		fprintf(stderr, "Timeout\n");
 		return -1;
@@ -142,12 +149,12 @@ scanline(char *buf, size_t size) {
 }
 
 static void
-sendCommand(void) {
+sendCommand(libusb_device_handle *devh) {
 	unsigned char buf[BUF_SIZE];
 	int len;
 
 	while ((len = scanline(buf, sizeof(buf))) != EOF) {
-		txChars(buf, len);
+		txChars(devh, buf, len);
 		if (len > 0 && buf[len-1] == '\n') {
 			break;
 		}
@@ -155,11 +162,11 @@ sendCommand(void) {
 }
 
 static void
-printResponse(void) {
+printResponse(libusb_device_handle *devh) {
 	unsigned char buf[BUF_SIZE];
 	int len;
 
-	while ((len = rxChars(buf, sizeof(buf)-1)) >= 0) {
+	while ((len = rxChars(devh, buf, sizeof(buf)-1)) >= 0) {
 		buf[len] = '\0';
 		printf("%s", buf);
 		if (buf[len] == '\n') {
@@ -170,19 +177,18 @@ printResponse(void) {
 
 int
 main(int argc, char *argv[]) {
-	int res;
-	if ((res = setup()) != 0) {
-		teardown();
-		return res;
+	libusb_device_handle *devh;
+
+	devh = setup();
+	if (!devh) {
+		return 1;
 	}
 
 	for (;;) {
-		sendCommand();
-		printResponse();
+		sendCommand(devh);
+		printResponse(devh);
 	}
 
-	libusb_release_interface(devh, 0);
-
-	teardown();
+	teardown(devh);
 	return 0;
 }
