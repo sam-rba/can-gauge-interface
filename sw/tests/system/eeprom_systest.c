@@ -19,8 +19,3 @@ main(void) {
 
 	}
 }
-
-void
-__interrupt() isr(void) {
-
-}

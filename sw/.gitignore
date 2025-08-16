@@ -1,0 +1,12 @@
+*.cmf
+*.d
+*.elf
+*.hex
+*.hxl
+*.lst
+*.o
+*.p1
+*.rlf
+*.s
+*.sdb
+*.sym
