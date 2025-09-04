@@ -1,0 +1,3 @@
+[submodule "fw/mla_usb"]
+	path = fw/mla_usb
+	url = https://github.com/MicrochipTech/mla_usb
