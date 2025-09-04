@@ -2,11 +2,13 @@
 
 #include <stdint.h>
 
+#include <usb_device.h>
+
 #include "types.h"
 #include "init.h"
 #include "spi.h"
 #include "eeprom.h"
-#include "config.h"
+#include "usb.h"
 
 void
 main(void) {
@@ -14,9 +16,11 @@ main(void) {
 	pinsInit();
 	spiInit();
 	eepromInit();
+	USBDeviceInit();
+	USBDeviceAttach();
 
 	for (;;) {
-
+		usbTask();
 	}
 }
 

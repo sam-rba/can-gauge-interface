@@ -1,6 +1,11 @@
 <command> ::= <opcode> " " <args> "\n"
 <response> ::= <retval> "\n"
 
+Echo:
+<opcode> ::= "e"
+<args> :: <bytes>
+<retval> :: <args>
+
 Write EEPROM:
 <opcode> ::= "w"
 <args> ::= <addr> <bytes>{:pagesize}
