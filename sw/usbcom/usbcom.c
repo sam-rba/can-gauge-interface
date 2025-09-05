@@ -169,7 +169,7 @@ printResponse(libusb_device_handle *devh) {
 	while ((len = rxChars(devh, buf, sizeof(buf)-1)) >= 0) {
 		buf[len] = '\0';
 		printf("%s", buf);
-		if (buf[len] == '\n') {
+		if (len > 0 && buf[len-1] == '\n') {
 			return;
 		}
 	}
@@ -192,4 +192,3 @@ main(int argc, char *argv[]) {
 	teardown(devh);
 	return 0;
 }
-
