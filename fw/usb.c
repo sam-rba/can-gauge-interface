@@ -10,6 +10,8 @@
 
 #include "usb.h"
 
+/***** Constants *****/
+
 // Line coding
 // See struct USB_CDC_LINE_CODING
 enum {
@@ -19,98 +21,32 @@ enum {
 	DATA_BITS = 8,
 };
 
-// State
-typedef enum {
-	IDLE,
-	ECHO,
-	WRITE_EEPROM,
-	READ_EEPROM,
+/***** Types *****/
+
+// A state is a function that executes the state's action and returns the next state.
+typedef struct State {
+	struct State* (*next)(void);
 } State;
+
+/***** Function Declarations *****/
+
+// States
+static State *idleState(void);
+static State *echoState(void);
+static State *writeEepromState(void);
+static State *readEepromState(void);
+
+/***** Global Variables *****/
 
 static uint8_t readBuf[CDC_DATA_OUT_EP_SIZE];
 static uint8_t writeBuf[CDC_DATA_IN_EP_SIZE];
 static uint8_t readLen = 0u;
 
-// Handle "e" echo command.
-// Returns the next state.
-static State
-echo(void) {
-	uint8_t i;
-	State state = ECHO;
-
-	if (readLen == 0u) {
-		readLen = getsUSBUSART(readBuf, sizeof(readBuf));
-	}
-
-	for (i = 0u; i < readLen; i++) {
-		writeBuf[i] = readBuf[i];
-		if (readBuf[i] == '\n') {
-			// End of command
-			state = IDLE;
-			i++;
-			break;
-		}
-	}
-
-	if (readLen > 0u) {
-		putUSBUSART(writeBuf, i);
-	}
-	readLen = 0u;
-
-	return state;
-}
-
-// Handle "w" write eeprom command.
-// Returns the next state.
-static State
-writeEeprom(void) {
-	// TODO
-	return IDLE;
-}
-
-// Handle "r" read eeprom command.
-// Returns the next state.
-static State
-readEeprom(void) {
-	// TODO
-	return IDLE;
-}
-
-static State
-cmdState(uint8_t opcode) {
-	switch (opcode) {
-	case 'e': return ECHO;
-	case 'w': return WRITE_EEPROM;
-	case 'r': return READ_EEPROM;
-	default: return IDLE; // invalid command
-	}
-}
-
-// Read (the start of) a command from USB.
-// Leaves <args> at the beginning of the read buffer.
-// Returns the next state based on the opcode of the command.
-static State
-readCmd(void) {
-	uint8_t opcode;
-
-	readLen = getsUSBUSART(readBuf, sizeof(readBuf));
-	if (readLen < 2u) {
-		// Invalid command. Must start with <opcode> <space>
-		return IDLE;
-	}
-
-	opcode = readBuf[0u];
-
-	// skip <opcode> <space>
-	memmove(readBuf, readBuf+2u, readLen-2u);
-	readLen -= 2u;
-
-	return cmdState(opcode);
-}
+/***** Function Definitions *****/
 
 void
 usbTask(void) {
-	static State state = IDLE;
+	static State state = {idleState};
 
 	USBDeviceTasks();
 
@@ -122,15 +58,84 @@ usbTask(void) {
 	}
 
 	if (USBUSARTIsTxTrfReady()) {
-		switch (state) {
-		case IDLE: state = readCmd(); break;
-		case ECHO: state = echo(); break;
-		case WRITE_EEPROM: state = writeEeprom(); break;
-		case READ_EEPROM: state = readEeprom(); break;
-		}
+		// Execute action and transition to next state
+		state = *state.next();
 	}
 
 	CDCTxService();
+}
+
+// Read (the start of) a command from USB.
+// Leaves <args> at the beginning of the read buffer.
+static State *
+idleState(void) {
+	static State state;
+	uint8_t opcode;
+
+	readLen = getsUSBUSART(readBuf, sizeof(readBuf));
+	if (readLen >= 2u) {
+		opcode = readBuf[0u];
+
+		// skip <opcode> <space>
+		memmove(readBuf, readBuf+2u, readLen-2u);
+		readLen -= 2u;
+
+		switch (opcode) {
+		case 'e': state.next = echoState; break;
+		case 'w': state.next = writeEepromState; break;
+		case 'r': state.next = readEepromState; break;
+		default: state.next =  idleState; break; // invalid command
+		}
+	} else {
+		// Invalid command. Must start with <opcode> <space>
+		state.next = idleState;
+	}
+
+	return &state;
+}
+
+// Handle "e" echo command.
+static State *
+echoState(void) {
+	static State state = {echoState};
+	uint8_t i;
+
+	if (readLen == 0u) {
+		readLen = getsUSBUSART(readBuf, sizeof(readBuf));
+	}
+
+	for (i = 0u; i < readLen; i++) {
+		writeBuf[i] = readBuf[i];
+		if (readBuf[i] == '\n') {
+			// End of command
+			state.next = idleState;
+			i++;
+			break;
+		}
+	}
+
+	if (readLen > 0u) {
+		putUSBUSART(writeBuf, i);
+	}
+	readLen = 0u;
+
+	return &state;
+}
+
+// Handle "w" write eeprom command.
+static State *
+writeEepromState(void) {
+	static State state = {idleState};
+	// TODO
+	return &state;
+}
+
+// Handle "r" read eeprom command.
+static State *
+readEepromState(void) {
+	static State state = {idleState};
+	// TODO
+	return &state;
 }
 
 static void
