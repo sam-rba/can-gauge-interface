@@ -6,7 +6,7 @@
 
 #include <libusb-1.0/libusb.h>
 
-#define TIMEOUT_MS 1000
+#define TIMEOUT_MS 5000
 
 #define BUF_SIZE 512
 

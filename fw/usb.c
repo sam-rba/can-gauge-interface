@@ -72,8 +72,10 @@ idleState(void) {
 	static State state;
 	uint8_t opcode;
 
+	state.next = idleState;
+
 	readLen = getsUSBUSART(readBuf, sizeof(readBuf));
-	if (readLen >= 2u) {
+	if (readLen >= 2u) { // <opcode> <space> ...
 		opcode = readBuf[0u];
 
 		// skip <opcode> <space>
@@ -84,11 +86,8 @@ idleState(void) {
 		case 'e': state.next = echoState; break;
 		case 'w': state.next = writeEepromState; break;
 		case 'r': state.next = readEepromState; break;
-		default: state.next =  idleState; break; // invalid command
+		default: break; // invalid command
 		}
-	} else {
-		// Invalid command. Must start with <opcode> <space>
-		state.next = idleState;
 	}
 
 	return &state;
@@ -97,8 +96,10 @@ idleState(void) {
 // Handle "e" echo command.
 static State *
 echoState(void) {
-	static State state = {echoState};
+	static State state;
 	uint8_t i;
+
+	state.next = echoState;
 
 	if (readLen == 0u) {
 		readLen = getsUSBUSART(readBuf, sizeof(readBuf));
@@ -125,16 +126,22 @@ echoState(void) {
 // Handle "w" write eeprom command.
 static State *
 writeEepromState(void) {
-	static State state = {idleState};
+	static State state;
+
 	// TODO
+
+	state.next = idleState;
 	return &state;
 }
 
 // Handle "r" read eeprom command.
 static State *
 readEepromState(void) {
-	static State state = {idleState};
+	static State state;
+
 	// TODO
+
+	state.next = idleState;
 	return &state;
 }
 
