@@ -8,7 +8,7 @@
 
 #define TIMEOUT_MS 1000
 
-#define BUF_SIZE 64
+#define BUF_SIZE 512
 
 #define INTERFACE 0
 
@@ -94,9 +94,9 @@ txChars(libusb_device_handle *devh, unsigned char *data, int n) {
 	while (actualLen < n) {
 		res = libusb_bulk_transfer(devh, EP_OUT_ADDR, data, n, &actualLen, TIMEOUT_MS);
 		if (res == LIBUSB_ERROR_TIMEOUT) {
-			printf("Timeout (%d)\n", actualLen);
+			printf("Tx timeout (%d)\n", actualLen);
 		} else if (res < 0) {
-			fprintf(stderr, "Error sending data\n");
+			fprintf(stderr, "Tx error: %s\n", libusb_strerror(res));
 		}
 		assert(actualLen <= n);
 		n -= actualLen;
@@ -108,17 +108,17 @@ txChars(libusb_device_handle *devh, unsigned char *data, int n) {
 // Returns number of bytes read, or -1 on error
 static int
 rxChars(libusb_device_handle *devh, unsigned char *data, int size) {
-	int res, actualLen;
+	int res, len;
 
-	res = libusb_bulk_transfer(devh, EP_IN_ADDR, data, size, &actualLen, TIMEOUT_MS);
+	res = libusb_bulk_transfer(devh, EP_IN_ADDR, data, size, &len, TIMEOUT_MS);
 	if (res == LIBUSB_ERROR_TIMEOUT) {
-		fprintf(stderr, "Timeout\n");
+		fprintf(stderr, "Rx timeout\n");
 		return -1;
 	} else if (res < 0) {
-		fprintf(stderr, "Error receiving data\n");
+		fprintf(stderr, "Rx error: %s\n", libusb_strerror(res));
 		return -1;
 	}
-	return actualLen;
+	return len;
 }
 
 // Get line from stdin
@@ -192,3 +192,4 @@ main(int argc, char *argv[]) {
 	teardown(devh);
 	return 0;
 }
+
