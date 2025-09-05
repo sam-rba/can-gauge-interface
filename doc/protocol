@@ -1,5 +1,5 @@
 <command> ::= <opcode> " " <args> "\n"
-<response> ::= <retval> "\n"
+<response> ::= (<retval>|"nack") "\n"
 
 Echo:
 <opcode> ::= "e"

@@ -86,8 +86,10 @@ idleState(void) {
 		case 'e': state.next = echoState; break;
 		case 'w': state.next = writeEepromState; break;
 		case 'r': state.next = readEepromState; break;
-		default: break; // invalid command
+		default: putsUSBUSART("nack\n"); break; // invalid command
 		}
+	} else if (readLen > 0) {
+		putsUSBUSART("nack\n");
 	}
 
 	return &state;
