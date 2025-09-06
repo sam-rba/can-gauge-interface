@@ -8,12 +8,12 @@ Echo:
 
 Write EEPROM:
 <opcode> ::= "w"
-<args> ::= <addr> <bytes>{:pagesize}
-<retval> ::= ""
+<args> ::= <addr> " " <size> " " <bytes>
+<retval> ::= "ok"
 
 Read EEPROM:
 <opcode> ::= "r"
-<args> ::= <addr> <size>
+<args> ::= <addr> " " <size>
 <retval> ::= <bytes>{size}
 
 <addr> ::= "0"--"2047"
@@ -22,4 +22,4 @@ Read EEPROM:
 <byte> ::= "0"--"FF"
 <size> ::= "0"--"2048"
 
-pagesize := 16
+Messages must not contain NUL ('\0').

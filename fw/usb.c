@@ -28,6 +28,12 @@ typedef struct State {
 	struct State* (*next)(void);
 } State;
 
+// Input buffer
+typedef struct {
+	uint8_t data[CDC_DATA_OUT_EP_SIZE];
+	uint8_t len, head;
+} RxQueue;
+
 /***** Function Declarations *****/
 
 // States
@@ -38,11 +44,26 @@ static State *readEepromState(void);
 
 /***** Global Variables *****/
 
-static uint8_t readBuf[CDC_DATA_OUT_EP_SIZE];
-static uint8_t writeBuf[CDC_DATA_IN_EP_SIZE];
-static uint8_t readLen = 0u;
+static uint8_t txBuf[CDC_DATA_IN_EP_SIZE];
+static RxQueue rxBuf = {.len = 0u, .head = 0u};
 
 /***** Function Definitions *****/
+
+// Return the next Rx'd char, or '\0' if no data.
+static char
+getchar(void) {
+	if (rxBuf.len <= 0u) {
+		rxBuf.len = getsUSBUSART(rxBuf.data, sizeof(rxBuf.data));
+		rxBuf.head = 0u;
+	}
+
+	if (rxBuf.len > 0u) {
+		rxBuf.len--;
+		return rxBuf.data[rxBuf.head++];
+	} else {
+		return '\0';
+	}
+}
 
 void
 usbTask(void) {
@@ -66,30 +87,36 @@ usbTask(void) {
 }
 
 // Read (the start of) a command from USB.
-// Leaves <args> at the beginning of the read buffer.
 static State *
 idleState(void) {
 	static State state;
-	uint8_t opcode;
+	char opcode;
 
 	state.next = idleState;
 
-	readLen = getsUSBUSART(readBuf, sizeof(readBuf));
-	if (readLen >= 2u) { // <opcode> <space> ...
-		opcode = readBuf[0u];
+	// Read opcode
+	opcode = getchar();
+	if (!opcode) {
+		// No data
+		return &state;
+	}
 
-		// skip <opcode> <space>
-		memmove(readBuf, readBuf+2u, readLen-2u);
-		readLen -= 2u;
-
-		switch (opcode) {
-		case 'e': state.next = echoState; break;
-		case 'w': state.next = writeEepromState; break;
-		case 'r': state.next = readEepromState; break;
-		default: putsUSBUSART("nack\n"); break; // invalid command
-		}
-	} else if (readLen > 0) {
+	// Skip space
+	if (!getchar()) {
+		// Incomplete command
 		putsUSBUSART("nack\n");
+		return &state;
+	}
+
+	// State transition
+	switch (opcode) {
+	case 'e': state.next = echoState; break;
+	case 'w': state.next = writeEepromState; break;
+	case 'r': state.next = readEepromState; break;
+	default: // invalid command
+		rxBuf.len = 0u; // discard input
+		putsUSBUSART("nack\n");
+		break;
 	}
 
 	return &state;
@@ -103,24 +130,19 @@ echoState(void) {
 
 	state.next = echoState;
 
-	if (readLen == 0u) {
-		readLen = getsUSBUSART(readBuf, sizeof(readBuf));
-	}
-
-	for (i = 0u; i < readLen; i++) {
-		writeBuf[i] = readBuf[i];
-		if (readBuf[i] == '\n') {
+	i = 0u;
+	while (i < sizeof(txBuf)) {
+		txBuf[i] = getchar();
+		if (txBuf[i++] == '\n') {
 			// End of command
 			state.next = idleState;
-			i++;
 			break;
 		}
 	}
 
-	if (readLen > 0u) {
-		putUSBUSART(writeBuf, i);
+	if (i > 0u) {
+		putUSBUSART(txBuf, i);
 	}
-	readLen = 0u;
 
 	return &state;
 }
