@@ -1,0 +1,58 @@
+===== Tachometer =====
+
+VDO: 0.5--999 pulses/rev
+
+Target 0.5--4 pulses/rev
+
+Max 20,000 rpm = 333 rev/s -> 167Hz--1.332 kHz max
+
+Target resolution: 100 rpm. Target max: 20,000 rpm. 20,000/100 = 200 = resolution. Need 8 bits.
+
+PIC16F1459 PWM min frequency with PR2=0:
+f = FOSC / (4 * TMR2_prescale)
+f_min = 48e6 / (4 * 64) = 187.5 kHz
+With 10-bit clock divider (counter): 187.5 KHz / 1024 = 183 Hz
+Just above target max frequency of 167 Hz.
+
+TMR0
+Use TMR0 for control.
+3-bit prescaler 2--256
+Min frequency without using TMR0: f = FOSC / (4 * pre)
+f_min = 48e6 / (4 * 256) = 46.9 kHz
+
+Alternative to hardware clock divider: software counter.
+Increment on timer interrupt.
+When reaches threshold, toggle pin.
+Uses more CPU cycles but less board space and money than hardware clock divider.
+
+TMR1
+Can use with LFINTOSC, FOSC, FOSC/4, or external 32.768 kHz oscillator.
+LFINTOSC = 31 kHz.
+Pre = {1, 2, 4, 8}.
+Without using TMR1H/L: f_min = LFINTOSC / 8 = 31,000 / 8 = 3.875 kHz
+Use for both tach and speedo, each with their own software counter?
+Then can use TMR1H/L to divide frequency further and use software counters for independent control of tach and speedo.
+Use TMR1H/L to divide frequency, and Pre to set pulses/rev? Can't use for both tach and speed then.
+
+TMR2
+Use PR2 for control.
+f = FOSC / (4 * pre * pr2 * post)
+pre = {1, 4, 16, 64}
+post = [1,16]
+Without PR2: f_min = 48e6 / (4 * 64 * 16) ~= 11.7 kHz
+
+
+===== Speedometer =====
+
+Stack: 310--248,500 pulses/km
+
+Target 320 km/h = 320/3600 km/s
+f = 27Hz--22kHz min/max
+
+8-bit resolution is OK.
+
+Use TMR2 for speedo.
+Outputs min 11.7 kHz without using PR2.
+Don't need software counter.
+
+Then can use TMR1 for tacho.
