@@ -90,7 +90,7 @@ eepromWrite(U16 addr, U8 *data, U8 size) {
 	while (size--) {
 		(void)spiTx(*data);
 		data++;
-		incU16(&addr);
+		addU16(&addr, 1u);
 
 		// Check if write crosses page boundary
 		if (isPageStart(addr) && size) {

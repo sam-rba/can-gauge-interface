@@ -7,10 +7,15 @@
  * #include "types.h"
  */
 
+typedef enum {
+	OK,
+	FAIL,
+} Status;
+
 typedef uint8_t U8;
 
 typedef struct {
-	U8 lo, hi;
+	U8 hi, lo;
 } U16;
 
-void incU16(U16 *x);
+void addU16(U16 *a, U8 b);

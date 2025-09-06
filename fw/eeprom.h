@@ -5,10 +5,8 @@
  * 
  * Usage:
  *
- * #include <xc.h>
  * #include <stdint.h>
  * #include "types.h"
- * #include "spi.h"
  * #include "eeprom.h"
  */
 

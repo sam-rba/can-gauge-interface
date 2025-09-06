@@ -1,16 +1,22 @@
 #include <xc.h>
 
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
 
 #include <usb.h>
 #include <usb_device.h>
 #include <usb_device_cdc.h>
 
+#include "types.h"
+#include "eeprom.h"
+
 #include "usb.h"
 
 /***** Constants *****/
+
+// Safety counter
+#define BAILOUT 100u
 
 // Line coding
 // See struct USB_CDC_LINE_CODING
@@ -30,8 +36,8 @@ typedef struct State {
 
 // Input buffer
 typedef struct {
-	uint8_t data[CDC_DATA_OUT_EP_SIZE];
-	uint8_t len, head;
+	U8 data[CDC_DATA_OUT_EP_SIZE];
+	U8 len, head;
 } RxQueue;
 
 /***** Function Declarations *****/
@@ -44,25 +50,45 @@ static State *readEepromState(void);
 
 /***** Global Variables *****/
 
-static uint8_t txBuf[CDC_DATA_IN_EP_SIZE];
+static U8 txBuf[CDC_DATA_IN_EP_SIZE];
 static RxQueue rxBuf = {.len = 0u, .head = 0u};
 
 /***** Function Definitions *****/
 
-// Return the next Rx'd char, or '\0' if no data.
-static char
-getchar(void) {
+// Rx a char from USB.
+// Returns FAIL if no data.
+static Status
+getchar(char *c) {
 	if (rxBuf.len <= 0u) {
 		rxBuf.len = getsUSBUSART(rxBuf.data, sizeof(rxBuf.data));
 		rxBuf.head = 0u;
 	}
 
 	if (rxBuf.len > 0u) {
+		*c = rxBuf.data[rxBuf.head];
+		rxBuf.head++;
 		rxBuf.len--;
-		return rxBuf.data[rxBuf.head++];
+		return OK;
 	} else {
-		return '\0';
+		return FAIL;
 	}
+}
+
+// Attempt to Rx the next char up to retries+1 times.
+static Status
+getcharBlock(char *c, U8 retries) {
+	Status status;
+
+	do {
+		status = getchar(c);
+		if (status == OK) {
+			return OK;
+		}
+
+		USBDeviceTasks();
+	} while (--retries + 1u);
+
+	return FAIL;
 }
 
 void
@@ -86,25 +112,31 @@ usbTask(void) {
 	CDCTxService();
 }
 
+static void
+nack(void) {
+	putsUSBUSART("nack\n");
+}
+
 // Read (the start of) a command from USB.
 static State *
 idleState(void) {
 	static State state;
-	char opcode;
+	char opcode, junk;
+	Status status;
 
 	state.next = idleState;
 
 	// Read opcode
-	opcode = getchar();
-	if (!opcode) {
+	status = getchar(&opcode);
+	if (status != OK) {
 		// No data
 		return &state;
 	}
 
 	// Skip space
-	if (!getchar()) {
+	if (getchar(&junk) != OK) {
 		// Incomplete command
-		putsUSBUSART("nack\n");
+		nack();
 		return &state;
 	}
 
@@ -115,7 +147,7 @@ idleState(void) {
 	case 'r': state.next = readEepromState; break;
 	default: // invalid command
 		rxBuf.len = 0u; // discard input
-		putsUSBUSART("nack\n");
+		nack();
 		break;
 	}
 
@@ -126,35 +158,129 @@ idleState(void) {
 static State *
 echoState(void) {
 	static State state;
-	uint8_t i;
+	static U8 i = 0u;
+	Status status;
 
 	state.next = echoState;
 
-	i = 0u;
 	while (i < sizeof(txBuf)) {
-		txBuf[i] = getchar();
-		if (txBuf[i++] == '\n') {
+		status = getchar((char *) &txBuf[i]);
+		if (status == OK && txBuf[i++] == '\n') {
 			// End of command
 			state.next = idleState;
 			break;
+		} else if (status != OK) {
+			// Wait to receive more data and continue on next call
+			return &state;
 		}
 	}
 
 	if (i > 0u) {
 		putUSBUSART(txBuf, i);
+		i = 0u;
 	}
 
 	return &state;
+}
+
+// Parse a 2-digit hex number and consume the space after it.
+static Status
+parseU8(U8 *n) {
+	U8 i;
+	char c;
+	Status status;
+
+	*n = 0u;
+	for (i = 0u; i < 2u; i++) {
+		*n <<= 4u;
+		status = getcharBlock(&c, BAILOUT);
+		if (status != OK) {
+			return FAIL;
+		}
+		if (isdigit(c)) {
+			*n += c - '0';
+		} else if (c >= 'A' && c <= 'F') {
+			*n += 10u + (c - 'A');
+		} else if (c >= 'a' && c <= 'f') {
+			*n += 10u + (c - 'a');
+		} else {
+			return FAIL;
+		}
+	}
+
+	// Skip space
+	status = getcharBlock(&c, BAILOUT);
+	if (status != OK || !isspace(c)) {
+		return FAIL;
+	}
+
+	return OK;
 }
 
 // Handle "w" write eeprom command.
 static State *
 writeEepromState(void) {
 	static State state;
-
-	// TODO
+	U16 addr;
+	U8 size;
+	U8 i;
+	char c;
+	Status status;
 
 	state.next = idleState;
+
+	// Read <addrHi/Lo> and <size>
+	if (parseU8(&addr.hi) != OK) {
+		nack();
+		return &state;
+	}
+	if (parseU8(&addr.lo) != OK) {
+		nack();
+		return &state;
+	}
+	if (parseU8(&size) != OK) {
+		nack();
+		return &state;
+	}
+
+	eepromWriteEnable();
+
+	// Read <bytes> into buffer
+	for (i = 0u; i < size; i++) {
+		// Reuse txBuf to save memory
+
+		// Receive byte
+		status = getcharBlock(&c, BAILOUT);
+		if (status != OK) {
+			nack();
+			eepromWriteDisable();
+			return &state;
+		}
+
+		// Check for overflow
+		if (i > 0u && (i%sizeof(txBuf)) == 0u) {
+			eepromWrite(addr, txBuf, sizeof(txBuf));
+			addU16(&addr, sizeof(txBuf));
+		}
+
+		txBuf[i%sizeof(txBuf)] = c;
+	}
+
+	// Flush buffer to eeprom
+	if (i > 0u) {
+		eepromWrite(addr, txBuf, i%sizeof(txBuf));
+	}
+
+	eepromWriteDisable();
+
+	// Consume '\n'
+	status = getcharBlock(&c, BAILOUT);
+	if (status != OK || c != '\n') {
+		nack();
+	}
+
+	putsUSBUSART("ok\n");
+
 	return &state;
 }
 

@@ -5,9 +5,9 @@
 #include "types.h"
 
 void
-incU16(U16 *x) {
-	x->lo++;
-	if (x->lo == 0u) {
-		x->hi++;
+addU16(U16 *a, U8 b) {
+	a->lo += b;
+	if (STATUSbits.C) {
+		a->hi++;
 	}
 }

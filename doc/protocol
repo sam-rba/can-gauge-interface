@@ -1,5 +1,5 @@
 <command> ::= <opcode> " " <args> "\n"
-<response> ::= (<retval>|"nack") "\n"
+<response> ::= (<retval> | "nack") "\n"
 
 Echo:
 <opcode> ::= "e"
@@ -8,7 +8,7 @@ Echo:
 
 Write EEPROM:
 <opcode> ::= "w"
-<args> ::= <addr> " " <size> " " <bytes>
+<args> ::= <addrHi> " " <addrLo> " " <size> " " <bytes>
 <retval> ::= "ok"
 
 Read EEPROM:
@@ -16,10 +16,9 @@ Read EEPROM:
 <args> ::= <addr> " " <size>
 <retval> ::= <bytes>{size}
 
-<addr> ::= "0"--"2047"
+<addrHi> ::= <byte>
+<addrLo> :: <byte>
+<size> ::= <byte>
 <bytes> ::= <byte> <bytetail> | ""
 <bytetail> ::= " " <byte> <bytetail> | ""
-<byte> ::= "0"--"FF"
-<size> ::= "0"--"2048"
-
-Messages must not contain NUL ('\0').
+<byte> ::= "00"--"FF"
