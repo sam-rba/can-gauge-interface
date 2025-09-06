@@ -13,6 +13,10 @@
 
 #include "usb.h"
 
+/***** Macros *****/
+
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+
 /***** Constants *****/
 
 // Safety counter
@@ -50,8 +54,8 @@ static State *readEepromState(void);
 
 /***** Global Variables *****/
 
-static U8 txBuf[CDC_DATA_IN_EP_SIZE];
 static RxQueue rxBuf = {.len = 0u, .head = 0u};
+static U8 txBuf[CDC_DATA_IN_EP_SIZE];
 
 /***** Function Definitions *****/
 
@@ -288,10 +292,49 @@ writeEepromState(void) {
 static State *
 readEepromState(void) {
 	static State state;
-
-	// TODO
+	static U16 addr;
+	static U8 size = 0u;
+	U8 chunkSize;
 
 	state.next = idleState;
+
+	if (size == 0u) {
+		// First time called in this transaction
+
+		// Read command, including '\n'
+		if (parseU8(&addr.hi) != OK) {
+			nack();
+			return &state;
+		}
+		if (parseU8(&addr.lo) != OK) {
+			nack();
+			return &state;
+		}
+		if (parseU8(&size) != OK) {
+			nack();
+			return &state;
+		}
+	}
+
+	// Read from eeprom into buffer
+	chunkSize = min(size, sizeof(txBuf)-1u); // -1 to leave space for '\n'
+	eepromRead(addr, txBuf, chunkSize);
+	addU16(&addr, chunkSize);
+
+	// End of read?
+	size -= chunkSize;
+	if (size == 0u) {
+		// Done
+		txBuf[chunkSize] = '\n';
+		state.next = idleState;
+	} else {
+		// More data to read in next call
+		state.next = readEepromState;
+	}
+
+	// Flush buffer to USB
+	putUSBUSART(txBuf, chunkSize);
+
 	return &state;
 }
 

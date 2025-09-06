@@ -13,7 +13,7 @@ Write EEPROM:
 
 Read EEPROM:
 <opcode> ::= "r"
-<args> ::= <addr> " " <size>
+<args> ::= <addrHi> " " <addrLo> " " <size>
 <retval> ::= <bytes>{size}
 
 <addrHi> ::= <byte>
