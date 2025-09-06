@@ -1,3 +1,6 @@
 [submodule "fw/mla_usb"]
 	path = fw/mla_usb
 	url = https://github.com/MicrochipTech/mla_usb
+[submodule "fw/tests/unit/Unity"]
+	path = fw/tests/unit/Unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
