@@ -3,4 +3,9 @@
 *.aux
 *.png
 *.bak
+*.~lock*
+*.out
+*.lck
+\#auto_saved_files\#
+*-backups
 usbcom

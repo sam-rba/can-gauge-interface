@@ -1,0 +1,140 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{IEEEtrantools}
+
+\title{Power Supply}
+\author{Sam Anthony}
+
+\begin{document}
+
+\maketitle
+
+Switching Regulator Component Selection \& Sizing --- Phil's Lab \#71: \\
+\url{https://youtu.be/FqT_Ofd54fo}
+
+
+\section{Requirements}
+
+Input voltage range:
+\begin{equation}
+	9V \le V_{In} \le 16V
+\end{equation}
+\begin{equation}
+	V_{In,nom} = 12.7V
+\end{equation}
+
+Nominal output voltage:
+\begin{equation}
+	V_{Out,nom} = 5V
+\end{equation}
+
+Maximum load current:
+\begin{equation}
+	I_{Load,max} = 250 mA
+\end{equation}
+
+\section{IC selection}
+
+Diodes Inc. AP64100Q: \\
+\url{https://www.diodes.com/assets/Datasheets/AP64100Q.pdf}
+
+Switching frequency:
+\begin{equation}
+	100 kHz \le f_{sw} \le 2.2 MHz
+\end{equation}
+Select a frequency of 2MHz:
+\begin{equation}
+	f_{sw} = 2 MHz
+\end{equation}
+\begin{equation}
+	RT[k \Omega] = \frac{100000}{f_{sw}[kHz]} = 50 k\Omega
+\end{equation}
+
+Max. high-side current:
+\begin{equation}
+	I_{Peak,lim} = 2.2 A
+\end{equation}
+
+
+\section{Maximum switching current}
+
+Efficiency:
+\begin{equation}
+	\eta \approx 0.85
+\end{equation}
+
+Duty cycle:
+\begin{equation}
+	\delta = \frac{V_{Out}}{V_{In} \cdot \eta}
+\end{equation}
+
+\begin{equation}
+	\delta(V_{In,min}) \approx 0.654
+\end{equation}
+
+\begin{equation}
+	\delta(V_{In,nom}) \approx 0.464
+\end{equation}
+
+\begin{equation}
+	\delta(V_{In,max}) \approx 0.368
+\end{equation}
+
+Inductor ripple current estimated using average recommended inductor value from datasheet:
+\begin{equation}
+	L_{avg} = \frac{6.8 \mu H + 33 \mu H}{2} = 19.9 \mu H
+\end{equation}
+
+\begin{equation}
+	\Delta I_L = \frac{(V_{In} - V_{Out}) \cdot \delta}{f_{sw} \cdot L_{avg}} \\
+\end{equation}
+
+\begin{equation}
+	\Delta I_L(V_{In,min}) = \frac{(9V - 5V) \cdot 0.654}{2MHz \cdot 19.9 \mu H} = 65.7 mA
+\end{equation}
+
+\begin{equation}
+	\Delta I_L(V_{In,nom}) = \frac{(12.7V - 5V) \cdot 0.464}{2MHz \cdot 19.9 \mu H} = 86.4 mA
+\end{equation}
+
+\begin{equation}
+	\Delta I_L(V_{In,max}) = \frac{(16V - 5V) \cdot 0.368}{2MHz \cdot 19.9 \mu H} = 102 mA
+\end{equation}
+
+Available output current:
+\begin{IEEEeqnarray}{rCl}
+	I_{Avail,min} & = & I_{Peak,lim} - \frac{\Delta I_{L,max}}{2} \\
+	& = & 2.2A - 51 mA \\
+	& = & 2.15 A > I_{Load,max}
+\end{IEEEeqnarray}
+
+Max power supply current:
+\begin{equation}
+	I_{Supply,max} = I_{Load,max} + \frac{\Delta I_{L,max}}{2} = 301mA
+\end{equation}
+
+\section{Inductor selection}
+
+\begin{equation}
+	L = \frac{V_{Out} \cdot (V_{In} - V_{Out})}{\Delta I_L \cdot f_{sw} \cdot V_{In}}
+\end{equation}
+
+Estimate ripple current as $20\%$--$40\%$ of maximum supply current:
+\begin{equation}
+	\Delta I_{L,approx.} = 0.30 \cdot 301 mA = 90.3 mA
+\end{equation}
+
+\begin{equation}
+	L(V_{In,min}) = \frac{5V \cdot (9V - 5V)}{90.3mA \cdot 2MHz \cdot 9V} = 12.3 \mu H
+\end{equation}
+
+\begin{equation}
+	L_(V_{In,nom}) = \frac{5V \cdot (12.7V - 5V)}{90.3mA \cdot 2MHz \cdot 12.7V} = 16.8 \mu H
+\end{equation}
+
+\begin{equation}
+	L(V_{In,max}) = \frac{5V \cdot (16V - 5V)}{90.3mA \cdot 2MHz \cdot 16V} = 19.0 \mu H
+\end{equation}
+
+\end{document}
