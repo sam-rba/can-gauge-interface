@@ -1,5 +1,5 @@
 <command> ::= <opcode> " " <args> "\n"
-<response> ::= (<retval> | "nack") "\n"
+<response> ::= (<retval> | "nack" <err>) "\n"
 
 Echo:
 <opcode> ::= "e"
@@ -22,3 +22,5 @@ Read EEPROM:
 <bytes> ::= <byte> <bytetail> | ""
 <bytetail> ::= " " <byte> <bytetail> | ""
 <byte> ::= "00"--"FF"
+<err> ::= <char> <err> | ""
+<char> ::= [a-zA-Z0-9_ ]

@@ -8,4 +8,4 @@
 *.lck
 \#auto_saved_files\#
 *-backups
-usbcom
+sw/usbcom/usbcom
