@@ -22,5 +22,5 @@ Read EEPROM:
 <bytes> ::= <byte> <bytetail> | ""
 <bytetail> ::= " " <byte> <bytetail> | ""
 <byte> ::= "00"--"FF"
-<err> ::= <char> <err> | ""
-<char> ::= [a-zA-Z0-9_ ]
+<err> ::= <string>
+<string> ::= [^\n]*

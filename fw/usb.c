@@ -116,11 +116,6 @@ usbTask(void) {
 	CDCTxService();
 }
 
-static void
-nack(void) {
-	putsUSBUSART("nack\n");
-}
-
 // Read (the start of) a command from USB.
 static State *
 idleState(void) {
@@ -140,7 +135,7 @@ idleState(void) {
 	// Skip space
 	if (getchar(&junk) != OK) {
 		// Incomplete command
-		nack();
+		putsUSBUSART("nack incomplete command\n");
 		return &state;
 	}
 
@@ -151,7 +146,7 @@ idleState(void) {
 	case 'r': state.next = readEepromState; break;
 	default: // invalid command
 		rxBuf.len = 0u; // discard input
-		nack();
+		putsUSBUSART("nack invalid command\n");
 		break;
 	}
 
@@ -235,15 +230,15 @@ writeEepromState(void) {
 
 	// Read <addrHi/Lo> and <size>
 	if (parseU8(&addr.hi) != OK) {
-		nack();
+		putsUSBUSART("nack bad <addrHi>\n");
 		return &state;
 	}
 	if (parseU8(&addr.lo) != OK) {
-		nack();
+		putsUSBUSART("nack bad <addrLo>\n");
 		return &state;
 	}
 	if (parseU8(&size) != OK) {
-		nack();
+		putsUSBUSART("nack bad <size>\n");
 		return &state;
 	}
 
@@ -251,40 +246,34 @@ writeEepromState(void) {
 
 	// Read <bytes> into buffer
 	for (i = 0u; i < size; i++) {
-		// Reuse txBuf to save memory
-
-		// Receive byte
-		status = getcharBlock(&c, BAILOUT);
-		if (status != OK) {
-			nack();
-			eepromWriteDisable();
-			return &state;
-		}
-
 		// Check for overflow
 		if (i > 0u && (i%sizeof(txBuf)) == 0u) {
 			eepromWrite(addr, txBuf, sizeof(txBuf));
 			addU16(&addr, sizeof(txBuf));
 		}
 
-		txBuf[i%sizeof(txBuf)] = c;
+		// Receive byte
+		status = getcharBlock((char *) &txBuf[i%sizeof(txBuf)], BAILOUT);
+		if (status != OK) {
+			putsUSBUSART("nack not enough bytes\n");
+			eepromWriteDisable();
+			return &state;
+		}
 	}
 
 	// Flush buffer to eeprom
-	if (i > 0u) {
-		eepromWrite(addr, txBuf, i%sizeof(txBuf));
-	}
+	eepromWrite(addr, txBuf, i%sizeof(txBuf));
 
 	eepromWriteDisable();
 
 	// Consume '\n'
 	status = getcharBlock(&c, BAILOUT);
 	if (status != OK || c != '\n') {
-		nack();
+		putsUSBUSART("nack missing newline\n");
+		return &state;
 	}
 
 	putsUSBUSART("ok\n");
-
 	return &state;
 }
 
@@ -303,26 +292,26 @@ readEepromState(void) {
 
 		// Read command, including '\n'
 		if (parseU8(&addr.hi) != OK) {
-			nack();
+			putsUSBUSART("nack bad <addrHi>\n");
 			return &state;
 		}
 		if (parseU8(&addr.lo) != OK) {
-			nack();
+			putsUSBUSART("nack bad <addrLo>\n");
 			return &state;
 		}
 		if (parseU8(&size) != OK) {
-			nack();
+			putsUSBUSART("nack bad <size>\n");
 			return &state;
 		}
 	}
 
 	// Read from eeprom into buffer
-	chunkSize = min(size, sizeof(txBuf)-1u); // -1 to leave space for '\n'
+	chunkSize = min(size, sizeof(txBuf)-1u); // -1 to leave space for \n
 	eepromRead(addr, txBuf, chunkSize);
 	addU16(&addr, chunkSize);
+	size -= chunkSize;
 
 	// End of read?
-	size -= chunkSize;
 	if (size == 0u) {
 		// Done
 		txBuf[chunkSize] = '\n';
@@ -333,7 +322,7 @@ readEepromState(void) {
 	}
 
 	// Flush buffer to USB
-	putUSBUSART(txBuf, chunkSize);
+	putUSBUSART(txBuf, chunkSize+1u); // +1 for \n
 
 	return &state;
 }
