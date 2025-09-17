@@ -38,7 +38,7 @@ func Connect() (*Device, error) {
 		return nil, err
 	}
 
-	inEp, err := intf.InEndpoint(inEndpointAddr)
+	in, err := inEndpoint(intf)
 	if err != nil {
 		closeIntf()
 		dev.Close()
@@ -46,40 +46,9 @@ func Connect() (*Device, error) {
 		return nil, err
 	}
 
-	inEpDesc, ok := intf.Setting.Endpoints[inEndpointAddr]
-	if !ok {
-		closeIntf()
-		dev.Close()
-		ctx.Close()
-		return nil, fmt.Errorf("no such endpoint: %x", inEndpointAddr)
-	}
-
-	in, err := inEp.NewStream(inEpDesc.MaxPacketSize, 1)
+	out, err := outEndpoint(intf)
 	if err != nil {
-		closeIntf()
-		dev.Close()
-		ctx.Close()
-		return nil, err
-	}
-
-	outEp, err := intf.OutEndpoint(outEndpointAddr)
-	if err != nil {
-		closeIntf()
-		dev.Close()
-		ctx.Close()
-		return nil, err
-	}
-
-	outEpDesc, ok := intf.Setting.Endpoints[outEndpointAddr]
-	if !ok {
-		closeIntf()
-		dev.Close()
-		ctx.Close()
-		return nil, fmt.Errorf("no such endpoint: %x", outEndpointAddr)
-	}
-
-	out, err := outEp.NewStream(outEpDesc.MaxPacketSize, 1)
-	if err != nil {
+		in.Close()
 		closeIntf()
 		dev.Close()
 		ctx.Close()
@@ -129,6 +98,34 @@ func interfaceByClass(dev *gousb.Device, class gousb.Class) (intf *gousb.Interfa
 		intf.Close()
 		cfg.Close()
 	}, nil
+}
+
+func inEndpoint(intf *gousb.Interface) (*gousb.ReadStream, error) {
+	ep, err := intf.InEndpoint(inEndpointAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	desc, ok := intf.Setting.Endpoints[inEndpointAddr]
+	if !ok {
+		return nil, fmt.Errorf("no such endpoint: %x", inEndpointAddr)
+	}
+
+	return ep.NewStream(desc.MaxPacketSize, 1)
+}
+
+func outEndpoint(intf *gousb.Interface) (*gousb.WriteStream, error) {
+	ep, err := intf.OutEndpoint(outEndpointAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	desc, ok := intf.Setting.Endpoints[outEndpointAddr]
+	if !ok {
+		return nil, fmt.Errorf("no such endpoint: %x", outEndpointAddr)
+	}
+
+	return ep.NewStream(desc.MaxPacketSize, 1)
 }
 
 func (dev *Device) Close() error {
