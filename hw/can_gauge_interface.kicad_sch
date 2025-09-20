@@ -11,6 +11,255 @@
 		(company "Sam Anthony")
 	)
 	(lib_symbols
+		(symbol "AP7375Q_1"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "U"
+				(at -3.81 3.175 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "AP7375Q"
+				(at 0 3.175 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_SO:Diodes_SO-8EP"
+				(at 0 12.192 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "https://www.diodes.com/assets/Datasheets/AP7375Q.pdf"
+				(at 0.254 7.366 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "300mA LDO, automotive compliant, SO-8EP"
+				(at 0 9.398 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "linear regulator ldo fixed positive"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "DFN*2x2mm*P0.65mm*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "AP7375Q_1_0_1"
+				(rectangle
+					(start -5.08 1.905)
+					(end 5.08 -7.62)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "AP7375Q_1_1_1"
+				(pin no_connect line
+					(at -25.4 -5.08 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -25.4 -7.62 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -25.4 -10.16 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -25.4 -12.7 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "VI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -7.62 -2.54 0)
+					(length 2.54)
+					(name "EN"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -3.81 -10.16 90)
+					(length 2.54)
+					(name "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 0 -10.16 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "VO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Analog_DAC:MCP4912"
 			(pin_names
 				(offset 1.016)
@@ -5284,6 +5533,24 @@
 						)
 					)
 				)
+				(pin passive line
+					(at -6.35 -12.7 90)
+					(length 2.54)
+					(name "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin power_in line
 					(at 0 -12.7 90)
 					(length 2.54)
@@ -5457,6 +5724,82 @@
 				)
 			)
 			(symbol "AP7375Q_1_1"
+				(pin no_connect line
+					(at -25.4 -5.08 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -25.4 -7.62 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -25.4 -10.16 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin no_connect line
+					(at -25.4 -12.7 0)
+					(length 2.54)
+					(hide yes)
+					(name "NC"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin power_in line
 					(at -7.62 0 0)
 					(length 2.54)
@@ -5493,6 +5836,24 @@
 						)
 					)
 				)
+				(pin passive line
+					(at -3.81 -10.16 90)
+					(length 2.54)
+					(name "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "9"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin power_in line
 					(at 0 -10.16 90)
 					(length 2.54)
@@ -5503,7 +5864,7 @@
 							)
 						)
 					)
-					(number "3"
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -6314,10 +6675,22 @@
 		(uuid "fa708378-5d68-4b37-adb6-2b4e7819a3fe")
 	)
 	(junction
+		(at 158.75 58.42)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0d778efc-0901-4d6c-9df6-c2984ecacab9")
+	)
+	(junction
 		(at 510.54 166.37)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0e79e9a3-13d4-4002-8e3f-1d4fe78db5da")
+	)
+	(junction
+		(at 504.19 68.58)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0f78514d-6507-4bfa-a973-5d8082b41180")
 	)
 	(junction
 		(at 106.68 45.72)
@@ -6534,6 +6907,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "97dbb9ba-2e5f-4459-aee3-0f9b3a850a15")
+	)
+	(junction
+		(at 55.88 64.77)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "98de919a-e455-41f6-968b-3569824bace7")
 	)
 	(junction
 		(at 525.78 175.26)
@@ -6818,6 +7197,16 @@
 			(type default)
 		)
 		(uuid "040a229d-fb90-40ce-a97c-b663db6bfcf5")
+	)
+	(wire
+		(pts
+			(xy 158.75 58.42) (xy 158.75 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "060bda41-d32c-475f-819d-8bc848351f1d")
 	)
 	(wire
 		(pts
@@ -7341,6 +7730,16 @@
 	)
 	(wire
 		(pts
+			(xy 154.94 55.88) (xy 154.94 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2f2570c5-1d4e-41f9-950d-4342cba6fc0a")
+	)
+	(wire
+		(pts
 			(xy 497.84 111.76) (xy 496.57 111.76)
 		)
 		(stroke
@@ -7438,6 +7837,16 @@
 			(type default)
 		)
 		(uuid "37d43585-c7df-4046-b312-9cce2bc99034")
+	)
+	(wire
+		(pts
+			(xy 49.53 62.23) (xy 49.53 64.77)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "37f154ad-3b81-47f3-bd80-fc76e575f198")
 	)
 	(wire
 		(pts
@@ -7891,7 +8300,7 @@
 	)
 	(wire
 		(pts
-			(xy 55.88 62.23) (xy 55.88 73.66)
+			(xy 55.88 62.23) (xy 55.88 64.77)
 		)
 		(stroke
 			(width 0)
@@ -8008,6 +8417,16 @@
 			(type default)
 		)
 		(uuid "6a060583-2d45-40b2-969f-a0a722ef6103")
+	)
+	(wire
+		(pts
+			(xy 154.94 58.42) (xy 158.75 58.42)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6b371a84-80f0-4adb-91f2-ede404678ad8")
 	)
 	(wire
 		(pts
@@ -8141,6 +8560,16 @@
 	)
 	(wire
 		(pts
+			(xy 504.19 68.58) (xy 508 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "76d71f5d-23f6-4d11-8a1c-8f473a36ef71")
+	)
+	(wire
+		(pts
 			(xy 233.68 152.4) (xy 215.9 152.4)
 		)
 		(stroke
@@ -8201,7 +8630,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 55.88) (xy 158.75 73.66)
+			(xy 158.75 55.88) (xy 158.75 58.42)
 		)
 		(stroke
 			(width 0)
@@ -8731,7 +9160,7 @@
 	)
 	(wire
 		(pts
-			(xy 495.3 68.58) (xy 508 68.58)
+			(xy 495.3 68.58) (xy 504.19 68.58)
 		)
 		(stroke
 			(width 0)
@@ -9098,6 +9527,16 @@
 			(type default)
 		)
 		(uuid "c2826864-3ed1-41b6-9788-905ed84e9d7a")
+	)
+	(wire
+		(pts
+			(xy 49.53 64.77) (xy 55.88 64.77)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c3546d95-87c4-4a47-b5a2-1119a17e4e48")
 	)
 	(wire
 		(pts
@@ -9511,6 +9950,16 @@
 	)
 	(wire
 		(pts
+			(xy 504.19 67.31) (xy 504.19 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ea232d87-76de-49a1-be23-28c883bb676e")
+	)
+	(wire
+		(pts
 			(xy 86.36 57.15) (xy 86.36 49.53)
 		)
 		(stroke
@@ -9758,6 +10207,16 @@
 			(type default)
 		)
 		(uuid "f77ff7c1-516c-45c3-bc05-98dee1c2737b")
+	)
+	(wire
+		(pts
+			(xy 55.88 64.77) (xy 55.88 73.66)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f7d6c3d4-c3d3-45c9-a510-a74e0466240d")
 	)
 	(wire
 		(pts
@@ -10546,7 +11005,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_USB:USB_A_Wuerth_614004134726_Horizontal"
+		(property "Footprint" "Connector_USB:USB_B_OST_USB-B1HSxx_Horizontal"
 			(at 44.45 154.94 0)
 			(effects
 				(font
@@ -11365,7 +11824,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-8-16_W7.62mm"
+		(property "Footprint" "Package_DIP:DIP-8_W7.62mm"
 			(at 137.16 167.64 0)
 			(effects
 				(font
@@ -12261,6 +12720,9 @@
 		)
 		(pin "8"
 			(uuid "86af7f32-f0ce-45c2-a949-ce7458e050fb")
+		)
+		(pin "9"
+			(uuid "1edcf3e8-911f-49fa-9627-ab2d67a2898a")
 		)
 		(instances
 			(project ""
@@ -14036,6 +14498,21 @@
 		(pin "1"
 			(uuid "74177349-7a95-4726-a5d3-cdf594943084")
 		)
+		(pin "4"
+			(uuid "4d62111e-f87d-4f43-9f7a-46d555463503")
+		)
+		(pin "2"
+			(uuid "954d5384-b9fe-4504-b418-47fb5e420969")
+		)
+		(pin "6"
+			(uuid "0438e9d9-88ef-41a9-8f03-e3073d766e88")
+		)
+		(pin "5"
+			(uuid "244dc66b-ba95-44d6-b906-b6c9af72735b")
+		)
+		(pin "9"
+			(uuid "adf50dba-631d-45fe-8d8e-7846f7ee6c13")
+		)
 		(instances
 			(project ""
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
@@ -14855,6 +15332,7 @@
 		)
 	)
 	(symbol
+		(lib_name "AP7375Q_1")
 		(lib_id "symbols:AP7375Q")
 		(at 158.75 45.72 0)
 		(unit 1)
@@ -14917,6 +15395,21 @@
 		)
 		(pin "1"
 			(uuid "b08d44c7-0522-46cf-8740-6c63729e2b31")
+		)
+		(pin "2"
+			(uuid "11546f57-6a2f-45f0-864f-924ee22ec504")
+		)
+		(pin "4"
+			(uuid "8d3a3bcc-ab9b-4ab4-97c9-1440166c6c30")
+		)
+		(pin "6"
+			(uuid "bf8df72d-8678-4b02-a951-891fcecd8a99")
+		)
+		(pin "5"
+			(uuid "6c01a9b2-5b88-4236-8f19-04d36b86a888")
+		)
+		(pin "9"
+			(uuid "228a969c-4070-466c-8361-44cf9f1c8d50")
 		)
 		(instances
 			(project ""
