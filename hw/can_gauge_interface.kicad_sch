@@ -9990,6 +9990,16 @@
 	)
 	(wire
 		(pts
+			(xy 273.05 80.01) (xy 283.21 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ebce4acf-628a-43cb-9d35-ad045140c54c")
+	)
+	(wire
+		(pts
 			(xy 508 68.58) (xy 508 69.85)
 		)
 		(stroke
@@ -10406,7 +10416,7 @@
 		(uuid "40a910cd-0b67-458d-a0cc-3827006a1a81")
 	)
 	(label "DAC1_~{CS}"
-		(at 273.05 85.09 0)
+		(at 295.91 46.99 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10447,7 +10457,7 @@
 		(uuid "50c7be78-6495-4042-abd4-0beaa81ed764")
 	)
 	(label "CAN_~{CS}"
-		(at 273.05 80.01 0)
+		(at 295.91 43.18 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10626,7 +10636,7 @@
 		(uuid "7fcef292-76de-4464-baa0-5343ea2a9445")
 	)
 	(label "DAC2_~{CS}"
-		(at 398.78 67.31 180)
+		(at 374.65 41.91 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10809,12 +10819,12 @@
 		(uuid "c838fa7e-3da0-463f-8bc5-5bc039f13884")
 	)
 	(label "ROM_~{CS}"
-		(at 398.78 77.47 180)
+		(at 273.05 80.01 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "ca92068d-7436-4439-a7e1-45c6739c426a")
 	)
