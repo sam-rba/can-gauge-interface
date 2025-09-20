@@ -8235,7 +8235,7 @@
 	(footprint "MountingHole:MountingHole_3.2mm_M3_DIN965"
 		(layer "F.Cu")
 		(uuid "86c18d21-b1f5-41ad-8839-15a72020b7e6")
-		(at 345.44 209.22)
+		(at 30 200)
 		(descr "Mounting Hole 3.2mm, no annular, M3, DIN965")
 		(tags "mounting hole 3.2mm no annular m3 din965")
 		(property "Reference" "H2"
@@ -8336,7 +8336,7 @@
 	(footprint "MountingHole:MountingHole_3.2mm_M3_DIN965"
 		(layer "F.Cu")
 		(uuid "95ea7be5-7824-41e4-bf6d-85a1ac409aa1")
-		(at 345.44 216.37)
+		(at 190 200)
 		(descr "Mounting Hole 3.2mm, no annular, M3, DIN965")
 		(tags "mounting hole 3.2mm no annular m3 din965")
 		(property "Reference" "H3"
@@ -8725,7 +8725,7 @@
 	(footprint "MountingHole:MountingHole_3.2mm_M3_DIN965"
 		(layer "F.Cu")
 		(uuid "a15f9c3d-3188-4834-afe5-7e34f23d1ec4")
-		(at 345.44 223.52)
+		(at 190 85)
 		(descr "Mounting Hole 3.2mm, no annular, M3, DIN965")
 		(tags "mounting hole 3.2mm no annular m3 din965")
 		(property "Reference" "H4"
