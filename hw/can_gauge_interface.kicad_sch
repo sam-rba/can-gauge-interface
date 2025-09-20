@@ -9090,6 +9090,16 @@
 	)
 	(wire
 		(pts
+			(xy 384.81 77.47) (xy 398.78 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9fd431e6-f0b0-4eb8-a67b-e66d69b84195")
+	)
+	(wire
+		(pts
 			(xy 173.99 33.02) (xy 173.99 45.72)
 		)
 		(stroke
@@ -10457,12 +10467,12 @@
 		(uuid "50c7be78-6495-4042-abd4-0beaa81ed764")
 	)
 	(label "CAN_~{CS}"
-		(at 295.91 43.18 0)
+		(at 398.78 77.47 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "52c19808-a51b-4add-89a7-04eddfdd6f2a")
 	)
