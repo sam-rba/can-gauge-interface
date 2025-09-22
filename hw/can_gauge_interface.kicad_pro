@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.8,
-          "height": 1.27,
-          "width": 2.54
+          "drill": 2.33,
+          "height": 3.5,
+          "width": 3.5
         },
         "silk_line_width": 0.2,
         "silk_text_italic": false,
@@ -48,7 +48,7 @@
         "silk_text_thickness": 0.2,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.508
+          "min_clearance": 2.54
         }
       },
       "diff_pair_dimensions": [
@@ -534,7 +534,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "manufacturing/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
