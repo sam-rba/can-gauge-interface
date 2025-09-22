@@ -14049,7 +14049,7 @@
 				)
 			)
 		)
-		(property "Value" "CAN CS"
+		(property "Value" "CAN ~{CS}"
 			(at 38.735 240.03 0)
 			(effects
 				(font
@@ -14767,7 +14767,7 @@
 				)
 			)
 		)
-		(property "Value" "SPI debug"
+		(property "Value" "SPI Debug"
 			(at 38.735 226.06 0)
 			(effects
 				(font
@@ -17113,7 +17113,7 @@
 				)
 			)
 		)
-		(property "Value" "DAC CS"
+		(property "Value" "DAC ~{CS}"
 			(at 38.735 260.35 0)
 			(effects
 				(font
@@ -18146,7 +18146,7 @@
 				)
 			)
 		)
-		(property "Value" "ROM CS"
+		(property "Value" "ROM ~{CS}"
 			(at 38.735 248.92 0)
 			(effects
 				(font
