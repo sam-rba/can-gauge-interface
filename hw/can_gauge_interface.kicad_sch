@@ -10432,6 +10432,16 @@
 		)
 		(uuid "54d9b504-d547-4558-9e6c-d2a9b4173f03")
 	)
+	(label "sense"
+		(at 81.28 60.96 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5af45d3c-c438-4db1-887d-3fb26be24439")
+	)
 	(label "INT"
 		(at 440.69 57.15 180)
 		(effects
@@ -10651,6 +10661,16 @@
 			(justify left bottom)
 		)
 		(uuid "a0adc9fa-a51a-43b6-8e31-a374e47f3d2e")
+	)
+	(label "PH"
+		(at 81.28 55.88 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a66ccb21-c3b3-419a-a86b-8848c00e2560")
 	)
 	(label "AN4"
 		(at 548.64 189.23 180)
