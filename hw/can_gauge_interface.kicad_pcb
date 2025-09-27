@@ -444,11 +444,11 @@
 	(footprint "Capacitor_SMD:C_1206_3216Metric"
 		(layer "F.Cu")
 		(uuid "0a538994-b888-4193-8f2c-2354bbc6ec25")
-		(at 292.59 181.25)
+		(at 139.495 77.47)
 		(descr "Capacitor SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C9"
-			(at 0 -1.85 0)
+			(at 0 1.984 0)
 			(layer "F.SilkS")
 			(uuid "67aeeb2a-2fc5-4c42-a68a-5c2a96d25ea9")
 			(effects
@@ -461,6 +461,7 @@
 		(property "Value" "10u"
 			(at 0 1.85 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "ec5c1021-f9a8-4c88-9240-f54cfae2650b")
 			(effects
 				(font
@@ -1225,11 +1226,11 @@
 	(footprint "Capacitor_SMD:C_1206_3216Metric"
 		(layer "F.Cu")
 		(uuid "1ab9ce83-87ca-4454-94c6-8bdda97fdcdf")
-		(at 292.59 191.3)
+		(at 228.649 260.35)
 		(descr "Capacitor SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C19"
-			(at 0 -1.85 0)
+			(at 0 1.905 0)
 			(layer "F.SilkS")
 			(uuid "b1f5400e-7277-4749-a653-b183deac3631")
 			(effects
@@ -1242,6 +1243,7 @@
 		(property "Value" "10u"
 			(at 0 1.85 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "8d503d5f-c5ff-4e28-90bc-8aaf1a04c9a1")
 			(effects
 				(font
@@ -1627,7 +1629,7 @@
 	(footprint "Capacitor_SMD:C_1206_3216Metric"
 		(layer "F.Cu")
 		(uuid "24dcc59d-8622-48e2-9652-49183e245662")
-		(at 292.59 187.95)
+		(at 228.649 247.015)
 		(descr "Capacitor SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C18"
@@ -1644,6 +1646,7 @@
 		(property "Value" "10u"
 			(at 0 1.85 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "48c32111-97a0-456d-9a73-4b8d5b63e8ba")
 			(effects
 				(font
@@ -1828,11 +1831,11 @@
 	(footprint "Package_TO_SOT_SMD:TO-252-2"
 		(layer "F.Cu")
 		(uuid "29647d0f-5230-44d0-bab2-ca6f0ee0edfe")
-		(at 302.33 170.345)
+		(at 142.2 70.86)
 		(descr "TO-252/DPAK SMD package, http://www.infineon.com/cms/en/product/packages/PG-TO252/PG-TO252-3-1/")
 		(tags "DPAK TO-252 DPAK-3 TO-252-3 SOT-428")
 		(property "Reference" "U6"
-			(at 0 -4.5 0)
+			(at 6.443 0.128 0)
 			(layer "F.SilkS")
 			(uuid "6caf6978-7796-4c6a-8509-293a22317450")
 			(effects
@@ -1845,6 +1848,7 @@
 		(property "Value" "L78M05AB"
 			(at 0 4.5 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "0b274721-ee5c-460e-8e58-755d09201183")
 			(effects
 				(font
@@ -9898,7 +9902,7 @@
 	(footprint "Capacitor_SMD:C_1206_3216Metric"
 		(layer "F.Cu")
 		(uuid "c2ce3d8b-6371-42e9-8c31-c0bd3d7134a6")
-		(at 292.59 177.9)
+		(at 139.495 64.135)
 		(descr "Capacitor SMD 1206 (3216 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: IPC-SM-782 page 76, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf), generated with kicad-footprint-generator")
 		(tags "capacitor")
 		(property "Reference" "C8"
@@ -9915,6 +9919,7 @@
 		(property "Value" "10u"
 			(at 0 1.85 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "e8676b7e-7bef-4b30-807f-418774c60643")
 			(effects
 				(font
@@ -13809,11 +13814,11 @@
 	(footprint "Package_TO_SOT_SMD:TO-252-2"
 		(layer "F.Cu")
 		(uuid "eb98bc82-8771-4939-b318-1533e342c283")
-		(at 302.33 178.54)
+		(at 231.354 253.74)
 		(descr "TO-252/DPAK SMD package, http://www.infineon.com/cms/en/product/packages/PG-TO252/PG-TO252-3-1/")
 		(tags "DPAK TO-252 DPAK-3 TO-252-3 SOT-428")
 		(property "Reference" "U7"
-			(at 0 -4.5 0)
+			(at 6.39 0.26 0)
 			(layer "F.SilkS")
 			(uuid "fc54937f-019c-4ff4-8ad7-7db319191206")
 			(effects
@@ -13826,6 +13831,7 @@
 		(property "Value" "L78M05AB"
 			(at 0 4.5 0)
 			(layer "F.Fab")
+			(hide yes)
 			(uuid "c8290dd1-852a-45c3-bfb9-62cfa63b5d62")
 			(effects
 				(font
