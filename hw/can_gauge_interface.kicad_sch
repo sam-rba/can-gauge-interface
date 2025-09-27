@@ -5338,131 +5338,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:+6V"
-			(power)
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "#PWR"
-				(at 0 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Value" "+6V"
-				(at 0 3.556 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"+6V\""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "+6V_0_1"
-				(polyline
-					(pts
-						(xy -0.762 1.27) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "+6V_1_1"
-				(pin power_in line
-					(at 0 0 90)
-					(length 0)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "power:+7.5V"
 			(power)
 			(pin_numbers
@@ -7024,6 +6899,12 @@
 		(uuid "9e057f8b-d64e-4fe8-8688-7c18cf445bec")
 	)
 	(junction
+		(at 133.35 40.64)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "a1597a95-9ad1-40b0-b98d-80c4410a1804")
+	)
+	(junction
 		(at 508 60.96)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7170,6 +7051,10 @@
 	(no_connect
 		(at 231.14 177.8)
 		(uuid "1c971c21-2855-4367-a3c6-b43538792fad")
+	)
+	(no_connect
+		(at 410.21 67.31)
+		(uuid "201abb05-3e28-4a0c-86b1-b9973ccb170a")
 	)
 	(no_connect
 		(at 38.1 214.63)
@@ -8641,6 +8526,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 40.64) (xy 133.35 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "762a097d-3425-420c-9228-35b95d80dabd")
+	)
+	(wire
+		(pts
 			(xy 233.68 152.4) (xy 215.9 152.4)
 		)
 		(stroke
@@ -8958,6 +8853,16 @@
 			(type default)
 		)
 		(uuid "93cd9462-f6bf-4b3d-baea-fd7d1fad358d")
+	)
+	(wire
+		(pts
+			(xy 133.35 40.64) (xy 133.35 50.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9401566e-e836-48ff-ba9a-260ed18e8e63")
 	)
 	(wire
 		(pts
@@ -9641,7 +9546,7 @@
 	)
 	(wire
 		(pts
-			(xy 133.35 38.1) (xy 133.35 50.8)
+			(xy 133.35 38.1) (xy 133.35 40.64)
 		)
 		(stroke
 			(width 0)
@@ -10271,6 +10176,16 @@
 	)
 	(wire
 		(pts
+			(xy 127 38.1) (xy 127 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fcbee179-7870-4f7e-9ed4-dcaf7c94a7ce")
+	)
+	(wire
+		(pts
 			(xy 86.36 44.45) (xy 88.9 44.45)
 		)
 		(stroke
@@ -10778,16 +10693,6 @@
 		)
 		(uuid "b17d5a46-8d4c-4084-ba8f-2b2d88e33be3")
 	)
-	(label "~{MCLR}"
-		(at 298.45 67.31 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "b4a8aa14-e89c-471a-ad30-a851f5942f78")
-	)
 	(label "AN3"
 		(at 548.64 181.61 180)
 		(effects
@@ -10889,7 +10794,7 @@
 		)
 		(uuid "cdaaeb40-3bfe-4dfe-989d-2b99c48eefb8")
 	)
-	(label "ICSP_~{MCLR}"
+	(label "~{MCLR}"
 		(at 53.34 165.1 180)
 		(effects
 			(font
@@ -10910,7 +10815,7 @@
 		)
 		(uuid "d6575b1b-8316-4a2d-a258-89767173a204")
 	)
-	(label "ICSP_~{MCLR}"
+	(label "~{MCLR}"
 		(at 241.3 67.31 0)
 		(effects
 			(font
@@ -11384,6 +11289,72 @@
 			(project "can_gauge_interface"
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
 					(reference "#PWR039")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+7.5V")
+		(at 52.07 331.47 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0ddb0642-4fc0-4a51-b246-ef354ac7c90f")
+		(property "Reference" "#PWR013"
+			(at 52.07 335.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+7V"
+			(at 52.07 326.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 52.07 331.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 52.07 331.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+7.5V\""
+			(at 52.07 331.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0f21eb75-35b7-42cc-bf2a-10ba7f909322")
+		)
+		(instances
+			(project "can_gauge_interface"
+				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -14335,16 +14306,17 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+6V")
-		(at 52.07 331.47 0)
+		(lib_id "power:PWR_FLAG")
+		(at 127 38.1 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "70f992fc-bf17-4e89-b2f0-1d0d38c24fc2")
-		(property "Reference" "#PWR014"
-			(at 52.07 335.28 0)
+		(fields_autoplaced yes)
+		(uuid "6a8c5e9f-5ece-4b69-b783-b03bec0949e1")
+		(property "Reference" "#FLG02"
+			(at 127 36.195 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14352,16 +14324,17 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "+6.5V"
-			(at 52.07 327.66 0)
+		(property "Value" "PWR_FLAG"
+			(at 127 33.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(hide yes)
 			)
 		)
 		(property "Footprint" ""
-			(at 52.07 331.47 0)
+			(at 127 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14369,8 +14342,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
-			(at 52.07 331.47 0)
+		(property "Datasheet" "~"
+			(at 127 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14378,8 +14351,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Power symbol creates a global label with name \"+6V\""
-			(at 52.07 331.47 0)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 127 38.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14388,12 +14361,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "4b8dfea1-1936-4374-bf89-4efe75c43524")
+			(uuid "dd59e2a1-7492-464d-a257-77533377f760")
 		)
 		(instances
-			(project "can_gauge_interface"
+			(project ""
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "#PWR014")
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)
