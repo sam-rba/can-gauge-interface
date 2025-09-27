@@ -7,6 +7,12 @@
 		(legacy_teardrops no)
 	)
 	(paper "A3")
+	(title_block
+		(title "CAN Gauge Interface")
+		(date "2025-09-27")
+		(rev "0.1")
+		(company "Sam Anthony")
+	)
 	(layers
 		(0 "F.Cu" signal)
 		(4 "In1.Cu" signal)
@@ -209,6 +215,7 @@
 	(net 61 "unconnected-(U7-NC-Pad2)")
 	(net 62 "unconnected-(U1-C2IN2-{slash}C1IN2-{slash}DACOUT1{slash}AN6{slash}RC2-Pad14)")
 	(net 63 "/INT{slash}ICSP_CLK")
+	(net 64 "unconnected-(J1-Shield-Pad5)")
 	(footprint "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
 		(layer "F.Cu")
 		(uuid "0a5710d4-979d-440e-97fc-bd52743a2f3d")
@@ -524,7 +531,7 @@
 		(path "/56951da7-5096-42f0-a6db-55c9f174666c")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.16 16.57)
 			(end 6.46 16.57)
@@ -886,7 +893,7 @@
 		(path "/15961e72-b08c-41ca-8c2e-a2d7ca152e66")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 3.87 -1.37)
 			(end 3.87 1.37)
@@ -1605,7 +1612,7 @@
 		(path "/4399e8f0-a147-4701-acce-78247d4aded8")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 -1.37)
 			(end -1.37 1.37)
@@ -1829,7 +1836,7 @@
 		(path "/95e1e1b6-364b-4871-8176-e3803f3d6d9e")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.33 -1.33)
 			(end 0 -1.33)
@@ -2119,7 +2126,7 @@
 		(path "/c56a9b52-f0bd-4434-9df1-2dba278a7306")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 1.37)
 			(end 3.87 1.37)
@@ -3273,7 +3280,7 @@
 		(path "/6fdc308e-6cb7-4a5a-a8dd-8cc72974d214")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 -1.37)
 			(end -1.37 1.37)
@@ -3498,7 +3505,7 @@
 		(path "/4afaa826-8a89-4ffc-8374-48a3f49b0c2b")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 -1.37)
 			(end -1.37 1.37)
@@ -3924,7 +3931,7 @@
 		(path "/2357f54a-3401-4c7c-b5c0-312b03786771")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.16 -1.33)
 			(end 1.16 8.95)
@@ -4220,7 +4227,7 @@
 		(path "/e08a8a64-bca2-4d99-9334-146ad37571bf")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 11.42 1.92)
 			(end 11.42 1.44)
@@ -4945,7 +4952,7 @@
 		(path "/9b1559b5-1558-41c1-9034-513a7645bf66")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 -1.37)
 			(end -1.37 1.37)
@@ -6233,7 +6240,7 @@
 		(path "/f00e1c2e-c80a-4887-a824-4edee4bccef2")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 11.42 -1.92)
 			(end 11.42 -1.44)
@@ -6966,7 +6973,7 @@
 		(path "/199b057a-cc76-44b0-8496-df5775566855")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 3.87 -1.37)
 			(end 3.87 1.37)
@@ -7392,7 +7399,7 @@
 		(path "/cfe4210b-1f83-4c8c-a406-57d8ee8a52c9")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.16 16.57)
 			(end 6.46 16.57)
@@ -7985,7 +7992,7 @@
 			(drill 2.33)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 13 "unconnected-(J1-Shield-Pad5)_1")
+			(net 64 "unconnected-(J1-Shield-Pad5)")
 			(pinfunction "Shield")
 			(pintype "passive+no_connect")
 			(uuid "ed26d565-3519-4850-b33e-71fedf46d9a3")
@@ -7999,7 +8006,7 @@
 			(net 13 "unconnected-(J1-Shield-Pad5)_1")
 			(pinfunction "Shield")
 			(pintype "passive+no_connect")
-			(uuid "ed26d565-3519-4850-b33e-71fedf46d9a3")
+			(uuid "fd95c30b-8d09-4872-98df-f7073342be33")
 		)
 		(embedded_fonts no)
 		(model "${KICAD9_3DMODEL_DIR}/Connector_USB.3dshapes/USB_B_OST_USB-B1HSxx_Horizontal.wrl"
@@ -9612,7 +9619,7 @@
 		(path "/e9f9e328-55f4-4412-8835-7534832f382a")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.16 -1.33)
 			(end 1.16 24.19)
@@ -10328,7 +10335,7 @@
 		(path "/2df5684e-8846-4e8d-b8a8-c13335db7b6e")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 11.42 1.92)
 			(end 11.42 1.44)
@@ -11518,7 +11525,7 @@
 		(path "/b77e9300-cd9f-4a6b-8f7f-aa576c8a4c0e")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.16 -1.33)
 			(end 1.16 21.65)
@@ -12127,7 +12134,7 @@
 		(path "/2979bddb-cba3-49f2-8f83-00d28414dcf1")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.28 1.92)
 			(end 11.42 1.92)
@@ -12392,7 +12399,7 @@
 		(path "/8ba7cb52-a54d-4e40-b3c4-597ae58cea8f")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 -1.37)
 			(end -1.37 1.37)
@@ -13057,7 +13064,7 @@
 		(path "/844f5ae5-c751-485d-8bd0-ac4ce98acd50")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 11.42 1.92)
 			(end 11.42 1.44)
@@ -13862,7 +13869,7 @@
 		(path "/7ac7e55a-533a-4a1a-9237-8e8b8acaadf6")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 6.46 8.95)
 			(end 6.46 -1.33)
@@ -14158,7 +14165,7 @@
 		(path "/4ffb231a-e441-43a0-be52-e6b6d057967b")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.37 1.37)
 			(end 3.87 1.37)
@@ -15143,7 +15150,7 @@
 		(path "/596f35cf-fd07-4b17-bd68-aeb6eceff885")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.28 -1.92)
 			(end 11.42 -1.92)
