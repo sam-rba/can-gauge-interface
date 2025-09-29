@@ -8448,6 +8448,16 @@
 	)
 	(wire
 		(pts
+			(xy 298.45 80.01) (xy 308.61 80.01)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6e051c5e-131f-4e9d-a370-0e7ecde959ac")
+	)
+	(wire
+		(pts
 			(xy 107.95 107.95) (xy 107.95 109.22)
 		)
 		(stroke
@@ -8485,6 +8495,16 @@
 			(type default)
 		)
 		(uuid "7237718f-dba8-4cae-ba9d-a2d99e02ab42")
+	)
+	(wire
+		(pts
+			(xy 298.45 85.09) (xy 308.61 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "72e6ce79-594f-4493-b2c9-0dce3c29365a")
 	)
 	(wire
 		(pts
@@ -10324,7 +10344,7 @@
 		(uuid "40a910cd-0b67-458d-a0cc-3827006a1a81")
 	)
 	(label "DAC1_~{CS}"
-		(at 318.77 46.99 0)
+		(at 298.45 80.01 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10554,7 +10574,7 @@
 		(uuid "7fcef292-76de-4464-baa0-5343ea2a9445")
 	)
 	(label "DAC2_~{CS}"
-		(at 317.5 43.18 0)
+		(at 298.45 85.09 0)
 		(effects
 			(font
 				(size 1.27 1.27)
