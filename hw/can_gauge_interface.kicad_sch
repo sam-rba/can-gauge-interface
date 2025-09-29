@@ -7738,6 +7738,16 @@
 	)
 	(wire
 		(pts
+			(xy 410.21 74.93) (xy 424.18 74.93)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3775613d-01b3-494b-9602-6f1741bcf7d0")
+	)
+	(wire
+		(pts
 			(xy 508 115.57) (xy 508 106.68)
 		)
 		(stroke
@@ -10727,12 +10737,12 @@
 		(uuid "c838fa7e-3da0-463f-8bc5-5bc039f13884")
 	)
 	(label "ROM_~{CS}"
-		(at 298.45 80.01 0)
+		(at 424.18 74.93 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "ca92068d-7436-4439-a7e1-45c6739c426a")
 	)
