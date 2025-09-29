@@ -48,7 +48,7 @@
         "silk_text_thickness": 0.2,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 2.54
+          "min_clearance": 0.508
         }
       },
       "diff_pair_dimensions": [
@@ -129,7 +129,7 @@
         "max_error": 0.005,
         "min_clearance": 0.1016,
         "min_connection": 0.1016,
-        "min_copper_edge_clearance": 0.2032,
+        "min_copper_edge_clearance": 0.3048,
         "min_groove_width": 0.0,
         "min_hole_clearance": 0.3556,
         "min_hole_to_hole": 0.4572,
