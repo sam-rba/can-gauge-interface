@@ -11939,7 +11939,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_SO:TI_SO-PowerPAD-8_ThermalVias"
+		(property "Footprint" "Package_SO:TI_SO-PowerPAD-8"
 			(at 64.77 64.77 0)
 			(effects
 				(font
@@ -13211,7 +13211,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_Mini-Fit_Jr_5569-08A2_2x04_P4.20mm_Horizontal"
+		(property "Footprint" "footprints:Molex_Mini-Fit_Jr_5569-08A2_2x04_P4.20mm_Horizontal"
 			(at 49.53 233.68 0)
 			(effects
 				(font
@@ -13937,7 +13937,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_USB:USB_B_Lumberg_2411_02_Horizontal"
+		(property "Footprint" "footprints:USB_B_Lumberg_2411_02_Horizontal"
 			(at 44.45 205.74 0)
 			(effects
 				(font
@@ -14418,7 +14418,7 @@
 				(hide yes)
 			)
 		)
-		(property "Footprint" "Connector_Molex:Molex_Mini-Fit_Jr_5569-06A2_2x03_P4.20mm_Horizontal"
+		(property "Footprint" "footprints:Molex_Mini-Fit_Jr_5569-06A2_2x03_P4.20mm_Horizontal"
 			(at 49.53 260.35 0)
 			(effects
 				(font
