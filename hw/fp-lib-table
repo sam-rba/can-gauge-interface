@@ -2,4 +2,5 @@
   (version 7)
   (lib (name "footprints")(type "KiCad")(uri "${KIPRJMOD}/footprints.pretty")(options "")(descr ""))
   (lib (name "USB_B_Wurth")(type "KiCad")(uri "${KIPRJMOD}/symbols")(options "")(descr ""))
+  (lib (name "USB_B_Samtec_USB-B-S-F-W-TH")(type "KiCad")(uri "${KIPRJMOD}/footprints/USB_B_Samtec_USB-B-S-F-W-TH")(options "")(descr ""))
 )

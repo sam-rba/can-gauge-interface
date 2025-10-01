@@ -6916,10 +6916,6 @@
 		(uuid "1c971c21-2855-4367-a3c6-b43538792fad")
 	)
 	(no_connect
-		(at 38.1 214.63)
-		(uuid "21511142-06fa-43cb-a549-9a1d85b3f510")
-	)
-	(no_connect
 		(at 48.26 199.39)
 		(uuid "23fcefd7-a6c4-498b-93c5-02a48c5dfb29")
 	)
@@ -6950,6 +6946,10 @@
 	(no_connect
 		(at 231.14 180.34)
 		(uuid "d2ab7e4b-3f1a-4df6-8d81-f439e32e7560")
+	)
+	(no_connect
+		(at 38.1 214.63)
+		(uuid "e96504dd-ce98-4d6c-ada3-1b1eef4d6ce0")
 	)
 	(wire
 		(pts
@@ -12824,7 +12824,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "47077c27-9f0b-4379-bbcc-75ae94de53f2")
 		(property "Reference" "J2"
 			(at 50.8 227.965 0)
@@ -13486,7 +13486,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "60d667f4-250a-4a6f-8b81-08c595ee41f7")
 		(property "Reference" "J1"
 			(at 40.64 192.405 0)
@@ -13504,7 +13504,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:USB_B_Lumberg_2411_02_Horizontal"
+		(property "Footprint" "USB_B_Samtec_USB-B-S-F-W-TH:SAMTEC_USB-B-S-X-X-TH"
 			(at 44.45 205.74 0)
 			(effects
 				(font
@@ -13513,7 +13513,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://suddendocs.samtec.com/prints/usb-b-s-x-x-th-x-xx-mkt.pdf"
 			(at 44.45 205.74 0)
 			(effects
 				(font
@@ -13966,7 +13966,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "72cceb64-dd75-4ce7-9711-12715fa77d8b")
 		(property "Reference" "J3"
 			(at 50.8 254.635 0)
