@@ -5665,131 +5665,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "power:VBUS"
-			(power)
-			(pin_numbers
-				(hide yes)
-			)
-			(pin_names
-				(offset 0)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "#PWR"
-				(at 0 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Value" "VBUS"
-				(at 0 3.556 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"VBUS\""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "VBUS_0_1"
-				(polyline
-					(pts
-						(xy -0.762 1.27) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "VBUS_1_1"
-				(pin power_in line
-					(at 0 0 90)
-					(length 0)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "symbols:L78M05AB"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -6423,7 +6298,7 @@
 	)
 	(rectangle
 		(start 25.4 152.4)
-		(end 88.9 368.3)
+		(end 76.2 368.3)
 		(stroke
 			(width 0)
 			(type dash)
@@ -6917,22 +6792,10 @@
 		(uuid "a5674bc2-9142-4062-b226-c462cba4d7e2")
 	)
 	(junction
-		(at 57.15 199.39)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ab69ac39-72a1-481a-b7d8-968087759e73")
-	)
-	(junction
 		(at 276.86 149.86)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ab88cd5a-cf75-4ac1-8dd2-8ea506989c05")
-	)
-	(junction
-		(at 52.07 199.39)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "adedc290-1de0-4b7d-ac78-39989f55a7a7")
 	)
 	(junction
 		(at 316.23 162.56)
@@ -7057,6 +6920,10 @@
 		(uuid "21511142-06fa-43cb-a549-9a1d85b3f510")
 	)
 	(no_connect
+		(at 48.26 199.39)
+		(uuid "23fcefd7-a6c4-498b-93c5-02a48c5dfb29")
+	)
+	(no_connect
 		(at 410.21 67.31)
 		(uuid "8d2476c7-a02e-42cf-9aa5-3fdf63b5679b")
 	)
@@ -7113,16 +6980,6 @@
 			(type default)
 		)
 		(uuid "01c20870-9dde-474d-86fc-5e74938335b2")
-	)
-	(wire
-		(pts
-			(xy 57.15 199.39) (xy 60.96 199.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "05f98ee2-c8d4-45bf-864a-2255b732a71c")
 	)
 	(wire
 		(pts
@@ -7193,16 +7050,6 @@
 			(type default)
 		)
 		(uuid "0afb6dc9-fe74-4313-9df3-03c0c6ac0434")
-	)
-	(wire
-		(pts
-			(xy 57.15 194.31) (xy 57.15 199.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0cf358d1-8987-453d-ad74-a1d05ebb2c11")
 	)
 	(wire
 		(pts
@@ -7936,16 +7783,6 @@
 	)
 	(wire
 		(pts
-			(xy 71.12 199.39) (xy 80.01 199.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "436cc31b-53ee-42b7-b23f-95c4f8ccfa93")
-	)
-	(wire
-		(pts
 			(xy 506.73 134.62) (xy 506.73 123.19)
 		)
 		(stroke
@@ -8676,16 +8513,6 @@
 	)
 	(wire
 		(pts
-			(xy 60.96 194.31) (xy 57.15 194.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "80576c5c-3301-43cb-9fc1-0f8ed76d8b84")
-	)
-	(wire
-		(pts
 			(xy 537.21 179.07) (xy 537.21 191.77)
 		)
 		(stroke
@@ -8896,16 +8723,6 @@
 	)
 	(wire
 		(pts
-			(xy 48.26 199.39) (xy 52.07 199.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9682051b-2784-4a27-a36c-35109ba8bc6a")
-	)
-	(wire
-		(pts
 			(xy 500.38 170.18) (xy 508 170.18)
 		)
 		(stroke
@@ -9053,16 +8870,6 @@
 			(type default)
 		)
 		(uuid "a3a4a01c-38b9-4ba0-8393-440a0d0449a9")
-	)
-	(wire
-		(pts
-			(xy 73.66 194.31) (xy 73.66 189.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a57dd1b8-e555-40ac-8bb1-b939e15ee6df")
 	)
 	(wire
 		(pts
@@ -9376,16 +9183,6 @@
 	)
 	(wire
 		(pts
-			(xy 52.07 199.39) (xy 57.15 199.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "be4616ed-3480-46e2-9899-3a1d8532e1f7")
-	)
-	(wire
-		(pts
 			(xy 387.35 139.7) (xy 391.16 139.7)
 		)
 		(stroke
@@ -9616,16 +9413,6 @@
 	)
 	(wire
 		(pts
-			(xy 52.07 189.23) (xy 52.07 199.39)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d00a29c2-5163-4168-87b7-f53b4429ead9")
-	)
-	(wire
-		(pts
 			(xy 177.8 44.45) (xy 177.8 46.99)
 		)
 		(stroke
@@ -9793,16 +9580,6 @@
 			(type default)
 		)
 		(uuid "e0a1effd-305f-4faa-9122-d4da15bd7de1")
-	)
-	(wire
-		(pts
-			(xy 80.01 199.39) (xy 80.01 189.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e10c89f5-6d59-4ced-ac5f-6b5fbf235550")
 	)
 	(wire
 		(pts
@@ -10063,16 +9840,6 @@
 			(type default)
 		)
 		(uuid "f58dea2e-22d6-4809-8a1e-e72eed61f2de")
-	)
-	(wire
-		(pts
-			(xy 71.12 194.31) (xy 73.66 194.31)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f5f8afdd-e512-4edd-ad4a-8675ce476f90")
 	)
 	(wire
 		(pts
@@ -12633,141 +12400,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Jumper:Jumper_2_Open")
-		(at 66.04 194.31 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "32903940-7ff5-4d6d-80c3-37f68a42f39c")
-		(property "Reference" "JP3"
-			(at 66.04 191.135 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "USB_PWR"
-			(at 66.04 191.135 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 66.04 194.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 66.04 194.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Jumper, 2-pole, open"
-			(at 66.04 194.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "cd263e50-0276-424f-82c9-78c4be51ec8d")
-		)
-		(pin "2"
-			(uuid "bd9b48a4-b09d-484a-b6fc-ace9f46182ab")
-		)
-		(instances
-			(project ""
-				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "JP3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Jumper:Jumper_2_Open")
-		(at 66.04 199.39 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3819b40d-a011-4e30-ba67-4076b291996c")
-		(property "Reference" "JP4"
-			(at 66.04 196.215 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "USB_PWR"
-			(at 66.04 201.295 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 66.04 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 66.04 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Jumper, 2-pole, open"
-			(at 66.04 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "12608c04-8760-412c-855c-5e7699e953f6")
-		)
-		(pin "2"
-			(uuid "02024b8f-51d9-45b7-aa9d-a4d33da34e5f")
-		)
-		(instances
-			(project "can_gauge_interface"
-				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "JP4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 120.65 57.15 0)
 		(unit 1)
@@ -13469,71 +13101,6 @@
 			(project ""
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
 					(reference "R1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 73.66 189.23 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "4f7b0d92-ffb3-4c9c-9d07-b350388d8d2f")
-		(property "Reference" "#PWR032"
-			(at 73.66 193.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 73.66 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 73.66 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 73.66 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 73.66 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5a5b8de4-b346-490d-90da-3cf553f57de2")
-		)
-		(instances
-			(project "can_gauge_interface"
-				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "#PWR032")
 					(unit 1)
 				)
 			)
@@ -15854,71 +15421,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:VBUS")
-		(at 52.07 189.23 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a48cd53f-7b09-49b9-9877-15797eb7eff7")
-		(property "Reference" "#PWR031"
-			(at 52.07 193.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "VBUS"
-			(at 52.07 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 52.07 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 52.07 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"VBUS\""
-			(at 52.07 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ff0cfb0d-9b35-4a84-b380-f9a2d6471bfe")
-		)
-		(instances
-			(project ""
-				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "#PWR031")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 82.55 44.45 90)
 		(unit 1)
@@ -16501,72 +16003,6 @@
 			(project ""
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
 					(reference "U2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5VA")
-		(at 80.01 189.23 0)
-		(mirror y)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "b9cb7137-34c6-4fd0-bb4c-bc0ee482aad5")
-		(property "Reference" "#PWR041"
-			(at 80.01 193.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5VA"
-			(at 80.01 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 80.01 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 80.01 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5VA\""
-			(at 80.01 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "f5f76201-1a22-4375-9d03-2f3e20537add")
-		)
-		(instances
-			(project "can_gauge_interface"
-				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "#PWR041")
 					(unit 1)
 				)
 			)
