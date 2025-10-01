@@ -6,8 +6,8 @@
 	(paper "A2")
 	(title_block
 		(title "CAN Gauge Interface")
-		(date "2025-09-19")
-		(rev "0.1")
+		(date "2025-10-01")
+		(rev "0.2")
 		(company "Sam Anthony")
 	)
 	(lib_symbols
@@ -11863,7 +11863,7 @@
 		(at 429.26 64.77 270)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom no)
+		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(uuid "25007344-fc14-492e-b414-3a5223e53247")
@@ -16412,7 +16412,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "cc29682c-55d6-48d2-a8c3-f9365410b70b")
 		(property "Reference" "L1"
@@ -16431,7 +16431,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_12x12mm_H8mm"
+		(property "Footprint" "Inductor_SMD:L_Wuerth_WE-PD-Typ-LS_Handsoldering"
 			(at 95.25 50.8 0)
 			(effects
 				(font
@@ -16440,7 +16440,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://www.we-online.com/components/products/datasheet/7447706151.pdf"
 			(at 95.25 50.8 0)
 			(effects
 				(font
@@ -17511,7 +17511,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "fb9ccdc2-bb73-45be-96fb-14a5f0522d35")
 		(property "Reference" "SW1"
 			(at 262.89 72.39 90)
