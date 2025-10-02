@@ -59,6 +59,41 @@ static U8 txBuf[CDC_DATA_IN_EP_SIZE];
 
 /***** Function Definitions *****/
 
+void
+usbInit(void) {
+	USBDeviceInit();
+	USBDeviceAttach();
+}
+
+void
+usbTask(void) {
+	static State state = {idleState};
+
+	USBDeviceTasks();
+
+	if (USBGetDeviceState() < CONFIGURED_STATE) {
+		return;
+	}
+	if (USBIsDeviceSuspended()) {
+		return;
+	}
+
+	if (USBUSARTIsTxTrfReady()) {
+		// Execute action and transition to next state
+		state = *state.next();
+	}
+
+	CDCTxService();
+}
+
+void
+usbPrint(char *s) {
+	while (!USBUSARTIsTxTrfReady()) {
+		usbTask();
+	}
+	putsUSBUSART(s);
+}
+
 // Rx a char from USB.
 // Returns FAIL if no data.
 static Status
@@ -93,27 +128,6 @@ getcharBlock(char *c, U8 retries) {
 	} while (--retries + 1u);
 
 	return FAIL;
-}
-
-void
-usbTask(void) {
-	static State state = {idleState};
-
-	USBDeviceTasks();
-
-	if (USBGetDeviceState() < CONFIGURED_STATE) {
-		return;
-	}
-	if (USBIsDeviceSuspended()) {
-		return;
-	}
-
-	if (USBUSARTIsTxTrfReady()) {
-		// Execute action and transition to next state
-		state = *state.next();
-	}
-
-	CDCTxService();
 }
 
 // Read (the start of) a command from USB.

@@ -5,18 +5,14 @@
 #include "system.h"
 #include "types.h"
 #include "spi.h"
-#include "eeprom.h"
-#include "usb.h"
 
 void
 main(void) {
 	sysInit();
 	spiInit();
-	eepromInit();
-	usbInit();
 
 	for (;;) {
-		usbTask();
+		(void)spiTx(0x05); // 0b0000101
 	}
 }
 

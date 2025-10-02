@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "sys.h"
+#include "system.h"
 #include "types.h"
 
 #include "spi.h"
@@ -16,8 +16,7 @@ spiInit(void) {
 	TRISBbits.TRISB6 = OUT; // SCK
 
 	SSPSTAT = 0x00;
-	SSPCON1 = 0x01; // FOSC/16 => 3MHz SPI clock
-	SSPCON1bits.SSPEN = 1; // enable
+	SSPCON1 = 0x22; // FOSC/64 => 750kHz SPI clock
 	junk = SSPBUF; // dummy read to clear BF
 	(void)junk;
 }

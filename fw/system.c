@@ -1,3 +1,7 @@
+#include <xc.h>
+
+#include "system.h"
+
 // CONFIG1
 #pragma config FOSC = INTOSC // Oscillator Selection Bits (INTOSC oscillator: I/O function on CLKIN pin)
 #pragma config WDTE = OFF // Watchdog Timer Enable (WDT disabled)
@@ -19,3 +23,14 @@
 #pragma config BORV = LO // Brown-out Reset Voltage Selection (Brown-out Reset Voltage (Vbor), low trip point selected.)
 #pragma config LPBOR = OFF // Low-Power Brown Out Reset (Low-Power BOR is disabled)
 #pragma config LVP = ON // Low-Voltage Programming Enable
+
+void
+sysInit(void) {
+	OSCCON = 0xFC; // HFINTOSC @ 16MHz, 3x PLL, PLL enabled
+	ACTCON = 0x90; // active clock tuning enabled for USB
+
+	// Disable all analog pin functions
+	ANSELA = 0;
+	ANSELB = 0;
+	ANSELC = 0;
+}
