@@ -12,17 +12,6 @@ Ref,Val,Package,PosX,PosY,Rot,Side
 "C18","10u","C_1206_3216Metric",134.923000,-188.849000,0.000000,top
 "C19","10u","C_1206_3216Metric",134.923000,-199.644000,0.000000,top
 "D1","SS34","D_SMA",73.025000,-119.475000,90.000000,top
-"J1","USB_B","USB_B_Lumberg_2411_02_Horizontal",64.770000,-137.160000,180.000000,top
-"J2","Conn_02x04_Top_Bottom","Molex_Mini-Fit_Jr_5569-08A2_2x04_P4.20mm_Horizontal",63.080000,-165.100000,90.000000,top
-"J3","Analog","Molex_Mini-Fit_Jr_5569-06A2_2x03_P4.20mm_Horizontal",63.080000,-193.820000,90.000000,top
-"J5","SPI Debug","PinSocket_1x03_P2.54mm_Vertical",110.490000,-129.540000,90.000000,top
-"J6","CAN ~{CS}","PinSocket_1x01_P2.54mm_Vertical",104.140000,-142.240000,0.000000,top
-"J7","ROM ~{CS}","PinSocket_1x01_P2.54mm_Vertical",124.460000,-129.540000,0.000000,top
-"J8","DAC ~{CS}","PinSocket_1x02_P2.54mm_Vertical",125.730000,-186.690000,-90.000000,top
-"J9","Conn_01x04_Socket","PinSocket_1x04_P2.54mm_Vertical",81.280000,-127.000000,90.000000,top
-"J10","+5VA","PinSocket_1x01_P2.54mm_Vertical",124.460000,-198.120000,0.000000,top
-"JP2","Prog","PinSocket_1x03_P2.54mm_Vertical",142.240000,-119.380000,180.000000,top
-"JP5","Term","PinSocket_1x02_P2.54mm_Vertical",80.010000,-157.480000,180.000000,top
 "R1","10k","R_0805_2012Metric",63.222500,-105.410000,0.000000,top
 "R2","3k24","R_0805_2012Metric",55.245000,-115.292500,-90.000000,top
 "R3","2k7","R_0805_2012Metric",59.055000,-115.292500,-90.000000,top

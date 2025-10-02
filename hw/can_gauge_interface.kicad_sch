@@ -11865,9 +11865,9 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "25007344-fc14-492e-b414-3a5223e53247")
-		(property "Reference" "JP2"
+		(property "Reference" "JP1"
 			(at 433.705 66.04 90)
 			(effects
 				(font
@@ -11922,7 +11922,7 @@
 		(instances
 			(project ""
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "JP2")
+					(reference "JP1")
 					(unit 1)
 				)
 			)
@@ -12274,7 +12274,7 @@
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "2e6d1986-f500-4666-83a3-888daaa63a39")
 		(property "Reference" "H1"
@@ -12679,7 +12679,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "45857884-c62a-4412-bf74-d4b689ad7aea")
 		(property "Reference" "J9"
@@ -13421,7 +13421,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "5f3e76c7-7ff3-4939-b1dd-0ac138c9e24b")
 		(property "Reference" "J6"
@@ -13701,7 +13701,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "68703dc4-ba43-465c-9cfd-0baf9dc4ab24")
 		(property "Reference" "J10"
 			(at 38.735 350.52 0)
@@ -14135,7 +14135,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "7b791919-5961-4063-938b-a5c083d3817a")
 		(property "Reference" "J5"
@@ -14206,7 +14206,7 @@
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "80f93c3d-b6a8-47f2-9e1b-f23e667d2a6e")
 		(property "Reference" "H4"
@@ -15157,7 +15157,7 @@
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "9ca7755f-dbcf-4e59-8e90-32f37cbcf18d")
 		(property "Reference" "H2"
@@ -15830,9 +15830,9 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(uuid "b67caa23-aac8-46e4-bde6-3e383031f47c")
-		(property "Reference" "JP5"
+		(property "Reference" "JP2"
 			(at 299.72 151.765 0)
 			(effects
 				(font
@@ -15884,7 +15884,7 @@
 		(instances
 			(project ""
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f"
-					(reference "JP5")
+					(reference "JP2")
 					(unit 1)
 				)
 			)
@@ -16015,7 +16015,7 @@
 		(exclude_from_sim yes)
 		(in_bom no)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "baaed1ef-b02b-47d0-876d-4933d1d1b7ea")
 		(property "Reference" "H3"
@@ -16344,7 +16344,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "c940dc06-93fd-40b0-9fee-cd12981801c5")
 		(property "Reference" "J8"
@@ -17446,7 +17446,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp no)
+		(dnp yes)
 		(fields_autoplaced yes)
 		(uuid "fa447b73-c59d-431c-bdec-fccc1fc4bf4d")
 		(property "Reference" "J7"

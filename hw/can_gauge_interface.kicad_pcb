@@ -184,7 +184,7 @@
 	(net 30 "/DAC1_~{CS}")
 	(net 31 "/INT{slash}ICSP_CLK")
 	(net 32 "/INT")
-	(net 33 "Net-(JP5-B)")
+	(net 33 "Net-(JP2-B)")
 	(net 34 "unconnected-(U1-C2IN2-{slash}C1IN2-{slash}DACOUT1{slash}AN6{slash}RC2-Pad14)")
 	(net 35 "/CLK")
 	(net 36 "unconnected-(U2-OSC2-Pad7)")
@@ -267,7 +267,7 @@
 		(path "/fa447b73-c59d-431c-bdec-fccc1fc4bf4d")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.33 1.21)
 			(end -1.33 1.33)
@@ -909,7 +909,7 @@
 		(path "/45857884-c62a-4412-bf74-d4b689ad7aea")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.33 -1.33)
 			(end 1.33 0)
@@ -1188,7 +1188,7 @@
 		(path "/2e6d1986-f500-4666-83a3-888daaa63a39")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(attr exclude_from_pos_files exclude_from_bom dnp)
 		(fp_circle
 			(center 0 0)
 			(end 2.8 0)
@@ -2571,7 +2571,7 @@
 		(path "/9ca7755f-dbcf-4e59-8e90-32f37cbcf18d")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(attr exclude_from_pos_files exclude_from_bom dnp)
 		(fp_circle
 			(center 0 0)
 			(end 2.8 0)
@@ -3855,7 +3855,7 @@
 		(at 80.01 157.48 180)
 		(descr "Through hole straight socket strip, 1x02, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x02 2.54mm single row")
-		(property "Reference" "JP5"
+		(property "Reference" "JP2"
 			(at 0 -2.77 0)
 			(layer "F.SilkS")
 			(uuid "03225547-2749-464f-816b-7a3d2741c110")
@@ -3909,7 +3909,7 @@
 		(path "/b67caa23-aac8-46e4-bde6-3e383031f47c")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.33 1.27)
 			(end 1.33 3.87)
@@ -4088,7 +4088,7 @@
 			(drill 1)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 33 "Net-(JP5-B)")
+			(net 33 "Net-(JP2-B)")
 			(pinfunction "B")
 			(pintype "passive")
 			(uuid "3eeb1b7c-d5e9-4909-9459-edd4c2d0438c")
@@ -5295,7 +5295,7 @@
 		(path "/80f93c3d-b6a8-47f2-9e1b-f23e667d2a6e")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(attr exclude_from_pos_files exclude_from_bom dnp)
 		(fp_circle
 			(center 0 0)
 			(end 2.8 0)
@@ -5866,7 +5866,7 @@
 		(path "/c940dc06-93fd-40b0-9fee-cd12981801c5")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.33 3.87)
 			(end 1.33 3.87)
@@ -6567,7 +6567,7 @@
 		(path "/5f3e76c7-7ff3-4939-b1dd-0ac138c9e24b")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.33 1.21)
 			(end -1.33 1.33)
@@ -7014,7 +7014,7 @@
 		(at 142.24 119.38 180)
 		(descr "Through hole straight socket strip, 1x03, 2.54mm pitch, single row (from Kicad 4.0.7), script generated")
 		(tags "Through hole socket strip THT 1x03 2.54mm single row")
-		(property "Reference" "JP2"
+		(property "Reference" "JP1"
 			(at 0 -2.77 0)
 			(layer "F.SilkS")
 			(uuid "2d7c7b2a-5a98-474f-9f64-ee0493a392f6")
@@ -7068,7 +7068,7 @@
 		(path "/25007344-fc14-492e-b414-3a5223e53247")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.33 1.27)
 			(end 1.33 6.41)
@@ -9949,7 +9949,7 @@
 		(path "/7b791919-5961-4063-938b-a5c083d3817a")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start 1.33 -1.33)
 			(end 1.33 0)
@@ -10420,7 +10420,7 @@
 		(path "/68703dc4-ba43-465c-9cfd-0baf9dc4ab24")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr through_hole)
+		(attr through_hole dnp)
 		(fp_line
 			(start -1.33 1.21)
 			(end -1.33 1.33)
@@ -12172,7 +12172,7 @@
 			(size 1.025 1.4)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.243902)
-			(net 33 "Net-(JP5-B)")
+			(net 33 "Net-(JP2-B)")
 			(pintype "passive")
 			(uuid "f9480296-3f5a-4c27-af08-d25b50af0181")
 		)
@@ -12483,7 +12483,7 @@
 		(path "/baaed1ef-b02b-47d0-876d-4933d1d1b7ea")
 		(sheetname "/")
 		(sheetfile "can_gauge_interface.kicad_sch")
-		(attr exclude_from_pos_files exclude_from_bom)
+		(attr exclude_from_pos_files exclude_from_bom dnp)
 		(fp_circle
 			(center 0 0)
 			(end 2.8 0)
