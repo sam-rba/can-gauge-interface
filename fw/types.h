@@ -18,4 +18,8 @@ typedef struct {
 	U8 hi, lo;
 } U16;
 
+// *a = *a+b
 void addU16(U16 *a, U8 b);
+
+// *a = *a<<b
+void lshiftU16(U16 *a, U8 b);

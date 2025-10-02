@@ -11,8 +11,8 @@
  */
 
 // Pin mapping
-#define EEPROM_CS_TRIS TRISAbits.TRISA5
-#define EEPROM_CS LATAbits.LATA5
+#define EEPROM_CS_TRIS TRISCbits.TRISC5
+#define EEPROM_CS LATCbits.LATC5
 
 void eepromInit(void);
 void eepromWriteEnable(void);
