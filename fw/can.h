@@ -12,6 +12,10 @@
  * #include "can.h"
  */
 
+// Pin mapping
+#define CAN_CS_TRIS TRISAbits.TRISA5
+#define CAN_CS LATAbits.LATA5
+
 // Bit timings (CNF1, CNF2, CNF3)
 #define CAN_TIMINGS_10K 0xDE, 0xAD, 0x06 // BRP=30, PropSeg=6, PS1=6, PS2=7, SP=65%, SJW=4
 #define CAN_TIMINGS_20K 0xCF, 0xAD, 0x06 // BRP=15, PropSeg=6, PS1=6, PS2=7, SP=65%, SJW=4
