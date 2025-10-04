@@ -103,7 +103,7 @@ class Bittiming:
 		return min(MAX_SJW, self.ps1, self.ps2)
 
 	def cnf1(self) -> int:
-		return (((self.max_sjw()-1) & 0x3) << 6) | (self.prescaler() & 0x3F)
+		return (((self.max_sjw()-1) & 0x3) << 6) | ((self.prescaler()-1) & 0x3F)
 
 	def cnf2(self) -> int:
 		phseg: int = (self.ps1-1) & 0x7
