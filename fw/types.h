@@ -18,6 +18,9 @@ typedef struct {
 	U8 hi, lo;
 } U16;
 
+// Little-endian 32-bit unsigned integer.
+typedef U8 U32[4];
+
 // *a = *a+b
 void addU16(U16 *a, U8 b);
 
