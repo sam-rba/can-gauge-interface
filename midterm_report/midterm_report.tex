@@ -4,7 +4,7 @@
 \usepackage[backend=biber]{biblatex}
 \usepackage{amsmath}
 
-\title{\textsc{Comp} 490 Midterm Report}
+\title{\textsc{Comp} 490 Mid-Term Report}
 
 \author{Sam Anthony 40271987 \\
 sam@samanthony.xyz \\ s\_a365@concordia.ca
@@ -198,8 +198,6 @@ All signal vias are accompanied by a ground via to keep the E fields from spread
 All traces are microstripped above a solid ground plane, again to keep the fields tight and to give the current a return path.
 The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are far away, on the opposite side of the board.
 
-TODO
-
 
 \section{Firmware}
 
@@ -222,17 +220,32 @@ This is a major disappointment, but I will have to work around it seeing as the 
 
 \section{Software}
 
-TODO
+Software is any program that runs on a host PC, as opposed to on the microcontroller.
 
+I wrote a program called \texttt{usbcom} that communicates with the PIC via USB.
+It connects its standard input to the OUT USB endpoint, and its standard output to the IN USB endpoint.
+It is written in Go, and uses libusb.
 
-\section{Errata}
+\texttt{usbcom} and the PIC firmware communicate using a proprietary text-based protocol over the USB CDC (communications device class) interface.
+The protocol is defined in loose Backus-Naur form \cite{protocol}.
 
-TODO
+I also wrote a Python script---\texttt{bittiming.py}---to calculate CAN bit timing parameters for the MCP2515.
 
 
 \section{Next steps}
 
-TODO
+When the board arrives, I will do a visual inspection to ensure that nothing went wrong during manufacturing.
+Then I will solder the THT components in place.
+Once that is done, I will test the board for continuity and shorts.
+With a fully assembled board, I can flash the firmware and migrate system testing from the breadboard to the printed prototype board.
+I will finish developing the rest of the firmware, and run through the full suite of system tests that I will have at that point.
+
+I bought some equipment for testing and debugging the system.
+A USBtin USB/CAN interface will allow me test the reception of CAN frames \cite{usbtin}.
+The EspoTek Labrador is a combined power supply, oscilloscope, and logic analyzer \cite{espotek_labrador}.
+It will be used for powering the board and debugging the SPI lines.
+
+If I have time, I would also like to do some experiments with the power supply to see how it handles changes in input voltage.
 
 
 \printbibliography
