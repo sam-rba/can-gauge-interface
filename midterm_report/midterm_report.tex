@@ -33,7 +33,7 @@ An overview of the system is shown in figure \ref{fig:system}.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{"../proposal/diagram.png"}
-	\caption{system diagram}
+	\caption{System diagram.}
 	\label{fig:system}
 \end{figure}
 
@@ -161,21 +161,21 @@ It should arrive any day now.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{"schematic-v0.2.pdf"}
-	\caption{schematic}
+	\caption{Schematic.}
 	\label{fig:schematic}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{"pcb_pours-v0.2.pdf"}
-	\caption{PCB front and back copper pours, and drill holes}
+	\caption{PCB front and back copper pours; drill holes.}
 	\label{fig:pcb_pours}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{"pcb_3d-v0.2.png"}
-	\caption{PCB 3D render}
+	\caption{3D render of the PCB.}
 	\label{fig:pcb_3d}
 \end{figure}
 
@@ -184,8 +184,15 @@ The top and bottom layers are for signals, and the two middle layers are solid g
 This ensures that all signal traces' fields are tightly coupled to ground directly above or below.
 Power is routed on the bottom layer.
 
-As mentioned above, most of the ICs are available in DIP (through-hole) packages, and I have been using them for prototyping on the breadboard.
+As mentioned above, most of the ICs are available in DIP (through-hole) packages, and I have been using them for prototyping on the breadboard (fig. \ref{fig:breadboard}).
 Once the PCB arrives, I can transplant the chips into the board, along with the passive components.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"breadboard.jpg"}
+	\caption{Breadboard circuit for MCP2515 system testing.}
+	\label{fig:breadboard}
+\end{figure}
 
 The power supply parts, on the other hand, are SMD.
 It is important to minimize loop distances in power supply circuits.
@@ -194,7 +201,7 @@ The SMD components will be assembled by JLC, as I have neither the equipment nor
 
 The board was layed out with PCB design best-practices in mind.
 Traces are widely-spaced to reduce coupling.
-All signal vias are accompanied by a ground via to keep the E fields from spreading in the dielectric.
+All signal vias are accompanied by a ground via to keep the electric fields from spreading in the dielectric.
 All traces are microstripped above a solid ground plane, again to keep the fields tight and to give the current a return path.
 The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are far away, on the opposite side of the board.
 
