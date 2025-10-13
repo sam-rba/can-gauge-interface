@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[backend=biber]{biblatex}
+
+\title{\textsc{Comp} 490 Midterm Report}
+
+\author{Sam Anthony 40271987 \\
+sam@samanthony.xyz \\ s\_a365@concordia.ca
+\and
+Hovhannes Harutyunyan, PhD \\
+Department of Computer Science and Software Engineering \\
+haruty@encs.concordia.ca
+\and
+Concordia University \\
+}
+
+\addbibresource{references.bib}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Project introduction}
+
+The goal of the project is to build an electronic device for use in cars: it is an interface between the car's CAN bus (controller area network) \cite{can20b}, and some analog gauges installed in the cockpit.
+An overview of the system is shown in figure \ref{fig:system}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"../proposal/diagram.png"}
+	\caption{system diagram}
+	\label{fig:system}
+\end{figure}
+
+
+\section{Desiderata}
+
+The device must be able to perform certain functions.
+As well, there are some desirable properties that it should fulfil.
+
+These function and desirable properties are as follows:
+
+\begin{enumerate}
+	\item{Receive standard and extended CAN frames from the bus.}
+	\item{Decode information in the frames.}
+	\item{Generate four analog 0--5V signals suitable for driving temperature or pressure gauges.}
+	\item{Generate two variable-frequency square waves for a tachometer and a speedometer.}
+	\item{Be user-programmable for any encoding scheme and gauge combination.}
+	\item{Run on a 12V automotive electrical power supply.}
+	\item{Operate reliably in an automotive environment: resist heat, vibration, and EMI (electromagnetic interference).}
+\end{enumerate}
+
+
+\section{Component selection}
+
+TODO
+
+
+\section{PCB design and manufacture}
+
+TODO
+
+
+\section{Firmware}
+
+TODO
+
+
+\section{Software}
+
+TODO
+
+
+\section{Errata}
+
+TODO
+
+
+\section{Next steps}
+
+TODO
+
+
+\printbibliography
+
+\end{document}
