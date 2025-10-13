@@ -2,6 +2,7 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage[backend=biber]{biblatex}
+\usepackage{amsmath}
 
 \title{\textsc{Comp} 490 Midterm Report}
 
@@ -20,6 +21,8 @@ Concordia University \\
 \begin{document}
 
 \maketitle
+\tableofcontents
+\pagebreak
 
 
 \section{Project introduction}
@@ -55,7 +58,73 @@ These function and desirable properties are as follows:
 
 \section{Component selection}
 
-TODO
+A car is a harsh environment for an electronic device.
+The device is subject to large variations in temperature, vibration, and EMI.
+To increase reliability, AEC-certified parts were chosen wherever possible.
+
+
+\subsection{Logic control}
+
+The microcontroller is at the heart of the design.
+A Microchip PIC16F1459 was chosen because of its simplicity, robustness, feature set, and low cost \cite{pic16f1459}.
+It is an 8-bit microcontroller that features a USB peripheral, an SPI peripheral for communicating with the other ICs, and timers for waveform generation.
+The PIC is a proven design that Microchip recommends for automotive applications.
+It is available in a DIP package, making it convenient for prototyping on a breadboard.
+
+A Microchip MCP2515 serves as the CAN controller \cite{mcp2515}.
+It supports CAN 2.0B and it has an SPI interface for communicating with the PIC.
+An MCP2561 transceiver goes along with it \cite{mcp2561}.
+Like the PIC, both these chips are available in DIP packages for prototyping on the breadboard.
+
+
+\subsection{Data storage}
+
+The EEPROM is used to store the configuration.
+This includes the encoding scheme that defines how parameters are encoded in CAN frames, as well as a table mapping parameter values to output signal values.
+
+There are six such tables: one for each gauge.
+Each table has 32 entries, and the mapping is from 16-bit word to 16-bit word.
+Thus, the required size is $6 \times 32 \times 16 \times 2 = 6144$ bits, or 768 bytes.
+Additionally, the encoding schemes will take a handfull of bytes per gauge.
+
+a Microchip 25LC160C EEPROM was selected.
+Its 16Kib (2KiB) of space is more than adequate to hold the configuration.
+
+
+\subsection{Input/output}
+
+The PIC has an integrated USB peripheral for communicating with a host computer.
+The configuration is sent to the PIC via USB and stored on the EEPROM.
+
+Four DACs (digital-to-analog converters) generate analog signals to drive the four pressure or temperature gauges.
+Based on the characteristics of commonly-used pressure and temperature sensors \cite{bosch_pst}, it was determined that a resolution of 15mV/step was required.
+Given the operating voltage of 5V, this meant that the DACs must have at least $5\text{V}/15\text{mV} \approx 333$ steps of resolution.
+Thus, an 8-bit DAC with 256 steps would be insufficient, and so a 10-bit DAC was selected: namely a Microchip\footnote{It is purely a coincidence that all the ICs ended up being Microchip parts. I don't have any particular affinity to the company. It just so happens that they make all the right chips for this particular application.} MCP4912.
+
+The MCP4912 incorporates two DACs in a single chip, so there are two chips per board.
+
+
+\subsection{Power supply}
+
+The ICs require a 5V supply.
+A 12V automotive electrical system operates between 9--16V, with a nominal voltage of $\sim$14V.
+The voltage ripple is often quite significant as well.
+Thus, the power supply must be very robust to supply a stable voltage to the ICs.
+
+The voltage drop $V_\text{Drop} = V_\text{In} - V_\text{Out}$ is $16\text{V} - 5\text{V} = 11\text{V}$ in the worst case.
+This ruled out the use of a linear regulator, since it would dissipate too much power.
+The power dissipation of a linear regulator is linear in $V_\text{Drop}$:
+
+\begin{equation}
+	P = (V_\text{In} - V_\text{Out}) \times I
+\end{equation}
+
+The load current is estimated to be $\le 250$mA \cite{power_budget}.
+That means a linear regulator would dissipate up to $11\text{V} \times 0.250\text{A} = 2.75$W.
+That amount of power from a tiny chip would be difficult to cool.
+Thus, a switching regulator is right for this design.
+
+The power supply will discussed further in the next section.
 
 
 \section{PCB design and manufacture}
