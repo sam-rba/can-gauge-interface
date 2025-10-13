@@ -203,7 +203,21 @@ TODO
 
 \section{Firmware}
 
-TODO
+Firmware is the program that runs on the PIC microcontroller.
+It is responsible for interacting with the peripherals and transforming data from the CAN bus into output signals for the gauges.
+
+The firmware is written in C for Microchip's XC8 compiler.
+
+Each peripheral---MCP2515, 25LC160C, and MCP4912---has a corresponding translation unit.
+So far, I have written and tested the MCP4912 DAC unit.
+The 25LC160C and MCP2515 units are mostly written but still require more testing.
+
+The firmware must also communicate with a PC via USB.
+The Microchip MLA USB library is employed for this purpose \cite{mla_usb}.
+However, the USB code uses a lot of the PIC's flash memory.
+Some system test builds already fail to link due to lack of space.
+As a result, USB may have to be dropped from the project, and another method will have to be devised for programming the user configuration into the EEPROM.
+This is a major disappointment, but I will have to work around it seeing as the hardware has already been finalized.
 
 
 \section{Software}
