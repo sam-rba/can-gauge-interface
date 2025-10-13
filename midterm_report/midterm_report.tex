@@ -69,7 +69,14 @@ The microcontroller is at the heart of the design.
 A Microchip PIC16F1459 was chosen because of its simplicity, robustness, feature set, and low cost \cite{pic16f1459}.
 It is an 8-bit microcontroller that features a USB peripheral, an SPI peripheral for communicating with the other ICs, and timers for waveform generation.
 The PIC is a proven design that Microchip recommends for automotive applications.
-It is available in a DIP package, making it convenient for prototyping on a breadboard.
+It is available in a DIP package, making it convenient for prototyping on a breadboard (fig. \ref{fig:pic}).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{"pic16f1459.png"}
+	\caption{Microchip PIC16F1459 8-bit microcontroller.}
+	\label{fig:pic}
+\end{figure}
 
 A Microchip MCP2515 serves as the CAN controller \cite{mcp2515}.
 It supports CAN 2.0B and it has an SPI interface for communicating with the PIC.
@@ -107,7 +114,8 @@ The MCP4912 incorporates two DACs in a single chip, so there are two chips per b
 \subsection{Power supply}
 
 The ICs require a 5V supply.
-A 12V automotive electrical system operates between 9--16V, with a nominal voltage of $\sim$14V.
+
+A 12V automotive electrical system operates between 9--16V, with a nominal voltage of $\sim$13.7V.
 The voltage ripple is often quite significant as well.
 Thus, the power supply must be very robust to supply a stable voltage to the ICs.
 
@@ -122,12 +130,73 @@ The power dissipation of a linear regulator is linear in $V_\text{Drop}$:
 The load current is estimated to be $\le 250$mA \cite{power_budget}.
 That means a linear regulator would dissipate up to $11\text{V} \times 0.250\text{A} = 2.75$W.
 That amount of power from a tiny chip would be difficult to cool.
-Thus, a switching regulator is right for this design.
+Thus, a switching regulator is the right choice for this design.
 
-The power supply will discussed further in the next section.
+The downside of a switching regulator is that it produces a lot of noise in the PDN (power distribution network).
+To isolate the other components from this noise, a two-stage PDN is used.
+The first stage is the switching regulator itself, also known as a buck converter.
+The buck drops the voltage from 12V down to 7V.
+
+The second stage is composed of two linear regulators: one for the digital circuitry, and one for the analog circuitry.
+Just like a buck converter, switched digital ICs introduce noise into the PDN.
+Therefore, it is good practice to keep the digital and analog components separate.
+The linear regulators drop the voltage from 7V down to the final 5V that the ICs require.
+This second stage isolates the ICs from the noisy buck converter, and splitting the stage between two regulators keeps the digital and analog circuits isolated from one-another.
+
+The buck converter is a Texas Instruments TPS5430 \cite{tps5430}.
+It is surrounded by a couple of LC and RC networks to regulate the voltage and to dampen the output ripple.
+See the datasheet and \cite{power_supply} for the process of selecting the accompanying passive components.
+The linear regulators are ST L78M05ABs \cite{l78m}.
+
+This design is certainly overkill for the application, but it is better than an under-developed PDN that could cause brown-outs during transient loads and variations in the supply voltage.
 
 
 \section{PCB design and manufacture}
+
+KiCad was used to design the schematic (fig. \ref{fig:schematic}) and the PCB (figs. \ref{fig:pcb_pours} \& \ref{fig:pcb_3d}).
+JLCPCB was chosen to manufacture the printed circuit board.
+At the time of writing, the board design has been finalized and submitted to JLC for manufacturing.
+It should arrive any day now.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"schematic-v0.2.pdf"}
+	\caption{schematic}
+	\label{fig:schematic}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"pcb_pours-v0.2.pdf"}
+	\caption{PCB front and back copper pours, and drill holes}
+	\label{fig:pcb_pours}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"pcb_3d-v0.2.png"}
+	\caption{PCB 3D render}
+	\label{fig:pcb_3d}
+\end{figure}
+
+The board is a 4-layer design that uses a combination of surface-mount (SMD) and through-hole (THT) components.
+The top and bottom layers are for signals, and the two middle layers are solid ground planes.
+This ensures that all signal traces' fields are tightly coupled to ground directly above or below.
+Power is routed on the bottom layer.
+
+As mentioned above, most of the ICs are available in DIP (through-hole) packages, and I have been using them for prototyping on the breadboard.
+Once the PCB arrives, I can transplant the chips into the board, along with the passive components.
+
+The power supply parts, on the other hand, are SMD.
+It is important to minimize loop distances in power supply circuits.
+That is why power regulator chips are generally only available in smaller SMD packages.
+The SMD components will be assembled by JLC, as I have neither the equipment nor the skill for SMD soldering.
+
+The board was layed out with PCB design best-practices in mind.
+Traces are widely-spaced to reduce coupling.
+All signal vias are accompanied by a ground via to keep the E fields from spreading in the dielectric.
+All traces are microstripped above a solid ground plane, again to keep the fields tight and to give the current a return path.
+The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are far away, on the opposite side of the board.
 
 TODO
 
