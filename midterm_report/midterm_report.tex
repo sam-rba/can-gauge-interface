@@ -28,7 +28,7 @@ Concordia University \\
 \section{Project introduction}
 
 The goal of the project is to build an electronic device for use in cars: it is an interface between the car's CAN bus (controller area network) \cite{can20b}, and some analog gauges installed in the cockpit.
-An overview of the system is shown in figure \ref{fig:system}.
+An overview of the system is shown in Figure \ref{fig:system}.
 
 \begin{figure}
 	\centering
@@ -66,10 +66,10 @@ To increase reliability, AEC-certified parts were chosen wherever possible.
 \subsection{Logic control}
 
 The microcontroller is at the heart of the design.
-A Microchip PIC16F1459 was chosen because of its simplicity, robustness, feature set, and low cost \cite{pic16f1459}.
-It is an 8-bit microcontroller that features a USB peripheral, an SPI peripheral for communicating with the other ICs, and timers for waveform generation.
+A Microchip PIC16F1459 was chosen because of its simplicity and robustness, its feature set, and its low cost \cite{pic16f1459}.
+It is an 8-bit microcontroller that features a USB peripheral for communicating with the host PC, an SPI peripheral for communicating with the other ICs, and timers for waveform generation.
 The PIC is a proven design that Microchip recommends for automotive applications.
-It is available in a DIP package, making it convenient for prototyping on a breadboard (fig. \ref{fig:pic}).
+It is available in a DIP package, making it convenient for prototyping on a breadboard (Figure \ref{fig:pic}).
 
 \begin{figure}
 	\centering
@@ -79,7 +79,7 @@ It is available in a DIP package, making it convenient for prototyping on a brea
 \end{figure}
 
 A Microchip MCP2515 serves as the CAN controller \cite{mcp2515}.
-It supports CAN 2.0B and it has an SPI interface for communicating with the PIC.
+It supports CAN 2.0B up to 1Mbps and it has an SPI interface for communicating with the PIC.
 An MCP2561 transceiver goes along with it \cite{mcp2561}.
 Like the PIC, both these chips are available in DIP packages for prototyping on the breadboard.
 
@@ -87,12 +87,12 @@ Like the PIC, both these chips are available in DIP packages for prototyping on 
 \subsection{Data storage}
 
 The EEPROM is used to store the configuration.
-This includes the encoding scheme that defines how parameters are encoded in CAN frames, as well as a table mapping parameter values to output signal values.
+This includes the encoding scheme that defines how parameters are encoded in CAN frames, as well as a table that maps parameter values to output signal values.
 
 There are six such tables: one for each gauge.
-Each table has 32 entries, and the mapping is from 16-bit word to 16-bit word.
+Each table has 32 entries, and the mapping is between 16-bit words.
 Thus, the required size is $6 \times 32 \times 16 \times 2 = 6144$ bits, or 768 bytes.
-Additionally, the encoding schemes will take a handfull of bytes per gauge.
+The encoding schemes will take a handfull of bytes per gauge in addition.
 
 a Microchip 25LC160C EEPROM was selected.
 Its 16Kib (2KiB) of space is more than adequate to hold the configuration.
@@ -107,7 +107,6 @@ Four DACs (digital-to-analog converters) generate analog signals to drive the fo
 Based on the characteristics of commonly-used pressure and temperature sensors \cite{bosch_pst}, it was determined that a resolution of 15mV/step was required.
 Given the operating voltage of 5V, this meant that the DACs must have at least $5\text{V}/15\text{mV} \approx 333$ steps of resolution.
 Thus, an 8-bit DAC with 256 steps would be insufficient, and so a 10-bit DAC was selected: namely a Microchip\footnote{It is purely a coincidence that all the ICs ended up being Microchip parts. I don't have any particular affinity to the company. It just so happens that they make all the right chips for this particular application.} MCP4912.
-
 The MCP4912 incorporates two DACs in a single chip, so there are two chips per board.
 
 
@@ -115,7 +114,7 @@ The MCP4912 incorporates two DACs in a single chip, so there are two chips per b
 
 The ICs require a 5V supply.
 
-A 12V automotive electrical system operates between 9--16V, with a nominal voltage of $\sim$13.7V.
+A 12V automotive electrical system operates in a wide range of approximately 9--16V, with a nominal voltage of $\sim$13.7V.
 The voltage ripple is often quite significant as well.
 Thus, the power supply must be very robust to supply a stable voltage to the ICs.
 
@@ -129,7 +128,7 @@ The power dissipation of a linear regulator is linear in $V_\text{Drop}$:
 
 The load current is estimated to be $\le 250$mA \cite{power_budget}.
 That means a linear regulator would dissipate up to $11\text{V} \times 0.250\text{A} = 2.75$W.
-That amount of power from a tiny chip would be difficult to cool.
+That amount of power from a single chip would be difficult to cool.
 Thus, a switching regulator is the right choice for this design.
 
 The downside of a switching regulator is that it produces a lot of noise in the PDN (power distribution network).
@@ -138,22 +137,23 @@ The first stage is the switching regulator itself, also known as a buck converte
 The buck drops the voltage from 12V down to 7V.
 
 The second stage is composed of two linear regulators: one for the digital circuitry, and one for the analog circuitry.
+The linear regulators drop the voltage from 7V down to the final 5V that the ICs require.
+
 Just like a buck converter, switched digital ICs introduce noise into the PDN.
 Therefore, it is good practice to keep the digital and analog components separate.
-The linear regulators drop the voltage from 7V down to the final 5V that the ICs require.
-This second stage isolates the ICs from the noisy buck converter, and splitting the stage between two regulators keeps the digital and analog circuits isolated from one-another.
+The second power stage isolates the ICs from the noisy buck converter, and splitting the stage between two regulators keeps the digital and analog circuits isolated from one-another.
+This design is certainly overkill for the application, but it is better than using too weak of a PDN that delivers an unstable voltage.
 
 The buck converter is a Texas Instruments TPS5430 \cite{tps5430}.
 It is surrounded by a couple of LC and RC networks to regulate the voltage and to dampen the output ripple.
 See the datasheet and \cite{power_supply} for the process of selecting the accompanying passive components.
-The linear regulators are ST L78M05ABs \cite{l78m}.
+The linear regulators are a pair of ST L78M05ABs \cite{l78m}.
 
-This design is certainly overkill for the application, but it is better than an under-developed PDN that could cause brown-outs during transient loads and variations in the supply voltage.
 
 
 \section{PCB design and manufacture}
 
-KiCad was used to design the schematic (fig. \ref{fig:schematic}) and the PCB (figs. \ref{fig:pcb_pours} \& \ref{fig:pcb_3d}).
+KiCad was used to design the schematic (Figure \ref{fig:schematic}) and the PCB (Figures \ref{fig:pcb_pours} \& \ref{fig:pcb_3d}).
 JLCPCB was chosen to manufacture the printed circuit board.
 At the time of writing, the board design has been finalized and submitted to JLC for manufacturing.
 It should arrive any day now.
@@ -184,7 +184,7 @@ The top and bottom layers are for signals, and the two middle layers are solid g
 This ensures that all signal traces' fields are tightly coupled to ground directly above or below.
 Power is routed on the bottom layer.
 
-As mentioned above, most of the ICs are available in DIP (through-hole) packages, and I have been using them for prototyping on the breadboard (fig. \ref{fig:breadboard}).
+As mentioned above, most of the ICs are available in DIP (through-hole) packages, and I have been using them for prototyping on the breadboard (Figure \ref{fig:breadboard}).
 Once the PCB arrives, I can transplant the chips into the board, along with the passive components.
 
 \begin{figure}
@@ -195,7 +195,7 @@ Once the PCB arrives, I can transplant the chips into the board, along with the 
 \end{figure}
 
 The power supply parts, on the other hand, are SMD.
-It is important to minimize loop distances in power supply circuits.
+It is important to minimize loop lengths in power supply circuits.
 That is why power regulator chips are generally only available in smaller SMD packages.
 The SMD components will be assembled by JLC, as I have neither the equipment nor the skill for SMD soldering.
 
@@ -203,7 +203,7 @@ The board was layed out with PCB design best-practices in mind.
 Traces are widely-spaced to reduce coupling.
 All signal vias are accompanied by a ground via to keep the electric fields from spreading in the dielectric.
 All traces are microstripped above a solid ground plane, again to keep the fields tight and to give the current a return path.
-The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are far away, on the opposite side of the board.
+The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are on the opposite side of the board.
 
 
 \section{Firmware}
@@ -211,7 +211,7 @@ The noisy switching regulator is placed far away from the other components to re
 Firmware is the program that runs on the PIC microcontroller.
 It is responsible for interacting with the peripherals and transforming data from the CAN bus into output signals for the gauges.
 
-The firmware is written in C for Microchip's XC8 compiler.
+The firmware is written in C for Microchip's XC8 compiler \cite{xc8}.
 
 Each peripheral---MCP2515, 25LC160C, and MCP4912---has a corresponding translation unit.
 So far, I have written and tested the MCP4912 DAC unit.
@@ -229,14 +229,15 @@ This is a major disappointment, but I will have to work around it seeing as the 
 
 Software is any program that runs on a host PC, as opposed to on the microcontroller.
 
-I wrote a program called \texttt{usbcom} that communicates with the PIC via USB.
+I wrote a program called \texttt{usbcom} that communicates with the PIC via USB \cite{usbcom}.
 It connects its standard input to the OUT USB endpoint, and its standard output to the IN USB endpoint.
 It is written in Go, and uses libusb.
 
 \texttt{usbcom} and the PIC firmware communicate using a proprietary text-based protocol over the USB CDC (communications device class) interface.
-The protocol is defined in loose Backus-Naur form \cite{protocol}.
+The message format is defined using EBNF \cite{protocol}.
+The semantics are a simple request-reply arrangement.
 
-I also wrote a Python script---\texttt{bittiming.py}---to calculate CAN bit timing parameters for the MCP2515.
+I also wrote a Python script---\texttt{bittiming.py}---to calculate CAN bit timing parameters for the MCP2515 \cite{bittiming_py}.
 
 
 \section{Next steps}
