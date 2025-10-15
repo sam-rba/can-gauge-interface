@@ -15,5 +15,7 @@ _autosave*
 *.run.xml
 *.toc
 *.zip
+*.FCStd1
+*.stl
 
 sw/usbcom/usbcom
