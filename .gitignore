@@ -6,6 +6,8 @@ _autosave*
 *.bbl
 *.bcf
 *.blg
+*.FCBak
+*.FCStd1
 *.lck
 *.~lock*
 *.log
@@ -13,9 +15,9 @@ _autosave*
 *.pdf
 *.png
 *.run.xml
+*.stl
 *.toc
 *.zip
-*.FCStd1
-*.stl
 
 sw/usbcom/usbcom
+mech/gcode
