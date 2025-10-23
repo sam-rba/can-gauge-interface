@@ -8,7 +8,6 @@
 #include "spi.h"
 #include "eeprom.h"
 #include "can.h"
-#include "usb.h"
 
 void
 main(void) {
@@ -16,10 +15,9 @@ main(void) {
 	spiInit();
 	eepromInit();
 	canInit();
-	usbInit();
 
 	for (;;) {
-		usbTask();
+
 	}
 }
 
