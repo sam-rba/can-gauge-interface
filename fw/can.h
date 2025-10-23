@@ -49,6 +49,14 @@ typedef struct {
 	};
 } CanId;
 
+// CAN frame
+typedef struct {
+	CanId id;
+	U8 dlc; // data length code
+	U8 data[8];
+	bool rtr; // remote transmission request
+} CanFrame;
+
 // Initialize the MCP2515.
 // Initial mode is Config.
 void canInit(void);
@@ -61,7 +69,7 @@ void canSetMode(CanMode mode);
 // The MCP2515 must be in Config mode.
 void canSetBitTiming(U8 cnf1, U8 cnf2, U8 cnf3);
 
-// Enable/disable interrupts on the MCP2515's INT pin.
+// Enable/disable RX-buffer-full interrupts on the MCP2515's INT pin.
 void canIE(bool enable);
 
 // Read RX status with RX STATUS instruction.
@@ -72,6 +80,9 @@ void canReadRxb0Data(U8 data[8u]);
 
 // Read the DATA field of RXB1.
 void canReadRxb1Data(U8 data[8u]);
+
+// Transmit a frame to the CAN bus
+Status canTx(const CanFrame *frame);
 
 // Set the message acceptance mask of RXB0.
 // The MCP2515 must be in Config mode.

@@ -91,7 +91,28 @@ typedef enum {
 	REG_RXB1EID0 = 0x74, // extended ID low
 	REG_RXB1DLC = 0x75, // data length code
 	REG_RXB1DM = 0x76, // data byte <M> [76h+0, 76h+7]
+
+	// Transmit buffer 0
+	REG_TXB0CTRL = 0x30, // control
+	REG_TXB0SIDH = 0x31, // standard ID high
+	REG_TXB0SIDL = 0x32, // standard ID low
+	REG_TXB0EID8 = 0x33, // extended ID high
+	REG_TXB0EID0 = 0x34, // extended ID low
+	REG_TXB0DLC = 0x35, // data length code
+	REG_TXB0DM = 0x36, // data byte <M> [36h+0, 36h+7]
 } Reg;
+
+// Masks
+enum {
+	// TXBnCTRL
+	TXREQ = 0x08,
+	TXERR = 0x10,
+
+	// TXBnDLC
+	RTR = 0x40,
+
+	EXIDE = 0x08, // extended identifier enable bit in SIDL registers
+};
 
 // Instructions
 enum {
@@ -133,19 +154,6 @@ read(Reg addr) {
 	return data;
 }
 
-// Read the DATA field of one of the RX buffers.
-static void
-readRxData(RxBuf bufNum, U8 data[8u]) {
-	U8 i;
-
-	CAN_CS = 0;
-	(void)spiTx(CMD_READ_RX | (U8)(bufNum << 2u) | 1u); // start at RXBnD0
-	for (i = 0u; i < 8u; i++) {
-		data[i] = spiTx(0x00);
-	}
-	CAN_CS = 1;
-}
-
 // Write to a register.
 static void
 write(Reg addr, U8 data) {
@@ -156,9 +164,8 @@ write(Reg addr, U8 data) {
 	CAN_CS = 1;
 }
 
-// Read RX status.
-static U8
-rxStatus(void) {
+U8
+canRxStatus(void) {
 	U8 status;
 
 	CAN_CS = 0;
@@ -228,6 +235,27 @@ canIE(bool enable) {
 }
 
 static void
+readRxbnData(U8 n, U8 data[8u]) {
+	CAN_CS = 0;
+	n &= 0x01; // n in {0,1}
+	(void)spiTx(CMD_READ_RX | (U8)(n << 2u) | 0x02); // start at RXBnD0
+	for (n = 0u; n < 8u; n++) {
+		data[n] = spiTx(0x00);
+	}
+	CAN_CS = 1;
+}
+
+void
+canReadRxb0Data(U8 data[8u]) {
+	readRxbnData(0u, data);
+}
+
+void
+canReadRxb1Data(U8 data[8u]) {
+	readRxbnData(1u, data);
+}
+
+static void
 writeIdToRegs(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
 	switch (id->type) {
 	case CAN_ID_STD: // standard ID
@@ -238,11 +266,38 @@ writeIdToRegs(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
 		break;
 	case CAN_ID_EXT: // extended ID
 		write(sidh, (U8)(id->eid[1] << 5u) | (U8)(id->eid[0] >> 3u)); // sid[10:3]
-		write(sidl, (U8)(id->eid[0] << 5u) | (U8)0x08 | (U8)((id->eid[3] >> 3u) & 0x03)); // sid[2:0], exide, eid[28:27]
+		write(sidl, (U8)(id->eid[0] << 5u) | EXIDE | (U8)((id->eid[3] >> 3u) & 0x03)); // sid[2:0], exide, eid[28:27]
 		write(eid8, (U8)(id->eid[3] << 5u) | (U8)(id->eid[2] >> 3u)); // eid[26:19]
 		write(eid0, (U8)(id->eid[2] << 5u) | (U8)(id->eid[1] >> 3u)); // eid[18:11]
 		break;
 	}
+}
+
+Status
+canTx(const CanFrame *frame) {
+	U8 k, ctrl;
+
+	// Set ID, DLC, and RTR
+	writeIdToRegs(&frame->id, REG_TXB0SIDH, REG_TXB0SIDL, REG_TXB0EID8, REG_TXB0EID0);
+	write(REG_TXB0DLC, (frame->dlc & 0x0F) | ((frame->rtr) ? RTR : 0));
+
+	// Copy data to registers
+	for (k = 0u; k < frame->dlc; k++) {
+		write(REG_TXB0DM+k, frame->data[k]);
+	}
+
+	// Send
+	bitModify(REG_TXB0CTRL, TXREQ, TXREQ);
+	do {
+		ctrl = read(REG_TXB0CTRL);
+		if (ctrl & TXERR) {
+			// Error
+			bitModify(REG_TXB0CTRL, TXREQ, 0); // cancel  transmission
+			return FAIL;
+		}
+	} while (ctrl & TXREQ); // transmission in progress
+
+	return OK;
 }
 
 void
