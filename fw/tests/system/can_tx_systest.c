@@ -49,7 +49,7 @@ main(void) {
 void
 __interrupt() isr(void) {
 	if (PIR1bits.TMR1IF) {
-		if (++ctr == 23u) { // 1s period
+		if (++ctr == 114u) { // 5s period
 			(void)canTx(&frame);
 			ctr = 0u;
 		}

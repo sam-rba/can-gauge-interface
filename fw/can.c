@@ -12,6 +12,8 @@
 // Oscillator startup timeout
 #define STARTUP_TIME 128u
 
+#define TX_RETRIES 10u
+
 // Register addresses
 typedef enum {
 	// Config and status
@@ -288,6 +290,7 @@ canTx(const CanFrame *frame) {
 
 	// Send
 	bitModify(REG_TXB0CTRL, TXREQ, TXREQ);
+	k = 0u;
 	do {
 		ctrl = read(REG_TXB0CTRL);
 		if (ctrl & TXERR) {
@@ -295,9 +298,9 @@ canTx(const CanFrame *frame) {
 			bitModify(REG_TXB0CTRL, TXREQ, 0); // cancel  transmission
 			return FAIL;
 		}
-	} while (ctrl & TXREQ); // transmission in progress
+	} while ((ctrl & TXREQ) && (++k <= TX_RETRIES)); // transmission in progress
 
-	return OK;
+	return (k <= TX_RETRIES) ? OK : FAIL;
 }
 
 void
