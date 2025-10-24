@@ -31,7 +31,7 @@ dacInit(void) {
 
 static void
 set(U8 dacNum, Conf conf, U16 level) {
-	lshiftU16(&level, 2u); // D0 at bit 2
+	level = lshiftU16(level, 2u); // D0 at bit 2
 	level.hi = (U8)conf | (level.hi & 0x0F); // set config bits
 
 	if (dacNum == 1u) {
