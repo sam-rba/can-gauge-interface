@@ -15,7 +15,5 @@
 #define EEPROM_CS LATCbits.LATC5
 
 void eepromInit(void);
-void eepromWriteEnable(void);
-void eepromWriteDisable(void);
-void eepromWrite(U16 addr, U8 data[], U8 size);
-void eepromRead(U16 addr, U8 data[], U8 size);
+Status eepromWrite(U16 addr, U8 data[], U8 size);
+Status eepromRead(U16 addr, U8 data[], U8 size);
