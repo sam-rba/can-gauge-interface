@@ -113,7 +113,7 @@ enum {
 	// TXBnDLC
 	RTR = 0x40,
 
-	EXIDE = 0x08, // extended identifier enable bit in SIDL registers
+	IDE = 0x08, // extended identifier flag bit of SIDL registers
 };
 
 // Instructions
@@ -236,29 +236,65 @@ canIE(bool enable) {
 	}
 }
 
+// Pack ID register values into a struct.
 static void
-readRxbnData(U8 n, U8 data[8u]) {
-	CAN_CS = 0;
-	n &= 0x01; // n in {0,1}
-	(void)spiTx(CMD_READ_RX | (U8)(n << 2u) | 0x02); // start at RXBnD0
-	for (n = 0u; n < 8u; n++) {
-		data[n] = spiTx(0x00);
+packId(CanId *id, U8 sidh, U8 sidl, U8 eid8, U8 eid0) {
+	if (sidl & IDE) { // extended ID
+		id->type = CAN_ID_EXT;
+		id->eid[0] = (U8)(sidh << 3u) | (U8)(sidl >> 5u); // sid[7:0]
+		id->eid[1] = (U8)(eid0 << 3u) | (U8)(sidh >> 5u); //eid[4:0], sid[10:8]
+		id->eid[2] = (U8)(eid8 << 3u) | (U8)(eid0 >> 5u); // eid[12:5]
+		id->eid[3] = (U8)((sidl & 0x3) << 3u) | (U8)(eid8 >> 5u); // eid[17:13]
+	} else { // standard ID
+		id->type = CAN_ID_STD;
+		id->sid.lo = (U8)(sidh << 3u) | (U8)(sidl >> 5u); // sid[7:0]
+		id->sid.hi = sidh >> 5u; // sid[10:8]
 	}
+}
+
+static void
+readRxbn(U8 n, CanFrame *frame) {
+	U8 sidh, sidl, eid8, eid0;
+
+	CAN_CS = 0;
+
+	// Start reading at RXBnSIDH
+	(void)spiTx(CMD_READ_RX | (U8)((n & 1u) << 2u));
+
+	// Read ID
+	sidh = spiTx(0u);
+	sidl = spiTx(0u);
+	eid8 = spiTx(0u);
+	eid0 = spiTx(0u);
+	packId(&frame->id, sidh, sidl, eid8, eid0);
+
+	// Read RTR and DLC
+	frame->dlc = spiTx(0u);
+	frame->rtr = frame->dlc & RTR;
+	frame->dlc &= 0xF;
+
+	// Read data
+	for (n = 0u; n < frame->dlc; n++) {
+		frame->data[n] = spiTx(0u);
+	}
+
 	CAN_CS = 1;
 }
 
 void
-canReadRxb0Data(U8 data[8u]) {
-	readRxbnData(0u, data);
+canReadRxb0(CanFrame *frame) {
+	readRxbn(0u, frame);
 }
 
 void
-canReadRxb1Data(U8 data[8u]) {
-	readRxbnData(1u, data);
+canReadRxb1(CanFrame *frame) {
+	readRxbn(1u, frame);
 }
 
+// Write an ID to a set of {xSIDH, xSIDL, xEID8, xEID0} registers,
+// e.g., RXMnSIDH etc.
 static void
-writeIdToRegs(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
+writeId(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
 	switch (id->type) {
 	case CAN_ID_STD: // standard ID
 		write(sidh, (U8)(id->sid.hi << 5u) | (U8)(id->sid.lo >> 3u));
@@ -268,7 +304,7 @@ writeIdToRegs(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
 		break;
 	case CAN_ID_EXT: // extended ID
 		write(sidh, (U8)(id->eid[1] << 5u) | (U8)(id->eid[0] >> 3u)); // sid[10:3]
-		write(sidl, (U8)(id->eid[0] << 5u) | EXIDE | (U8)((id->eid[3] >> 3u) & 0x03)); // sid[2:0], exide, eid[28:27]
+		write(sidl, (U8)(id->eid[0] << 5u) | IDE | (U8)((id->eid[3] >> 3u) & 0x03)); // sid[2:0], exide, eid[28:27]
 		write(eid8, (U8)(id->eid[3] << 5u) | (U8)(id->eid[2] >> 3u)); // eid[26:19]
 		write(eid0, (U8)(id->eid[2] << 5u) | (U8)(id->eid[1] >> 3u)); // eid[18:11]
 		break;
@@ -280,7 +316,7 @@ canTx(const CanFrame *frame) {
 	U8 k, ctrl;
 
 	// Set ID, DLC, and RTR
-	writeIdToRegs(&frame->id, REG_TXB0SIDH, REG_TXB0SIDL, REG_TXB0EID8, REG_TXB0EID0);
+	writeId(&frame->id, REG_TXB0SIDH, REG_TXB0SIDL, REG_TXB0EID8, REG_TXB0EID0);
 	write(REG_TXB0DLC, (frame->dlc & 0x0F) | ((frame->rtr) ? RTR : 0));
 
 	// Copy data to registers
@@ -305,40 +341,40 @@ canTx(const CanFrame *frame) {
 
 void
 canSetMask0(const CanId *mask) {
-	writeIdToRegs(mask, REG_RXM0SIDH, REG_RXM0SIDL, REG_RXM0EID8, REG_RXM0EID0);
+	writeId(mask, REG_RXM0SIDH, REG_RXM0SIDL, REG_RXM0EID8, REG_RXM0EID0);
 }
 
 void
 canSetMask1(const CanId *mask) {
-	writeIdToRegs(mask, REG_RXM1SIDH, REG_RXM1SIDL, REG_RXM1EID8, REG_RXM1EID0);
+	writeId(mask, REG_RXM1SIDH, REG_RXM1SIDL, REG_RXM1EID8, REG_RXM1EID0);
 }
 
 void
 canSetFilter0(const CanId *filter) {
-	writeIdToRegs(filter, REG_RXF0SIDH, REG_RXF0SIDL, REG_RXF0EID8, REG_RXF0EID0);
+	writeId(filter, REG_RXF0SIDH, REG_RXF0SIDL, REG_RXF0EID8, REG_RXF0EID0);
 }
 
 void
 canSetFilter1(const CanId *filter) {
-	writeIdToRegs(filter, REG_RXF1SIDH, REG_RXF1SIDL, REG_RXF1EID8, REG_RXF1EID0);
+	writeId(filter, REG_RXF1SIDH, REG_RXF1SIDL, REG_RXF1EID8, REG_RXF1EID0);
 }
 
 void
 canSetFilter2(const CanId *filter) {
-	writeIdToRegs(filter, REG_RXF2SIDH, REG_RXF2SIDL, REG_RXF2EID8, REG_RXF2EID0);
+	writeId(filter, REG_RXF2SIDH, REG_RXF2SIDL, REG_RXF2EID8, REG_RXF2EID0);
 }
 
 void
 canSetFilter3(const CanId *filter) {
-	writeIdToRegs(filter, REG_RXF3SIDH, REG_RXF3SIDL, REG_RXF3EID8, REG_RXF3EID0);
+	writeId(filter, REG_RXF3SIDH, REG_RXF3SIDL, REG_RXF3EID8, REG_RXF3EID0);
 }
 
 void
 canSetFilter4(const CanId *filter) {
-	writeIdToRegs(filter, REG_RXF4SIDH, REG_RXF4SIDL, REG_RXF4EID8, REG_RXF4EID0);
+	writeId(filter, REG_RXF4SIDH, REG_RXF4SIDL, REG_RXF4EID8, REG_RXF4EID0);
 }
 
 void
 canSetFilter5(const CanId *filter) {
-	writeIdToRegs(filter, REG_RXF5SIDH, REG_RXF5SIDL, REG_RXF5EID8, REG_RXF5EID0);
+	writeId(filter, REG_RXF5SIDH, REG_RXF5SIDL, REG_RXF5EID8, REG_RXF5EID0);
 }

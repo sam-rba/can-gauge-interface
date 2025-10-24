@@ -52,9 +52,9 @@ typedef struct {
 // CAN frame
 typedef struct {
 	CanId id;
+	bool rtr; // remote transmission request
 	U8 dlc; // data length code
 	U8 data[8];
-	bool rtr; // remote transmission request
 } CanFrame;
 
 // Initialize the MCP2515.
@@ -75,11 +75,11 @@ void canIE(bool enable);
 // Read RX status with RX STATUS instruction.
 U8 canRxStatus(void);
 
-// Read the DATA field of RXB0.
-void canReadRxb0Data(U8 data[8u]);
+// Read the frame in RXB0.
+void canReadRxb0(CanFrame *frame);
 
-// Read the DATA field of RXB1.
-void canReadRxb1Data(U8 data[8u]);
+// Read the frame in RXB1.
+void canReadRxb1(CanFrame *frame);
 
 // Transmit a frame to the CAN bus
 Status canTx(const CanFrame *frame);

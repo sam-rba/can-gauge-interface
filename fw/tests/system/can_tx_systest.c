@@ -1,3 +1,5 @@
+/* Periodically transmit a frame to the CAN bus. */
+
 #include <xc.h>
 
 #include <stdbool.h>
@@ -14,9 +16,9 @@ static const CanFrame frame = {
 		.type = CAN_ID_STD,
 		.sid = {0x01, 0x23},
 	},
+	.rtr = false,
 	.dlc = 8u,
 	.data = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77},
-	.rtr = false,
 };
 
 static U8 ctr = 0u; // timer

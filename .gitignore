@@ -8,6 +8,7 @@ _autosave*
 *.blg
 *.FCBak
 *.FCStd1
+*.html
 *.lck
 *.~lock*
 *.log
