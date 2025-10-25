@@ -41,8 +41,8 @@ typedef enum {
 typedef struct {
 	bool isExt; // is extended
 	union {
-		U16 sid; // 11-bit standard ID
-		U32 eid; // 29-bit extended ID
+		U16 sid; // 11-bit standard ID -- ID[28:18]
+		U32 eid; // 29-bit extended ID -- ID[28:0]
 	};
 } CanId;
 
