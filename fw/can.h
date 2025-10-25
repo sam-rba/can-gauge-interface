@@ -39,10 +39,7 @@ typedef enum {
 
 // CAN identifier
 typedef struct {
-	enum {
-		CAN_ID_STD, // standard
-		CAN_ID_EXT, // extended
-	} type;
+	bool isExt; // is extended
 	union {
 		U16 sid; // 11-bit standard ID
 		U32 eid; // 29-bit extended ID

@@ -178,17 +178,12 @@ eepromWriteCanId(U16 addr, const CanId *id) {
 
 	// Copy ID to buffer
 	memset(buf, 0u, sizeof(buf));
-	switch (id->type) {
-	case CAN_ID_STD:
-		buf[0u] = id->sid.lo;
-		buf[1u] = id->sid.hi & 0x7;
-		break;
-	case CAN_ID_EXT:
+	if (id->isExt) { // extended
 		memmove(buf, id->eid, sizeof(buf));
 		buf[3u] = (buf[3u] & 0x1F) | 0x80; // set EID flag
-		break;
-	default:
-		return FAIL; // unreachable
+	} else { // standard
+		buf[0u] = id->sid.lo;
+		buf[1u] = id->sid.hi & 0x7;
 	}
 
 	return eepromWrite(addr, buf, sizeof(buf));
@@ -209,10 +204,10 @@ eepromReadCanId(U16 addr, CanId *id) {
 
 	// Unpack
 	if (id->eid[3u] & 0x80) { // bit 31 is standard/extended flag
-		id->type = CAN_ID_EXT; // extended
+		id->isExt = true; // extended
 		id->eid[3u] &= 0x1F;
 	} else {
-		id->type = CAN_ID_STD; // standard
+		id->isExt = false; // standard
 		id->sid.lo = id->eid[0u];
 		id->sid.hi = id->eid[1u] & 0x7;
 	}

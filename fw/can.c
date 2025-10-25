@@ -240,13 +240,13 @@ canIE(bool enable) {
 static void
 packId(CanId *id, U8 sidh, U8 sidl, U8 eid8, U8 eid0) {
 	if (sidl & IDE) { // extended ID
-		id->type = CAN_ID_EXT;
+		id->isExt = true;
 		id->eid[0] = (U8)(sidh << 3u) | (U8)(sidl >> 5u); // sid[7:0]
 		id->eid[1] = (U8)(eid0 << 3u) | (U8)(sidh >> 5u); //eid[4:0], sid[10:8]
 		id->eid[2] = (U8)(eid8 << 3u) | (U8)(eid0 >> 5u); // eid[12:5]
 		id->eid[3] = (U8)((sidl & 0x3) << 3u) | (U8)(eid8 >> 5u); // eid[17:13]
 	} else { // standard ID
-		id->type = CAN_ID_STD;
+		id->isExt = false;
 		id->sid.lo = (U8)(sidh << 3u) | (U8)(sidl >> 5u); // sid[7:0]
 		id->sid.hi = sidh >> 5u; // sid[10:8]
 	}
@@ -295,19 +295,16 @@ canReadRxb1(CanFrame *frame) {
 // e.g., RXMnSIDH etc.
 static void
 writeId(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
-	switch (id->type) {
-	case CAN_ID_STD: // standard ID
-		write(sidh, (U8)(id->sid.hi << 5u) | (U8)(id->sid.lo >> 3u));
-		write(sidl, (U8) (id->sid.lo << 5u));
-		write(eid8, 0x00);
-		write(eid0, 0x00);
-		break;
-	case CAN_ID_EXT: // extended ID
+	if (id->isExt) { // extended
 		write(sidh, (U8)(id->eid[1] << 5u) | (U8)(id->eid[0] >> 3u)); // sid[10:3]
 		write(sidl, (U8)(id->eid[0] << 5u) | IDE | (U8)((id->eid[3] >> 3u) & 0x03)); // sid[2:0], exide, eid[28:27]
 		write(eid8, (U8)(id->eid[3] << 5u) | (U8)(id->eid[2] >> 3u)); // eid[26:19]
 		write(eid0, (U8)(id->eid[2] << 5u) | (U8)(id->eid[1] >> 3u)); // eid[18:11]
-		break;
+	} else { // standard
+		write(sidh, (U8)(id->sid.hi << 5u) | (U8)(id->sid.lo >> 3u));
+		write(sidl, (U8) (id->sid.lo << 5u));
+		write(eid8, 0x00);
+		write(eid0, 0x00);
 	}
 }
 
