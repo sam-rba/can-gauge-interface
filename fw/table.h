@@ -1,8 +1,8 @@
 /* Table datastructure for storing calibrations in the EEPROM.
  *
  * A table has a fixed number of rows that define a key/value mapping.
- * Keys and values are each U16.
- * T: U16->U16
+ * Keys and values are each U32.
+ * T: U32->U32
  * Numbers are stored little-endian.
  *
  * Keys must be monotonically increasing.
@@ -12,21 +12,23 @@
  *
  * Usage:
  *
+ * #include <stdbool.h>
  * #include <stdint.h>
  * #include "types.h"
+ * #include "can.h"
+ * #include "eeprom.h"
  * #include "table.h"
  */
 
 enum {
-	TAB_KEY_SIZE = 2, // U16
-	TAB_VAL_SIZE = 2, // U16
+	TAB_KEY_SIZE = 4, // U32
+	TAB_VAL_SIZE = 4, // U32
 	TAB_ROWS = 32,
 	TAB_ROW_SIZE = TAB_KEY_SIZE + TAB_VAL_SIZE,
-	TAB_SIZE = TAB_ROWS * TAB_ROW_SIZE,
 };
 
 typedef struct {
-	U16 offset; // starting address
+	EepromAddr offset; // starting address
 } Table;
 
 // Set the key and value of row k.

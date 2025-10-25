@@ -5,8 +5,10 @@
  *
  * Usage:
  *
+ * #include <stdbool>
  * #include <stdint.h>
  * #include "types.h"
+ * #include "can.h"
  * #include "eeprom.h"
  */
 
@@ -14,6 +16,10 @@
 #define EEPROM_CS_TRIS TRISCbits.TRISC5
 #define EEPROM_CS LATCbits.LATC5
 
+typedef U16 EepromAddr;
+
 void eepromInit(void);
-Status eepromWrite(U16 addr, U8 data[], U8 size);
-Status eepromRead(U16 addr, U8 data[], U8 size);
+Status eepromWrite(EepromAddr addr, U8 data[], U8 size);
+Status eepromRead(EepromAddr addr, U8 data[], U8 size);
+Status eepromWriteCanId(EepromAddr addr, const CanId *id);
+Status eepromReadCanId(EepromAddr addr, CanId *id);

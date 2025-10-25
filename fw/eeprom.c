@@ -2,10 +2,12 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "system.h"
 #include "types.h"
 #include "spi.h"
+#include "can.h"
 
 #include "eeprom.h"
 
@@ -163,6 +165,57 @@ eepromRead(U16 addr, U8 *data, U8 size) {
 		data++;
 	}
 	EEPROM_CS = 1;
+
+	return OK;
+}
+
+// Write a CAN ID to the EEPROM.
+// CAN IDs are stored in the lower 11 or 29 bits of a little-endian U32.
+// Bit 31 indicates standard/extended: 0=>std, 1=>ext.
+Status
+eepromWriteCanId(U16 addr, const CanId *id) {
+	U8 buf[4u];
+
+	// Copy ID to buffer
+	memset(buf, 0u, sizeof(buf));
+	switch (id->type) {
+	case CAN_ID_STD:
+		buf[0u] = id->sid.lo;
+		buf[1u] = id->sid.hi & 0x7;
+		break;
+	case CAN_ID_EXT:
+		memmove(buf, id->eid, sizeof(buf));
+		buf[3u] = (buf[3u] & 0x1F) | 0x80; // set EID flag
+		break;
+	default:
+		return FAIL; // unreachable
+	}
+
+	return eepromWrite(addr, buf, sizeof(buf));
+}
+
+// Read a CAN ID from the EEPROM.
+// CAN IDs are stored in the lower 11 or 29 bits of a little-endian U32.
+// Bit 31 indicates standard/extended: 0=>std, 1=>ext.
+Status
+eepromReadCanId(U16 addr, CanId *id) {
+	Status status;
+
+	// Read
+	status = eepromRead(addr, id->eid, sizeof(id->eid));
+	if (status != OK) {
+		return FAIL;
+	}
+
+	// Unpack
+	if (id->eid[3u] & 0x80) { // bit 31 is standard/extended flag
+		id->type = CAN_ID_EXT; // extended
+		id->eid[3u] &= 0x1F;
+	} else {
+		id->type = CAN_ID_STD; // standard
+		id->sid.lo = id->eid[0u];
+		id->sid.hi = id->eid[1u] & 0x7;
+	}
 
 	return OK;
 }

@@ -14,8 +14,8 @@
 #include "system.h"
 #include "types.h"
 #include "spi.h"
-#include "eeprom.h"
 #include "can.h"
+#include "eeprom.h"
 
 static const CanId id = {
 	.type = CAN_ID_STD,

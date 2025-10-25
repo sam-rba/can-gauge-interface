@@ -1,8 +1,10 @@
 #include <xc.h>
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "types.h"
+#include "can.h"
 #include "eeprom.h"
 
 #include "table.h"

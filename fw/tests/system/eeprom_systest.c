@@ -1,10 +1,12 @@
 #include <xc.h>
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "system.h"
 #include "types.h"
 #include "spi.h"
+#include "can.h"
 #include "eeprom.h"
 
 static const U16 addr = {0x00, 0x0A};
