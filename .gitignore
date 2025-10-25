@@ -15,6 +15,7 @@ _autosave*
 *.out
 *.pdf
 *.png
+*.ps
 *.run.xml
 *.stl
 *.toc
