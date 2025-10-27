@@ -13,7 +13,7 @@
 // Frame to transmit periodically
 static const CanFrame frame = {
 	.id = {
-		.type = CAN_ID_STD,
+		.isExt = false,
 		.sid = {0x01, 0x23},
 	},
 	.rtr = false,

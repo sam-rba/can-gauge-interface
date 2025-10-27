@@ -177,13 +177,14 @@ eepromWriteCanId(U16 addr, const CanId *id) {
 	U8 buf[4u];
 
 	// Copy ID to buffer
-	memset(buf, 0u, sizeof(buf));
 	if (id->isExt) { // extended
 		memmove(buf, id->eid, sizeof(buf));
-		buf[3u] = (buf[3u] & 0x1F) | 0x80; // set EID flag
+		buf[3u] = (buf[3u] & 0x1F) | 0x80; // set EID flag: bit 31
 	} else { // standard
 		buf[0u] = id->sid.lo;
 		buf[1u] = id->sid.hi & 0x7;
+		buf[2u] = 0u;
+		buf[3u] = 0u;
 	}
 
 	return eepromWrite(addr, buf, sizeof(buf));

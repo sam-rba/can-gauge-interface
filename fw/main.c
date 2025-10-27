@@ -43,12 +43,10 @@ static const CanId idCtrlFilter = {
 };
 
 // Receive buffer 0 mask.
-// RXB0 is used for control messages for reading/writing calibration tables
-// and CAN IDs for each parameter.
-// This mask is the union of the two control message filters.
+// RXB0 receives Table and ID Control Frames.
 static const CanId rxb0Mask = {
 	.isExt = true,
-	.eid = {0x00, 0x21, 0x27, 0x01}, // 1272100h
+	.eid = {0x00, 0xFF, 0xFF, 0x1F}, // all but LSB
 };
 
 // Receive buffer 1 mask.
@@ -96,13 +94,13 @@ loadParamIds(void) {
 	for (k = 0u; k < NPARAM; k++) {
 		status = eepromReadCanId(paramIdAddrs[k], (CanId*)&paramIds[k]);
 		if (status != OK) {
+			INTCONbits.GIE = oldGie; // restore previous interrupt setting
 			return FAIL;
 		}
 	}
 
 	// Restore previous interrupt setting
 	INTCONbits.GIE = oldGie;
-
 	return OK;
 }
 
@@ -134,10 +132,11 @@ main(void) {
 	canSetFilter0(&tblCtrlFilter); // Table Control Frames
 	canSetFilter1(&idCtrlFilter); // ID Control Frames
 	canSetMask1(&rxb1Mask); // RXB1 receives parameter values
-	// Permissive RXB1 mask; filter frames in software
+		// RXB1 messages are filtered in software
+	canIE(true); // enable interrupts on MCP2515's INT pin
+	canSetMode(CAN_MODE_NORMAL);
 
 	// Enable interrupts
-	canIE(true); // enable interrupts on MCP2515's INT pin
 	INTCON = 0x00; // clear flags
 	OPTION_REGbits.INTEDG = 0; // interrupt on falling edge of INT pin
 	INTCONbits.INTE = 1; // enable INT pin
@@ -161,16 +160,12 @@ handleTblCtrlFrame(const CanFrame *frame) {
 // of the requested parameter.
 static Status
 respondIdCtrl(Param param) {
-	CanFrame response;
 	CanId paramId;
-	Status status;
+	CanFrame response;
 
-	// Read parameter's CAN ID from EEPROM
+	// Get parameter's CAN ID
 	if ((U8)param < NPARAM) {
-		status = eepromReadCanId(paramIdAddrs[param], &paramId);
-		if (status != OK) {
-			return FAIL; // read failed
-		}
+		paramId = paramIds[param];
 	} else {
 		return FAIL; // invalid parameter
 	}
@@ -221,20 +216,22 @@ setParamId(const CanFrame *frame) {
 		return FAIL; // invalid DLC
 	}
 
-	// Extract param # from Control Frame's ID
+	// Set param's ID
 	param = frame->id.eid[0u] & 0xF;
-	if ((U8)param >= NPARAM) {
+	if ((U8)param < NPARAM) {
+		// Update copy in EEPROM
+		status = eepromWriteCanId(paramIdAddrs[param], &paramId);
+		if (status != OK) {
+			return FAIL; // write failed
+		}
+		// Update copy in RAM
+		paramIds[param] = paramId;
+	} else {
 		return FAIL; // invalid parameter
 	}
 
-	// Update copy in EEPROM
-	status = eepromWriteCanId(paramIdAddrs[param], &paramId);
-	if (status != OK) {
-		return FAIL; // write failed
-	}
-
-	// Update copy in PIC's RAM
-	paramIds[param] = paramId; 
+	// TODO: remove
+	respondIdCtrl(param); // echo
 
 	return OK;
 }
@@ -253,10 +250,25 @@ handleIdCtrlFrame(const CanFrame *frame) {
 	}
 }
 
+// TODO: remove
+static void
+echo(const CanFrame *frame) {
+	CanFrame out;
+	U8 k;
+
+	memmove(&out, frame, sizeof(*frame));
+	out.rtr = false;
+	for (k = 0u; k < out.dlc; k++) {
+		out.data[k]++;
+	}
+	canTx(&out);
+}
+
 // Handle a frame potentially holding a parameter value.
 static Status
 handleParamFrame(const CanFrame *frame) {
 	// TODO
+	echo(frame);
 }
 
 void

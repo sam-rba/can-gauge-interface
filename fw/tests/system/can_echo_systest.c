@@ -1,4 +1,4 @@
-/* Listen for a standard DATA FRAME with ID 123h;
+/* Listen for a frame with ID 123h or 1234567h;
  * echo it back with each byte of the DATA FIELD incremented by 1.
  */
 
@@ -12,6 +12,19 @@
 #include "spi.h"
 #include "can.h"
 
+static const CanId mask0 = {
+	.isExt = true,
+	.eid = {0xFF, 0xFF, 0xFF, 0x1F}};
+static const CanId filter0 = {
+	.isExt = true,
+	.eid = {0x67, 0x45, 0x23, 0x01}}; // 1234567h
+static const CanId mask1 = {
+	.isExt = false,
+	.sid = {.lo = 0xFF, .hi = 0x7}};
+static const CanId filter2 = {
+	.isExt = false,
+	.sid = {.lo = 0x23, .hi = 0x1}}; // 123h
+
 void
 main(void) {
 	sysInit();
@@ -20,20 +33,11 @@ main(void) {
 
 	// Setup MCP2515 CAN controller
 	canSetBitTiming(CAN_TIMING_10K);
-	CanId id = {
-		.type=CAN_ID_STD,
-		.sid = {0xFF, 0xFF},
-	};
-	canSetMask0(&id); // set masks
-	canSetMask1(&id);
-	canSetFilter1(&id); // set unused filters
-	canSetFilter2(&id);
-	canSetFilter3(&id);
-	canSetFilter4(&id);
-	canSetFilter5(&id);
-	id.sid = (U16){0x01, 0x23}; // listen for message on filter 0
-	canSetFilter0(&id);
-	canIE(true); // enable interrupts on INT pin
+	canSetMask0(&mask0); // RXB0
+	canSetFilter0(&filter0);
+	canSetMask1(&mask1); // RXB1
+	canSetFilter2(&filter2);
+	canIE(true); // enable interrupts on MCP2515's INT pin
 	canSetMode(CAN_MODE_NORMAL);
 	
 	// Enable interrupts
@@ -62,24 +66,22 @@ echo(CanFrame *frame) {
 
 void
 __interrupt() isr(void) {
-	U8 status;
 	CanFrame frame;
 
 	if (INTCONbits.INTF) {
-		status = canRxStatus();
-		switch (status & 0x7) { // check filter match
+		switch (canRxStatus() & 0x7) { // check filter match
 		case 0u: // RXF0
 			canReadRxb0(&frame);
 			echo(&frame);
 			break;
-		case 1u: // RXF1
-			canReadRxb0(&frame); // clear interrupt flag
+		case 2u: // RXF2
+			canReadRxb1(&frame);
+			echo(&frame);
 			break;
 		default:
-			// Message in RXB1
-			canReadRxb1(&frame); // clear interrupt flag
+			canReadRxb0(&frame); // clear interrupt flag
+			canReadRxb1(&frame);
 		}
-
 		INTCONbits.INTF = 0;
 	}
 }
