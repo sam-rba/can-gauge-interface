@@ -10,3 +10,4 @@
 *.s
 *.sdb
 *.sym
+*_utests
