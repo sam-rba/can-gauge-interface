@@ -241,14 +241,14 @@ static void
 packId(CanId *id, U8 sidh, U8 sidl, U8 eid8, U8 eid0) {
 	if (sidl & IDE) { // extended ID
 		id->isExt = true;
-		id->eid[0u] = eid0; // id[7:0]
-		id->eid[1u] = eid8; // idi[15:8]
-		id->eid[2u] = (sidh & 0x7) | (sidl & 0x3) | (sidl >> 3u); // id[23:21], id[20:18], id[17:16]
-		id->eid[3u] = (sidh >> 3u); // id[28:24]
+		id->eid = ((U32)eid0 << 0u) // id[7:0]
+			| ((U32)eid8 << 8u) // id[15:8]
+			| ((U32)((sidh & 0x7) | (sidl & 0x3) | (sidl >> 3u)) << 16u) // id[23:21], id[20:18], id[17:16]
+			| ((U32)(sidh >> 3u) << 24u); // id[28:24]
 	} else { // standard ID
 		id->isExt = false;
-		id->sid.lo = (U8)(sidh << 3u) | (U8)(sidl >> 5u); // sid[7:0]
-		id->sid.hi = sidh >> 5u; // sid[10:8]
+		id->sid = ((U16)((sidh << 3u) | (sidl >> 5u)) << 0u) // sid[7:0]
+			| ((U16)(sidh >> 5u) << 8u); // sid[10:8]
 	}
 }
 
@@ -296,15 +296,15 @@ canReadRxb1(CanFrame *frame) {
 static void
 writeId(const CanId *id, Reg sidh, Reg sidl, Reg eid8, Reg eid0) {
 	if (id->isExt) { // extended
-		write(eid0, id->eid[0u]); // id[7:0]
-		write(eid8, id->eid[1u]); // id[15:8]
-		write(sidl, ((id->eid[2u] << 3u) & 0xE0) | IDE | (id->eid[2u] & 0x3)); // id[20:18], IDE, id[17:16]
-		write(sidh, (U8)((id->eid[3u] & 0x1F) << 3u) | (id->eid[2u] >> 5u)); // id[28:24], id[23:21]
+		write(eid0, id->eid & 0xFF); // id[7:0]
+		write(eid8, (id->eid >> 8u) & 0xFF); // id[15:8]
+		write(sidl, ((id->eid >> 13u) & 0xE0) | IDE | ((id->eid >> 16u) & 0x03)); // id[20:18], IDE, id[17:16]
+		write(sidh, (id->eid >> 21u) & 0xFF); // id[28:21]
 	} else { // standard
-		write(sidh, (U8)(id->sid.hi << 5u) | (U8)(id->sid.lo >> 3u));
-		write(sidl, (U8) (id->sid.lo << 5u));
-		write(eid8, 0x00);
-		write(eid0, 0x00);
+		write(sidh, (id->sid >> 3u) & 0xFF);
+		write(sidl, (id->sid << 5u) & 0xE0);
+		write(eid8, 0u);
+		write(eid0, 0u);
 	}
 }
 

@@ -21,10 +21,11 @@
  */
 
 enum {
-	TAB_KEY_SIZE = 4, // U32
-	TAB_VAL_SIZE = 4, // U32
+	TAB_KEY_SIZE = sizeof(U32),
+	TAB_VAL_SIZE = sizeof(U32),
 	TAB_ROWS = 32,
 	TAB_ROW_SIZE = TAB_KEY_SIZE + TAB_VAL_SIZE,
+	TAB_SIZE = TAB_ROWS * TAB_ROW_SIZE,
 };
 
 typedef struct {

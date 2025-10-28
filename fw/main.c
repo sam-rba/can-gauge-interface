@@ -31,7 +31,7 @@ typedef enum {
 // Used for writing/reading calibration tables.
 static const CanId tblCtrlFilter = {
 	.isExt = true,
-	.eid = {0x00, 0x20, 0x27, 0x01}, // 12720XXh
+	.eid = 0x01272000, // 112720XXh
 };
 
 // ID Control filter.
@@ -39,14 +39,14 @@ static const CanId tblCtrlFilter = {
 // See `doc/datafmt.ps'.
 static const CanId idCtrlFilter = {
 	.isExt = true,
-	.eid = {0x00, 0x21, 0x27, 0x01}, // 127210Xh
+	.eid = 0x01272100, // 127210Xh
 };
 
 // Receive buffer 0 mask.
 // RXB0 receives Table and ID Control Frames.
 static const CanId rxb0Mask = {
 	.isExt = true,
-	.eid = {0x00, 0xFF, 0xFF, 0x1F}, // all but LSB
+	.eid = 0x1FFFFF00, // all buf LSB
 };
 
 // Receive buffer 1 mask.
@@ -54,28 +54,28 @@ static const CanId rxb0Mask = {
 // The mask is permissive: all messages are accepted and filtered in software.
 static const CanId rxb1Mask = {
 	.isExt = true,
-	.eid = {0u, 0u, 0u, 0u}, // accept all messages
+	.eid = 0u, // accept all messages
 };
 
 // Calibration tables in EEPROM:
 // Each is 2*sizeof(U32)*TAB_ROWS = 256B -- too big for an 8-bit word.
 // That's why the offsets are hard-coded.
-static const Table tachTbl = {{0x00, 0x00}}; // tachometer
-static const Table speedTbl = {{0x01, 0x00}}; // speedometer
-static const Table an1Tbl = {{0x02, 0x00}}; // analog channels...
-static const Table an2Tbl = {{0x03, 0x00}};
-static const Table an3Tbl = {{0x04, 0x00}};
-static const Table an4Tbl = {{0x05, 0x00}};
+static const Table tachTbl = {0ul*TAB_SIZE}; // tachometer
+static const Table speedTbl = {1ul*TAB_SIZE}; // speedometer
+static const Table an1Tbl = {2ul*TAB_SIZE}; // analog channels...
+static const Table an2Tbl = {3ul*TAB_SIZE};
+static const Table an3Tbl = {4ul*TAB_SIZE};
+static const Table an4Tbl = {5ul*TAB_SIZE};
 
 // EEPROM address of CAN ID for each parameter.
 // Each of these addresses holds a U32 CAN ID.
 static const EepromAddr paramIdAddrs[NPARAM] = {
-	[TACH] = {0x06, 0x00}, // tachometer
-	[SPEED] = {0x06, 0x04}, // speedometer
-	[AN1] = {0x06, 0x08}, // analog channels...
-	[AN2] = {0x06, 0x0C},
-	[AN3] = {0x06, 0x10},
-	[AN4] = {0x06, 0x14},
+	[TACH] = NPARAM*TAB_SIZE + 0ul*sizeof(U32), // tachometer
+	[SPEED] = NPARAM*TAB_SIZE + 1ul*sizeof(U32), // speedometer
+	[AN1] = NPARAM*TAB_SIZE + 2ul*sizeof(U32), // analog channels...
+	[AN2] = NPARAM*TAB_SIZE + 3ul*sizeof(U32),
+	[AN3] = NPARAM*TAB_SIZE + 4ul*sizeof(U32),
+	[AN4] = NPARAM*TAB_SIZE + 5ul*sizeof(U32),
 };
 
 // CAN ID of each parameter
@@ -173,20 +173,19 @@ respondIdCtrl(Param param) {
 	// Pack param ID into response's DATA FIELD
 	response.id = (CanId) {
 		.isExt = true,
-		.eid = {param & 0xF, 0x21, 0x27, 0x01}, // 127210Xh
+		.eid = 0x01272100 | ((U32)param & 0x0F), // 127210Xh
 	};
 	response.rtr = false;
 	if (paramId.isExt) { // extended
 		response.dlc = 4u; // U32
-		// BE <- LE
-		response.data[0u] = paramId.eid[3u] & 0x1F;
-		response.data[1u] = paramId.eid[2u];
-		response.data[2u] = paramId.eid[1u];
-		response.data[3u] = paramId.eid[0u];
+		response.data[0u] = (paramId.eid>>24u) & 0x1F;
+		response.data[1u] = (paramId.eid>>16u) & 0xFF;
+		response.data[2u] = (paramId.eid>>8u) & 0xFF;
+		response.data[3u] = (paramId.eid>>0u) & 0xFF;
 	} else { // standard
 		response.dlc = 2u; // U16
-		response.data[0u] = paramId.sid.hi & 0x7;
-		response.data[1u] = paramId.sid.lo;
+		response.data[0u] = (paramId.sid>>8u) & 0x07;
+		response.data[1u] = (paramId.sid>>0u) & 0xFF;
 	}
 
 	// Transmit response
@@ -202,22 +201,21 @@ setParamId(const CanFrame *frame) {
 
 	// Extract param ID from DATA FIELD
 	if (frame->dlc == 4u) { // extended
-		paramId.isExt = true;
-		// LE <- BE
-		paramId.eid[0u] = frame->data[3u];
-		paramId.eid[1u] = frame->data[2u];
-		paramId.eid[2u] = frame->data[1u];
-		paramId.eid[3u] = frame->data[0u] & 0x1F;
+		paramId.isExt = true;		
+		paramId.eid = ((U32)frame->data[3u] << 0u)
+			| ((U32)frame->data[2u] << 8u)
+			| ((U32)frame->data[1u] << 16u)
+			| (((U32)frame->data[0u] & 0x1F) << 24u);
 	} else if (frame->dlc == 2u) { // standard
 		paramId.isExt = false;
-		paramId.sid.lo = frame->data[1u];
-		paramId.sid.hi = frame->data[0u] & 0x7;
+		paramId.sid = ((U16)frame->data[1u] << 0u)
+			| ((U16)frame->data[0u] << 8u);
 	} else {
 		return FAIL; // invalid DLC
 	}
 
 	// Set param's ID
-	param = frame->id.eid[0u] & 0xF;
+	param = frame->id.eid & 0xF;
 	if ((U8)param < NPARAM) {
 		// Update copy in EEPROM
 		status = eepromWriteCanId(paramIdAddrs[param], &paramId);
@@ -243,7 +241,7 @@ handleIdCtrlFrame(const CanFrame *frame) {
 	Param param;
 
 	if (frame->rtr) { // REMOTE
-		param = frame->id.eid[0u] & 0xF;
+		param = frame->id.eid & 0xF;
 		return respondIdCtrl(param); // respond with the parameter's CAN ID
 	} else { // DATA
 		return setParamId(frame);

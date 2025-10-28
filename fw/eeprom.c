@@ -2,7 +2,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
 
 #include "system.h"
 #include "types.h"
@@ -88,13 +87,13 @@ waitForWrite(void) {
 
 static void
 spiTxAddr(U16 addr) {
-	(void)spiTx(addr.hi);
-	(void)spiTx(addr.lo);
+	(void)spiTx((addr>>8u) & 0xFF); // MSB
+	(void)spiTx((addr>>0u) & 0xFF); // LSB
 }
 
 static bool
 isPageStart(U16 addr) {
-	return (addr.lo % PAGE_SIZE) == 0;
+	return (addr % PAGE_SIZE) == 0;
 }
 
 Status
@@ -120,7 +119,7 @@ eepromWrite(U16 addr, U8 *data, U8 size) {
 	while (size--) {
 		(void)spiTx(*data);
 		data++;
-		addr = addU16U8(addr, 1u);
+		addr++;
 
 		// Check if write crosses page boundary
 		if (isPageStart(addr) && size) {
@@ -178,13 +177,16 @@ eepromWriteCanId(U16 addr, const CanId *id) {
 
 	// Copy ID to buffer
 	if (id->isExt) { // extended
-		memmove(buf, id->eid, sizeof(buf));
-		buf[3u] = (buf[3u] & 0x1F) | 0x80; // set EID flag: bit 31
+		buf[0u] = (id->eid>>0u) & 0xFF;
+		buf[1u] = (id->eid>>8u) & 0xFF;
+		buf[2u] = (id->eid>>16u) & 0xFF;
+		buf[3u] = (id->eid>>24u) & 0x1F;
+		buf[3u] |= 0x80; // set EID flag in bit 31
 	} else { // standard
-		buf[0u] = id->sid.lo;
-		buf[1u] = id->sid.hi & 0x7;
+		buf[0u] = (id->sid>>0u) & 0xFF;
+		buf[1u] = (id->sid>>8u) & 0x07;
 		buf[2u] = 0u;
-		buf[3u] = 0u;
+		buf[3u] = 0u; // clear EID flag in bit 32
 	}
 
 	return eepromWrite(addr, buf, sizeof(buf));
@@ -195,22 +197,26 @@ eepromWriteCanId(U16 addr, const CanId *id) {
 // Bit 31 indicates standard/extended: 0=>std, 1=>ext.
 Status
 eepromReadCanId(U16 addr, CanId *id) {
+	U8 buf[sizeof(U32)];
 	Status status;
 
 	// Read
-	status = eepromRead(addr, id->eid, sizeof(id->eid));
+	status = eepromRead(addr, buf, sizeof(buf));
 	if (status != OK) {
 		return FAIL;
 	}
 
 	// Unpack
-	if (id->eid[3u] & 0x80) { // bit 31 is standard/extended flag
+	if (buf[3u] & 0x80) { // bit 31 is standard/extended flag
 		id->isExt = true; // extended
-		id->eid[3u] &= 0x1F;
+		id->eid = ((U32)buf[0u] << 0u)
+			| ((U32)buf[1u] << 8u)
+			| ((U32)buf[2u] << 16u)
+			| (((U32)buf[3u] & 0x1F) << 24u);
 	} else {
 		id->isExt = false; // standard
-		id->sid.lo = id->eid[0u];
-		id->sid.hi = id->eid[1u] & 0x7;
+		id->sid = ((U16)buf[0u] << 0u)
+			| (((U16)buf[1u] & 0x07) << 8u);
 	}
 
 	return OK;

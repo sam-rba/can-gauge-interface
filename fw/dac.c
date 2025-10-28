@@ -11,8 +11,8 @@
 // Configuration bits:
 // buffered, gain=1x, mode=active
 typedef enum {
-	CONFA = 0x70, // DAC A
-	CONFB = 0xF0, // DAC B
+	CONFA = 0x7000, // DAC A
+	CONFB = 0xF000, // DAC B
 } Conf;
 
 void
@@ -22,7 +22,7 @@ dacInit(void) {
 	DAC1_CS = 1;
 	DAC2_CS = 1;
 
-	U16 level = {0u, 0u};
+	U16 level = 0u;
 	dacSet1a(level);
 	dacSet1b(level);
 	dacSet2a(level);
@@ -31,8 +31,8 @@ dacInit(void) {
 
 static void
 set(U8 dacNum, Conf conf, U16 level) {
-	level = lshiftU16(level, 2u); // D0 at bit 2
-	level.hi = (U8)conf | (level.hi & 0x0F); // set config bits
+	level <<= 2u; // D0 at bit 2
+	level = ((U16)conf & 0xF000) | (level & 0x0FFF); // set config bits
 
 	if (dacNum == 1u) {
 		DAC1_CS = 0;
@@ -41,8 +41,8 @@ set(U8 dacNum, Conf conf, U16 level) {
 	}
 	_delay(1);
 
-	(void)spiTx(level.hi);
-	(void)spiTx(level.lo);
+	(void)spiTx((level>>8u) & 0xFF); // MSB
+	(void)spiTx((level>>0u) & 0xFF); // LSB
 
 	if (dacNum == 1u) {
 		DAC1_CS = 1;
