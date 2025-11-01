@@ -26,7 +26,7 @@ typedef enum {
 	SIG_AN3,
 	SIG_AN4,
 
-	NSIGNALS,
+	NSIG,
 } Signal;
 
 // Table Control filter.
@@ -69,17 +69,17 @@ static const Table an4Tbl = {5ul*TAB_SIZE};
 
 // EEPROM address of encoding format structure for each signal.
 // Each of these addresses point to a SigFmt structure in the EEPROM.
-static const EepromAddr sigFmtAddrs[NSIGNALS] = {
-	[SIG_TACH] = NSIGNALS*TAB_SIZE + 0ul*SER_SIGFMT_SIZE, // tachometer
-	[SIG_SPEED] = NSIGNALS*TAB_SIZE + 1ul*SER_SIGFMT_SIZE, // speedometer
-	[SIG_AN1] = NSIGNALS*TAB_SIZE + 2ul*SER_SIGFMT_SIZE, // analog channels...
-	[SIG_AN2] = NSIGNALS*TAB_SIZE + 3ul*SER_SIGFMT_SIZE,
-	[SIG_AN3] = NSIGNALS*TAB_SIZE + 4ul*SER_SIGFMT_SIZE,
-	[SIG_AN4] = NSIGNALS*TAB_SIZE + 5ul*SER_SIGFMT_SIZE,
+static const EepromAddr sigFmtAddrs[NSIG] = {
+	[SIG_TACH] = NSIG*TAB_SIZE + 0ul*SER_SIGFMT_SIZE, // tachometer
+	[SIG_SPEED] = NSIG*TAB_SIZE + 1ul*SER_SIGFMT_SIZE, // speedometer
+	[SIG_AN1] = NSIG*TAB_SIZE + 2ul*SER_SIGFMT_SIZE, // analog channels...
+	[SIG_AN2] = NSIG*TAB_SIZE + 3ul*SER_SIGFMT_SIZE,
+	[SIG_AN3] = NSIG*TAB_SIZE + 4ul*SER_SIGFMT_SIZE,
+	[SIG_AN4] = NSIG*TAB_SIZE + 5ul*SER_SIGFMT_SIZE,
 };
 
 // Encoding format and CAN ID of each signal
-static volatile SigFmt sigFmts[NSIGNALS];
+static volatile SigFmt sigFmts[NSIG];
 
 // Load signals' encoding formats and CAN IDs from EEPROM
 static Status
@@ -87,11 +87,25 @@ loadSigFmts(void) {
 	U8 oldGie, k;
 	Status status;
 
+	// TODO:
+	// This is a stub to load hard-coded SigFmts until the serialization format is finalized.
+	for (k = 0u; k < NSIG; k++) {
+		sigFmts[k] = (SigFmt) {
+			.id = {
+				.isExt = true,
+				.eid = 2365480958},
+			.start = 24u,
+			.size = 16u,
+			.order = LITTLE_ENDIAN,
+			.isSigned = false,
+		}; // J1939 EngineSpeed
+	}
+
 	// Disable interrupts so the volatile address pointers can be passed safely
 	oldGie = INTCONbits.GIE;
 	INTCONbits.GIE = 0;
 
-	for (k = 0u; k < NSIGNALS; k++) {
+	for (k = 0u; k < NSIG; k++) {
 		status = serReadSigFmt(sigFmtAddrs[k], (SigFmt*)&sigFmts[k]);
 		if (status != OK) {
 			INTCONbits.GIE = oldGie; // restore previous interrupt setting
@@ -184,25 +198,35 @@ handleIdCtrlFrame(const CanFrame *frame) {
 	}
 }
 
-// TODO: remove
-static void
-echo(const CanFrame *frame) {
-	CanFrame out;
-	U8 k;
-
-	memmove(&out, frame, sizeof(*frame));
-	out.rtr = false;
-	for (k = 0u; k < out.dlc; k++) {
-		out.data[k]++;
-	}
-	canTx(&out);
+// Generate the output signal being sent to one of the gauges.
+static Status
+driveGauge(Signal sig, Number raw) {
+	// TODO
 }
 
 // Handle a frame potentially holding a signal value.
 static Status
 handleSigFrame(const CanFrame *frame) {
-	// TODO
-	echo(frame);
+	Status status, result;
+	Signal sig;
+	Number raw;
+
+	result = OK;
+
+	// Search for signal with this ID
+	// Exhaustive because message may contain multiple signals.
+	for (sig = 0u; sig < NSIG; sig++) {
+		if (canIdEq(&frame->id, (const CanId *)&sigFmts[sig].id)) {
+			// Extract raw signal value from frame
+			status = sigPluck((const SigFmt *)&sigFmts[sig], frame, &raw);
+			if (status == OK) {
+				status = driveGauge(sig, raw); // generate output signal
+			}
+			result |= status;
+		}
+	}
+
+	return result;
 }
 
 void

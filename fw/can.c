@@ -375,3 +375,15 @@ void
 canSetFilter5(const CanId *filter) {
 	writeId(filter, REG_RXF5SIDH, REG_RXF5SIDL, REG_RXF5EID8, REG_RXF5EID0);
 }
+
+bool
+canIdEq(const CanId *a, const CanId *b) {
+	if (a->isExt != b->isExt) {
+		return false;
+	}
+	if (a->isExt) {
+		return a->eid == b->eid;
+	} else {
+		return a->sid == b->sid;
+	}
+}

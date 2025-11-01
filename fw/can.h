@@ -113,3 +113,6 @@ void canSetFilter4(const CanId *filter);
 // Set message acceptance filter 5 (RXB1).
 // The MCP2515 must be in Config mode.
 void canSetFilter5(const CanId *filter);
+
+// Compare two CAN IDs.
+bool canIdEq(const CanId *a, const CanId *b);
