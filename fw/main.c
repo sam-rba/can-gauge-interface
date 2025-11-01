@@ -15,17 +15,17 @@
 // TODO: auto baud detection
 #define CAN_TIMING CAN_TIMING_10K
 
-// Parameters
+// Signals
 typedef enum {
-	TACH = 0,
-	SPEED,
-	AN1,
-	AN2,
-	AN3,
-	AN4,
+	SIG_TACH = 0,
+	SIG_SPEED,
+	SIG_AN1,
+	SIG_AN2,
+	SIG_AN3,
+	SIG_AN4,
 
-	NPARAM,
-} Param;
+	NSIGNALS,
+} Signal;
 
 // Table Control filter.
 // Used for writing/reading calibration tables.
@@ -35,7 +35,7 @@ static const CanId tblCtrlFilter = {
 };
 
 // ID Control filter.
-// Used for writing/reading the CAN ID associated with each parameter.
+// Used for writing/reading the CAN ID associated with each signal.
 // See `doc/datafmt.ps'.
 static const CanId idCtrlFilter = {
 	.isExt = true,
@@ -50,7 +50,7 @@ static const CanId rxb0Mask = {
 };
 
 // Receive buffer 1 mask.
-// RXB1 is used for receiving parameter values.
+// RXB1 is used for receiving signals.
 // The mask is permissive: all messages are accepted and filtered in software.
 static const CanId rxb1Mask = {
 	.isExt = true,
@@ -67,23 +67,23 @@ static const Table an2Tbl = {3ul*TAB_SIZE};
 static const Table an3Tbl = {4ul*TAB_SIZE};
 static const Table an4Tbl = {5ul*TAB_SIZE};
 
-// EEPROM address of CAN ID for each parameter.
+// EEPROM address of CAN ID for each signal.
 // Each of these addresses holds a U32 CAN ID.
-static const EepromAddr paramIdAddrs[NPARAM] = {
-	[TACH] = NPARAM*TAB_SIZE + 0ul*sizeof(U32), // tachometer
-	[SPEED] = NPARAM*TAB_SIZE + 1ul*sizeof(U32), // speedometer
-	[AN1] = NPARAM*TAB_SIZE + 2ul*sizeof(U32), // analog channels...
-	[AN2] = NPARAM*TAB_SIZE + 3ul*sizeof(U32),
-	[AN3] = NPARAM*TAB_SIZE + 4ul*sizeof(U32),
-	[AN4] = NPARAM*TAB_SIZE + 5ul*sizeof(U32),
+static const EepromAddr sigIdAddrs[NSIGNALS] = {
+	[SIG_TACH] = NSIGNALS*TAB_SIZE + 0ul*sizeof(U32), // tachometer
+	[SIG_SPEED] = NSIGNALS*TAB_SIZE + 1ul*sizeof(U32), // speedometer
+	[SIG_AN1] = NSIGNALS*TAB_SIZE + 2ul*sizeof(U32), // analog channels...
+	[SIG_AN2] = NSIGNALS*TAB_SIZE + 3ul*sizeof(U32),
+	[SIG_AN3] = NSIGNALS*TAB_SIZE + 4ul*sizeof(U32),
+	[SIG_AN4] = NSIGNALS*TAB_SIZE + 5ul*sizeof(U32),
 };
 
-// CAN ID of each parameter
-static volatile CanId paramIds[NPARAM];
+// CAN ID of each signal
+static volatile CanId sigIds[NSIGNALS];
 
-// Load parameters' CAN IDs from EEPROM
+// Load signals' CAN IDs from EEPROM
 static Status
-loadParamIds(void) {
+loadSigIds(void) {
 	U8 oldGie, k;
 	Status status;
 
@@ -91,8 +91,8 @@ loadParamIds(void) {
 	oldGie = INTCONbits.GIE;
 	INTCONbits.GIE = 0;
 
-	for (k = 0u; k < NPARAM; k++) {
-		status = eepromReadCanId(paramIdAddrs[k], (CanId*)&paramIds[k]);
+	for (k = 0u; k < NSIGNALS; k++) {
+		status = eepromReadCanId(sigIdAddrs[k], (CanId*)&sigIds[k]);
 		if (status != OK) {
 			INTCONbits.GIE = oldGie; // restore previous interrupt setting
 			return FAIL;
@@ -120,8 +120,8 @@ main(void) {
 	canInit();
 	eepromInit();
 
-	// Load parameters' CAN IDs from EEPROM
-	status = loadParamIds();
+	// Load signals' CAN IDs from EEPROM
+	status = loadSigIds();
 	if (status != OK) {
 		reset();
 	}
@@ -131,7 +131,7 @@ main(void) {
 	canSetMask0(&rxb0Mask); // RXB0 receives control messages
 	canSetFilter0(&tblCtrlFilter); // Table Control Frames
 	canSetFilter1(&idCtrlFilter); // ID Control Frames
-	canSetMask1(&rxb1Mask); // RXB1 receives parameter values
+	canSetMask1(&rxb1Mask); // RXB1 receives signal values
 		// RXB1 messages are filtered in software
 	canIE(true); // enable interrupts on MCP2515's INT pin
 	canSetMode(CAN_MODE_NORMAL);
@@ -157,79 +157,79 @@ handleTblCtrlFrame(const CanFrame *frame) {
 
 // Transmit the response to an ID Control REMOTE FRAME.
 // The response is an ID Control DATA FRAME containing the CAN ID
-// of the requested parameter.
+// of the requested signal.
 static Status
-respondIdCtrl(Param param) {
-	CanId paramId;
+respondIdCtrl(Signal sig) {
+	CanId sigId;
 	CanFrame response;
 
-	// Get parameter's CAN ID
-	if ((U8)param < NPARAM) {
-		paramId = paramIds[param];
+	// Get signal's CAN ID
+	if ((U8)sig < NSIGNALS) {
+		sigId = sigIds[sig];
 	} else {
-		return FAIL; // invalid parameter
+		return FAIL; // invalid signal
 	}
 
-	// Pack param ID into response's DATA FIELD
+	// Pack signal's ID into response's DATA FIELD
 	response.id = (CanId) {
 		.isExt = true,
-		.eid = 0x01272100 | ((U32)param & 0x0F), // 127210Xh
+		.eid = 0x01272100 | (sig & 0x0F), // 127210Xh
 	};
 	response.rtr = false;
-	if (paramId.isExt) { // extended
+	if (sigId.isExt) { // extended
 		response.dlc = 4u; // U32
-		response.data[0u] = (paramId.eid>>24u) & 0x1F;
-		response.data[1u] = (paramId.eid>>16u) & 0xFF;
-		response.data[2u] = (paramId.eid>>8u) & 0xFF;
-		response.data[3u] = (paramId.eid>>0u) & 0xFF;
+		response.data[0u] = (sigId.eid>>24u) & 0x1F;
+		response.data[1u] = (sigId.eid>>16u) & 0xFF;
+		response.data[2u] = (sigId.eid>>8u) & 0xFF;
+		response.data[3u] = (sigId.eid>>0u) & 0xFF;
 	} else { // standard
 		response.dlc = 2u; // U16
-		response.data[0u] = (paramId.sid>>8u) & 0x07;
-		response.data[1u] = (paramId.sid>>0u) & 0xFF;
+		response.data[0u] = (sigId.sid>>8u) & 0x07;
+		response.data[1u] = (sigId.sid>>0u) & 0xFF;
 	}
 
 	// Transmit response
 	return canTx(&response);
 }
 
-// Set the CAN ID associated with a parameter in response to an ID Control DATA FRAME.
+// Set the CAN ID associated with a signal in response to an ID Control DATA FRAME.
 static Status
-setParamId(const CanFrame *frame) {
-	CanId paramId;
-	Param param;
+setSigId(const CanFrame *frame) {
+	CanId sigId;
+	Signal sig;
 	Status status;
 
-	// Extract param ID from DATA FIELD
+	// Extract signal ID from DATA FIELD
 	if (frame->dlc == 4u) { // extended
-		paramId.isExt = true;		
-		paramId.eid = ((U32)frame->data[3u] << 0u)
+		sigId.isExt = true;
+		sigId.eid = ((U32)frame->data[3u] << 0u)
 			| ((U32)frame->data[2u] << 8u)
 			| ((U32)frame->data[1u] << 16u)
 			| (((U32)frame->data[0u] & 0x1F) << 24u);
 	} else if (frame->dlc == 2u) { // standard
-		paramId.isExt = false;
-		paramId.sid = ((U16)frame->data[1u] << 0u)
+		sigId.isExt = false;
+		sigId.sid = ((U16)frame->data[1u] << 0u)
 			| ((U16)frame->data[0u] << 8u);
 	} else {
 		return FAIL; // invalid DLC
 	}
 
-	// Set param's ID
-	param = frame->id.eid & 0xF;
-	if ((U8)param < NPARAM) {
+	// Set signal's ID
+	sig = frame->id.eid & 0xF;
+	if ((U8)sig < NSIGNALS) {
 		// Update copy in EEPROM
-		status = eepromWriteCanId(paramIdAddrs[param], &paramId);
+		status = eepromWriteCanId(sigIdAddrs[sig], &sigId);
 		if (status != OK) {
 			return FAIL; // write failed
 		}
 		// Update copy in RAM
-		paramIds[param] = paramId;
+		sigIds[sig] = sigId;
 	} else {
-		return FAIL; // invalid parameter
+		return FAIL; // invalid signal
 	}
 
 	// TODO: remove
-	respondIdCtrl(param); // echo
+	respondIdCtrl(sig); // echo
 
 	return OK;
 }
@@ -238,13 +238,13 @@ setParamId(const CanFrame *frame) {
 // See `doc/datafmt.ps'
 static Status
 handleIdCtrlFrame(const CanFrame *frame) {
-	Param param;
+	Signal sig;
 
 	if (frame->rtr) { // REMOTE
-		param = frame->id.eid & 0xF;
-		return respondIdCtrl(param); // respond with the parameter's CAN ID
+		sig = frame->id.eid & 0xF;
+		return respondIdCtrl(sig); // respond with the signal's CAN ID
 	} else { // DATA
-		return setParamId(frame);
+		return setSigId(frame);
 	}
 }
 
@@ -262,9 +262,9 @@ echo(const CanFrame *frame) {
 	canTx(&out);
 }
 
-// Handle a frame potentially holding a parameter value.
+// Handle a frame potentially holding a signal value.
 static Status
-handleParamFrame(const CanFrame *frame) {
+handleSigFrame(const CanFrame *frame) {
 	// TODO
 	echo(frame);
 }
@@ -281,13 +281,13 @@ __interrupt() isr(void) {
 			canReadRxb0(&frame);
 			(void)handleTblCtrlFrame(&frame);
 			break;
-		case 1u: // RXF1: parameter ID control
+		case 1u: // RXF1: signal ID control
 			canReadRxb0(&frame);
 			(void)handleIdCtrlFrame(&frame);
 			break;
 		default: // message in RXB1
 			canReadRxb1(&frame);
-			(void)handleParamFrame(&frame);
+			(void)handleSigFrame(&frame);
 		}
 		INTCONbits.INTF = 0; // clear flag
 	}
