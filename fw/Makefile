@@ -38,7 +38,7 @@ UTEST_INCLUDES = -I. -I $(UNITY_DIR)
 UTEST_CFLAGS = -std=c99 -Wall $(UTEST_INCLUDES)
 UTEST_LDFLAGS = 
 UTEST_BIN = $(basename $(wildcard $(UTEST_DIR)/*.c))
-UTEST_SRC = $(wildcard $(UTEST_DIR)/*.c) $(UNITY_DIR)/unity.c
+UTEST_SRC = $(wildcard $(UTEST_DIR)/*.c) $(UNITY_DIR)/unity.c signal.c
 UTEST_OBJ = $(UTEST_SRC:.c=.o)
 UTEST_HDR = $(wildcard $(UTEST_DIR)/*.h) $(UNITY_DIR)/unity.h
 
