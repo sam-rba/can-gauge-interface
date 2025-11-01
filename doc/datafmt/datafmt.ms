@@ -4,15 +4,20 @@ Data Frame Format for the CAN Gauge Interface
 Sam Anthony
 .AI
 .LP
-The Gauge Interface receives parameter values from other nodes in the vehicle via the CAN bus.
+The Gauge Interface receives
+.I signals
+.[
+dbc07
+.]
+from other nodes in the vehicle via the CAN bus.
 It also accepts frames from a host PC for calibration.
 The format of these calibration, or
 .I control ,
 frames are the subject of this document.
 .NH 1
-Parameters
+Signals
 .LP
-The Interface listens for 6 parameters on the bus:
+The Interface listens for 6 signals on the bus:
 .nr step -1 1
 .IP \n+[step].
 Tachometer
@@ -27,7 +32,7 @@ Analog 3
 .IP \n+[step].
 Analog 4
 .LP
-Each of these parameters has an associated CAN ID and a calibration table; thus, there are 6 IDs and 6 tables.
+Each of these signals has an associated CAN ID and a calibration table; thus, there are 6 IDs and 6 tables.
 The Interface listens for these IDs and uses the tables to lookup output signal values to drive he gauges.
 Each table has 32 rows, each of which contains a key and a value.
 The keys and values are each 32-bit unsigned integers.
@@ -35,7 +40,7 @@ Numbers are transmitted in big-endian order in frames' DATA FIELD.
 .NH 1
 Frames
 .LP
-In addition to the parameter frames, there are two types of
+In addition to the signal-carrying frames, there are also two types of
 .I control
 frame:
 .B "Table Control" ,
@@ -93,15 +98,15 @@ In the case of a REMOTE FRAME, the Interface will read the row of the table spec
 .NH 2
 ID Control Frame
 .LP
-The ID Control Frame is used to read or modify the CAN ID associated with one of the 6 parameters.
+The ID Control Frame is used to read or modify the CAN ID associated with one of the 6 signals.
 It is an extended frame with DLC=8.
-It may be either a DATA FRAME: to modify\(emor a REMOTE FRAME to read.
+It may be either a DATA FRAME: to modify\(emor a REMOTE FRAME: to read.
 .PP
 The ID Control Frame has extended ID
 .B 127210Xh .
 The least significant nibble,
 .I X ,
-indicates one of the 6 parameters [0, 5].
+indicates one of the 6 signals [0, 5].
 .begin dformat
 style bitwid 0.15
 ID Control ID
@@ -109,7 +114,7 @@ ID Control ID
 	3-0 X
 .end
 .LP
-The DATA FIELD contains the CAN ID of the parameter specified in
+The DATA FIELD contains the CAN ID of the signal specified in
 .I X .
 It may be either a standard or an extended ID.
 In the case of a standard 11-bit ID, DLC=2 and the ID is sent as a 16-bit number.
