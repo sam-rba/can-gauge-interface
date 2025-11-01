@@ -7,9 +7,11 @@
 #include "system.h"
 #include "types.h"
 #include "spi.h"
+#include "eeprom.h"
 #include "dac.h"
 #include "can.h"
-#include "eeprom.h"
+#include "signal.h"
+#include "serial.h"
 #include "table.h"
 
 // TODO: auto baud detection
@@ -57,9 +59,7 @@ static const CanId rxb1Mask = {
 	.eid = 0u, // accept all messages
 };
 
-// Calibration tables in EEPROM:
-// Each is 2*sizeof(U32)*TAB_ROWS = 256B -- too big for an 8-bit word.
-// That's why the offsets are hard-coded.
+// Calibration tables in EEPROM
 static const Table tachTbl = {0ul*TAB_SIZE}; // tachometer
 static const Table speedTbl = {1ul*TAB_SIZE}; // speedometer
 static const Table an1Tbl = {2ul*TAB_SIZE}; // analog channels...
@@ -67,23 +67,23 @@ static const Table an2Tbl = {3ul*TAB_SIZE};
 static const Table an3Tbl = {4ul*TAB_SIZE};
 static const Table an4Tbl = {5ul*TAB_SIZE};
 
-// EEPROM address of CAN ID for each signal.
-// Each of these addresses holds a U32 CAN ID.
-static const EepromAddr sigIdAddrs[NSIGNALS] = {
-	[SIG_TACH] = NSIGNALS*TAB_SIZE + 0ul*sizeof(U32), // tachometer
-	[SIG_SPEED] = NSIGNALS*TAB_SIZE + 1ul*sizeof(U32), // speedometer
-	[SIG_AN1] = NSIGNALS*TAB_SIZE + 2ul*sizeof(U32), // analog channels...
-	[SIG_AN2] = NSIGNALS*TAB_SIZE + 3ul*sizeof(U32),
-	[SIG_AN3] = NSIGNALS*TAB_SIZE + 4ul*sizeof(U32),
-	[SIG_AN4] = NSIGNALS*TAB_SIZE + 5ul*sizeof(U32),
+// EEPROM address of encoding format structure for each signal.
+// Each of these addresses point to a SigFmt structure in the EEPROM.
+static const EepromAddr sigFmtAddrs[NSIGNALS] = {
+	[SIG_TACH] = NSIGNALS*TAB_SIZE + 0ul*SER_SIGFMT_SIZE, // tachometer
+	[SIG_SPEED] = NSIGNALS*TAB_SIZE + 1ul*SER_SIGFMT_SIZE, // speedometer
+	[SIG_AN1] = NSIGNALS*TAB_SIZE + 2ul*SER_SIGFMT_SIZE, // analog channels...
+	[SIG_AN2] = NSIGNALS*TAB_SIZE + 3ul*SER_SIGFMT_SIZE,
+	[SIG_AN3] = NSIGNALS*TAB_SIZE + 4ul*SER_SIGFMT_SIZE,
+	[SIG_AN4] = NSIGNALS*TAB_SIZE + 5ul*SER_SIGFMT_SIZE,
 };
 
-// CAN ID of each signal
-static volatile CanId sigIds[NSIGNALS];
+// Encoding format and CAN ID of each signal
+static volatile SigFmt sigFmts[NSIGNALS];
 
-// Load signals' CAN IDs from EEPROM
+// Load signals' encoding formats and CAN IDs from EEPROM
 static Status
-loadSigIds(void) {
+loadSigFmts(void) {
 	U8 oldGie, k;
 	Status status;
 
@@ -92,7 +92,7 @@ loadSigIds(void) {
 	INTCONbits.GIE = 0;
 
 	for (k = 0u; k < NSIGNALS; k++) {
-		status = eepromReadCanId(sigIdAddrs[k], (CanId*)&sigIds[k]);
+		status = serReadSigFmt(sigFmtAddrs[k], (SigFmt*)&sigFmts[k]);
 		if (status != OK) {
 			INTCONbits.GIE = oldGie; // restore previous interrupt setting
 			return FAIL;
@@ -116,12 +116,12 @@ main(void) {
 
 	sysInit();
 	spiInit();
+	eepromInit();
 	dacInit();
 	canInit();
-	eepromInit();
 
-	// Load signals' CAN IDs from EEPROM
-	status = loadSigIds();
+	// Load signals' encoding formats and CAN IDs from EEPROM
+	status = loadSigFmts();
 	if (status != OK) {
 		reset();
 	}
@@ -160,78 +160,13 @@ handleTblCtrlFrame(const CanFrame *frame) {
 // of the requested signal.
 static Status
 respondIdCtrl(Signal sig) {
-	CanId sigId;
-	CanFrame response;
-
-	// Get signal's CAN ID
-	if ((U8)sig < NSIGNALS) {
-		sigId = sigIds[sig];
-	} else {
-		return FAIL; // invalid signal
-	}
-
-	// Pack signal's ID into response's DATA FIELD
-	response.id = (CanId) {
-		.isExt = true,
-		.eid = 0x01272100 | (sig & 0x0F), // 127210Xh
-	};
-	response.rtr = false;
-	if (sigId.isExt) { // extended
-		response.dlc = 4u; // U32
-		response.data[0u] = (sigId.eid>>24u) & 0x1F;
-		response.data[1u] = (sigId.eid>>16u) & 0xFF;
-		response.data[2u] = (sigId.eid>>8u) & 0xFF;
-		response.data[3u] = (sigId.eid>>0u) & 0xFF;
-	} else { // standard
-		response.dlc = 2u; // U16
-		response.data[0u] = (sigId.sid>>8u) & 0x07;
-		response.data[1u] = (sigId.sid>>0u) & 0xFF;
-	}
-
-	// Transmit response
-	return canTx(&response);
+	// TODO: "ID Control" will likely have to be renamed to "Signal Control" or "Encoding Control" or similar. It will carry a SigFmt structure instead of just a CAN ID. The datafmt doc will have to be updated too.
 }
 
 // Set the CAN ID associated with a signal in response to an ID Control DATA FRAME.
 static Status
 setSigId(const CanFrame *frame) {
-	CanId sigId;
-	Signal sig;
-	Status status;
-
-	// Extract signal ID from DATA FIELD
-	if (frame->dlc == 4u) { // extended
-		sigId.isExt = true;
-		sigId.eid = ((U32)frame->data[3u] << 0u)
-			| ((U32)frame->data[2u] << 8u)
-			| ((U32)frame->data[1u] << 16u)
-			| (((U32)frame->data[0u] & 0x1F) << 24u);
-	} else if (frame->dlc == 2u) { // standard
-		sigId.isExt = false;
-		sigId.sid = ((U16)frame->data[1u] << 0u)
-			| ((U16)frame->data[0u] << 8u);
-	} else {
-		return FAIL; // invalid DLC
-	}
-
-	// Set signal's ID
-	sig = frame->id.eid & 0xF;
-	if ((U8)sig < NSIGNALS) {
-		// Update copy in EEPROM
-		status = eepromWriteCanId(sigIdAddrs[sig], &sigId);
-		if (status != OK) {
-			return FAIL; // write failed
-		}
-		// Update copy in RAM
-		sigIds[sig] = sigId;
-	} else {
-		return FAIL; // invalid signal
-	}
-
-	// TODO: remove
-	respondIdCtrl(sig); // echo
-
-	return OK;
+	// TODO: this will likely have to be renamed to setSigFmt or similar. See above comment on updating datafmt doc.
 }
 
 // Handle an ID Control Frame.
@@ -240,6 +175,7 @@ static Status
 handleIdCtrlFrame(const CanFrame *frame) {
 	Signal sig;
 
+	// TODO: update datafmt doc to transceive entire signal encoding format instead of just the ID.
 	if (frame->rtr) { // REMOTE
 		sig = frame->id.eid & 0xF;
 		return respondIdCtrl(sig); // respond with the signal's CAN ID
@@ -282,6 +218,7 @@ __interrupt() isr(void) {
 			(void)handleTblCtrlFrame(&frame);
 			break;
 		case 1u: // RXF1: signal ID control
+			// TODO: see above TODOs on updating datafmt doc
 			canReadRxb0(&frame);
 			(void)handleIdCtrlFrame(&frame);
 			break;
