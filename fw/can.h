@@ -7,6 +7,7 @@
  *
  * Usage:
  *
+ * #include <xc.h>
  * #include <stdbool.h>
  * #include <stdint.h>
  * #include "types.h"

@@ -5,6 +5,7 @@
  *
  * Usage:
  *
+ * #include <xc.h>
  * #include <stdint.h>
  * #include "types.h"
  * #include "eeprom.h"
