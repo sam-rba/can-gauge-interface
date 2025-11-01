@@ -15,8 +15,17 @@ static void
 testPluckLE(void) {
 	setUp();
 
-	// TODO
-	TEST_ASSERT(0);
+	// 1111 1111  (1110 11)10  (1111 0010)  1111 1(101)
+	// 7       0  15        8  23      16  31       24
+	CanFrame frame = {.data = {0xFF, 0xEE, 0xF2, 0xFD}};
+	SigFmt sig = {
+		.start = 10u,
+		.size = 17u,
+	};
+	U32 want = 0x17CBB;
+	U32 got;
+	pluckLE(&sig, &frame, &got);
+	TEST_ASSERT_EQUAL_UINT32(want, got);
 
 	tearDown();
 }
