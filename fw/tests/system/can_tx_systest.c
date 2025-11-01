@@ -14,7 +14,7 @@
 static const CanFrame frame = {
 	.id = {
 		.isExt = false,
-		.sid = {0x01, 0x23},
+		.sid = 0x123,
 	},
 	.rtr = false,
 	.dlc = 8u,

@@ -13,7 +13,7 @@ main(void) {
 	spiInit();
 	dacInit();
 
-	dacSet1a((U16){0u, 252u}); // 1.23V
+	dacSet1a(252u); // 1.23V
 
 	for (;;) {
 

@@ -18,10 +18,10 @@
 #include "eeprom.h"
 
 static const CanId id = {
-	.type = CAN_ID_STD,
-	.sid = {0x1, 0x23},
+	.isExt = false,
+	.sid = 0x123,
 };
-static const U16 addr = {0x00, 0x0A};
+static const U16 addr = 0x000A;
 
 void
 main(void) {
@@ -33,8 +33,8 @@ main(void) {
 	// Setup MCP2515 CAN controller
 	canSetBitTiming(CAN_TIMING_10K);
 	CanId mask = {
-		.type=CAN_ID_STD,
-		.sid = {0xFF, 0xFF},
+		.isExt = false,
+		.sid = 0x7FF,
 	};
 	canSetMask0(&mask); // set masks
 	canSetMask1(&mask);

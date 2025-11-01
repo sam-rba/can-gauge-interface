@@ -9,7 +9,7 @@
 #include "can.h"
 #include "eeprom.h"
 
-static const U16 addr = {0x00, 0x0A};
+static const U16 addr = 0x000A;
 
 void
 main(void) {

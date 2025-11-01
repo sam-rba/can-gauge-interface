@@ -14,16 +14,20 @@
 
 static const CanId mask0 = {
 	.isExt = true,
-	.eid = {0xFF, 0xFF, 0xFF, 0x1F}};
+	.eid = 0x1FFFFFFF,
+};
 static const CanId filter0 = {
 	.isExt = true,
-	.eid = {0x67, 0x45, 0x23, 0x01}}; // 1234567h
+	.eid = 0x1234567,
+};
 static const CanId mask1 = {
 	.isExt = false,
-	.sid = {.lo = 0xFF, .hi = 0x7}};
+	.sid = 0x7FF,
+};
 static const CanId filter2 = {
 	.isExt = false,
-	.sid = {.lo = 0x23, .hi = 0x1}}; // 123h
+	.sid = 0x123,
+};
 
 void
 main(void) {
