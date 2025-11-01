@@ -5,10 +5,8 @@
  *
  * Usage:
  *
- * #include <stdbool>
  * #include <stdint.h>
  * #include "types.h"
- * #include "can.h"
  * #include "eeprom.h"
  */
 
@@ -21,5 +19,3 @@ typedef U16 EepromAddr;
 void eepromInit(void);
 Status eepromWrite(EepromAddr addr, U8 data[], U8 size);
 Status eepromRead(EepromAddr addr, U8 data[], U8 size);
-Status eepromWriteCanId(EepromAddr addr, const CanId *id);
-Status eepromReadCanId(EepromAddr addr, CanId *id);
