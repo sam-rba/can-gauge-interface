@@ -22,7 +22,7 @@
 
 enum {
 	TAB_KEY_SIZE = sizeof(U32),
-	TAB_VAL_SIZE = sizeof(U32),
+	TAB_VAL_SIZE = sizeof(U16),
 	TAB_ROWS = 32,
 	TAB_ROW_SIZE = TAB_KEY_SIZE + TAB_VAL_SIZE,
 	TAB_SIZE = TAB_ROWS * TAB_ROW_SIZE,
@@ -33,12 +33,12 @@ typedef struct {
 } Table;
 
 // Set the key and value of row k.
-Status tabWrite(const Table *tab, U8 k, U16 key, U16 val);
+Status tabWrite(const Table *tab, U8 k, U32 key, U16 val);
 
 // Read row k.
-Status tabRead(const Table *tab, U8 k, U16 *key, U16 *val);
+Status tabRead(const Table *tab, U8 k, U32 *key, U16 *val);
 
 // Lookup the value associated with given key.
 // If key falls between two rows, the value is interpolated
 // from the two adjacent.
-Status tabLookup(const Table *tab, U16 key, U16 *val);
+Status tabLookup(const Table *tab, Number key, U16 *val);

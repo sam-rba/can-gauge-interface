@@ -60,12 +60,14 @@ static const CanId rxb1Mask = {
 };
 
 // Calibration tables in EEPROM
-static const Table tachTbl = {0ul*TAB_SIZE}; // tachometer
-static const Table speedTbl = {1ul*TAB_SIZE}; // speedometer
-static const Table an1Tbl = {2ul*TAB_SIZE}; // analog channels...
-static const Table an2Tbl = {3ul*TAB_SIZE};
-static const Table an3Tbl = {4ul*TAB_SIZE};
-static const Table an4Tbl = {5ul*TAB_SIZE};
+static const Table tbls[NSIG] = {
+	[SIG_TACH] = {0ul*TAB_SIZE}, // tachometer
+	[SIG_SPEED] = {1ul*TAB_SIZE}, // speedometer
+	[SIG_AN1] = {2ul*TAB_SIZE}, // analog channels...
+	[SIG_AN2] = {3ul*TAB_SIZE},
+	[SIG_AN3] = {4ul*TAB_SIZE},
+	[SIG_AN4] = {5ul*TAB_SIZE},
+};
 
 // EEPROM address of encoding format structure for each signal.
 // Each of these addresses point to a SigFmt structure in the EEPROM.
@@ -199,8 +201,45 @@ handleIdCtrlFrame(const CanFrame *frame) {
 }
 
 // Generate the output signal being sent to one of the gauges.
+// Raw is the raw signal value extracted from a CAN frame.
 static Status
 driveGauge(Signal sig, Number raw) {
+	Status status;
+	U16 val;
+
+	if (sig >= NSIG) {
+		return FAIL;
+	}
+
+	// Lookup gauge waveform value in EEPROM table
+	status = tabLookup(&tbls[sig], raw, &val);
+	if (status != OK) {
+		return FAIL;
+	}
+
+	switch (sig) {
+	case SIG_TACH:
+		// TODO
+		break;
+	case SIG_SPEED:
+		// TODO
+		break;
+	case SIG_AN1:
+		dacSet1a(val);
+		break;
+	case SIG_AN2:
+		dacSet1b(val);
+		break;
+	case SIG_AN3:
+		dacSet2a(val);
+		break;
+	case SIG_AN4:
+		dacSet2b(val);
+		break;
+	default:
+		return FAIL; // invalid signal
+	}
+
 	// TODO
 }
 
