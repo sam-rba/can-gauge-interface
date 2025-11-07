@@ -93,26 +93,12 @@ loadSigFmts(void) {
 	U8 oldGie, k;
 	Status status;
 
-	// TODO:
-	// This is a stub to load hard-coded SigFmts until the serialization format is finalized.
-	for (k = 0u; k < NSIG; k++) {
-		sigFmts[k] = (SigFmt) {
-			.id = {
-				.isExt = true,
-				.eid = 2365480958},
-			.start = 24u,
-			.size = 16u,
-			.order = LITTLE_ENDIAN,
-			.isSigned = false,
-		}; // J1939 EngineSpeed
-	}
-
 	// Disable interrupts so the volatile address pointers can be passed safely
 	oldGie = INTCONbits.GIE;
 	INTCONbits.GIE = 0;
 
 	for (k = 0u; k < NSIG; k++) {
-		status = serReadSigFmt(sigFmtAddrs[k], (SigFmt*)&sigFmts[k]);
+		status = serReadSigFmt(sigFmtAddrs[k], (SigFmt *)&sigFmts[k]);
 		if (status != OK) {
 			INTCONbits.GIE = oldGie; // restore previous interrupt setting
 			return ERR;
@@ -121,7 +107,21 @@ loadSigFmts(void) {
 
 	// Restore previous interrupt setting
 	INTCONbits.GIE = oldGie;
+
 	return OK;
+}
+
+// Transmit an error code (typically a line number) to the CAN bus.
+static void
+txErrFrame(Status err) {
+	CanFrame frame;
+
+	frame.id = (CanId){.isExt = true, .eid = ERR_CAN_ID};
+	frame.rtr = false;
+	frame.dlc = 2u;
+	frame.data[0u] = (err >> 8u) & 0xFF;
+	frame.data[1u] = (err >> 0u) & 0xFF;
+	(void)canTx(&frame);
 }
 
 static void
@@ -136,15 +136,9 @@ main(void) {
 
 	sysInit();
 	spiInit();
-	eepromInit();
-	dacInit();
 	canInit();
-
-	// Load signals' encoding formats and CAN IDs from EEPROM
-	status = loadSigFmts();
-	if (status != OK) {
-		// TODO reset();
-	}
+	dacInit();
+	eepromInit();
 
 	// Setup MCP2515 CAN controller
 	canSetBitTiming(CAN_TIMING);
@@ -155,6 +149,13 @@ main(void) {
 		// RXB1 messages are filtered in software
 	canIE(true); // enable interrupts on MCP2515's INT pin
 	canSetMode(CAN_MODE_NORMAL);
+
+	// Load signals' encoding formats and CAN IDs from EEPROM
+	status = loadSigFmts();
+	if (status != OK) {
+		txErrFrame(status);
+		reset();
+	}
 
 	// TODO: remove
 	// Setup TMR1
@@ -230,15 +231,6 @@ setSigFmt(const CanFrame *frame) {
 	Signal sig;
 	SigFmt sigFmt;
 	Status status;
-
-	// TODO:remove
-	CanFrame response;
-	response.id = (CanId){.isExt=true, .eid = 0xDEF};
-	response.rtr = false;
-	response.dlc = 2u;
-	response.data[0u] = 0xDE;
-	response.data[1u] = 0xFA;
-	canTx(&response);
 
 	// Extract signal number from ID
 	sig = frame->id.eid & 0xF;
@@ -376,18 +368,6 @@ handleSigFrame(const CanFrame *frame) {
 	}
 
 	return result;
-}
-
-static void
-txErrFrame(Status err) {
-	CanFrame frame;
-
-	frame.id = (CanId){.isExt = true, .eid = ERR_CAN_ID};
-	frame.rtr = false;
-	frame.dlc = 2u;
-	frame.data[0u] = (err >> 8u) & 0xFF;
-	frame.data[1u] = (err >> 0u) & 0xFF;
-	(void)canTx(&frame);
 }
 
 void
