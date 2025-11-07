@@ -1,5 +1,5 @@
 .TL
-Data Frame Format for the CAN Gauge Interface
+Frame Format for the CAN Gauge Interface
 .AU
 Sam Anthony
 .AI
@@ -9,9 +9,9 @@ The Gauge Interface receives
 .[
 dbc07
 .]
-from other nodes in the vehicle via the CAN bus.
+from other nodes via the vehicle's CAN bus.
 It also accepts frames from a host PC for calibration.
-The format of these calibration, or
+The formats of these calibration, or
 .I control ,
 frames are the subject of this document.
 .NH 1
@@ -32,11 +32,14 @@ Analog 3
 .IP \n+[step].
 Analog 4
 .LP
-Each of these signals has an associated CAN ID and a calibration table; thus, there are 6 IDs and 6 tables.
-The Interface listens for these IDs and uses the tables to lookup output signal values to drive he gauges.
+Each of these signals has an associated CAN ID, encoding specification, and calibration table.
+A signal's CAN ID specifies which message contains the signal.
+It's encoding specification defines how the signal is encoded in the message's DATA FIELD.
+And it's calibration field defines a mapping from the raw signal value extracted from the message to an output value that is used to generate a waveform to display the signal on a gauge.
+.PP
 Each table has 32 rows, each of which contains a key and a value.
-The keys and values are each 32-bit unsigned integers.
-Numbers are transmitted in big-endian order in frames' DATA FIELD.
+The keys and values are 32-bit and 16-bit respectively.
+Numbers are transmitted in big-endian order in frames' DATA FIELDs.
 .NH 1
 Frames
 .LP
@@ -45,12 +48,12 @@ In addition to the signal-carrying frames, there are also two types of
 frame:
 .B "Table Control" ,
 and
-.B "ID Control" .
+.B "Signal Control" .
 .NH 2
 Table Control Frame
 .LP
 The Table Control Frame is used to read and write rows of the calibration tables.
-It is an extended frame with DLC=8.
+It is an extended frame with DLC=6.
 It may be either a DATA FRAME: to write to a table\(emor a REMOTE FRAME: to read from a table.
 .PP
 The Table Control Frame has extended ID
@@ -73,7 +76,7 @@ Table Control ID
 .end
 .LP
 The DATA FIELD contains a row of the table.
-The row is composed of two 32-bit unsigned integers: a key and a value.
+The row is composed of a 32-bit integer and a 16-bit integer: a key and a value.
 They are transmitted in big-endian order.
 .begin dformat
 style bitwid 0.07
@@ -85,22 +88,23 @@ Table Control DATA FIELD
 	7-0 D3
 	7-0 D4
 	7-0 D5
-	7-0 D6
-	7-0 D7
 noname
 	31-0 Key
-	31-0 Val
+	15-0 Val
 .end
 .LP
 Upon receiving a Table Control DATA FRAME, the Interface will write the key and value to the row of the table specified in the ID.
 .PP
 In the case of a REMOTE FRAME, the Interface will read the row of the table specified in the ID, and respond with a DATA FRAME containing the key and value of the row.
 .NH 2
-ID Control Frame
+Signal Control Frame
 .LP
-The ID Control Frame is used to read or modify the CAN ID associated with one of the 6 signals.
-It is an extended frame with DLC=8.
+The Signal Control Frame is used to read or modify the CAN ID associated with one of the signals, as well as to read or modify the signal's encoding format.
+It is an extended frame with DLC=7.
 It may be either a DATA FRAME: to modify\(emor a REMOTE FRAME: to read.
+.PP
+Upon receiving a Signal Control DATA FRAME, the Interface will write the signal's new ID and encoding to the EEPROM.
+Upon receiving a Signal Control REMOTE FRAME, the Interface will respond with a DATA FRAME containing the signal's ID and encoding which were retrieved from the EEPROM.
 .PP
 The ID Control Frame has extended ID
 .B 127210Xh .
@@ -109,37 +113,102 @@ The least significant nibble,
 indicates one of the 6 signals [0, 5].
 .begin dformat
 style bitwid 0.15
-ID Control ID
+Signal Control ID
 	28-4 127210h
 	3-0 X
 .end
 .LP
-The DATA FIELD contains the CAN ID of the signal specified in
-.I X .
-It may be either a standard or an extended ID.
-In the case of a standard 11-bit ID, DLC=2 and the ID is sent as a 16-bit number.
-In the case of an extended 29-bit ID, DLC=4 and the ID is sent as a 32-bit number.
-The numbers are sent big-endian in both cases.
-DLC can be used to determine whether the ID is standard or extended.
+The DATA FIELD contains the signal's CAN ID and encoding format.
 .begin dformat
 style bitwid 0.08
 style recspread 0
-ID Control DATA FIELD (11-bit Std. ID)
-	7-0 D0
-	7-0 D1
-noname
-	15-11
-	10-0 Std. ID
-.end
-.begin dformat
-style bitwid 0.08
-style recspread 0
-ID Control DATA FIELD (29-bit Ext. ID)
+Signal Control DATA FIELD
 	7-0 D0
 	7-0 D1
 	7-0 D2
 	7-0 D3
+	7-0 D4
+	7-0 D5
+	7-0 D6
 noname
-	31-29
-	28-0 Ext. ID
+	31-0 SigId
+	23-0 Encoding
+noname
+	31 EXIDE
+	30-29 Empty
+	28-0 ID
+	7-0 Start
+	7-0 Size
+	7 Order
+	6 Sign
+	5-0 Empty
 .end
+.LP
+The signal's CAN ID is sent as a big-endian 32-bit integer in the
+.I SigId
+field.
+The MSb\(embit 31, called
+.I EXIDE \(em
+indicates whether the ID is standard or extended.
+.TS
+tab(&);
+Ci
+L L.
+EXIDE
+= 0 & Standard identifier
+= 1 & Extended identifier
+.TE
+The lower 11 or 29 bits hold the ID itself, depending on whether it is standard or extended.
+In the case of a standard ID,
+.I EXIDE =0
+and the ID is sent in the lower 11 bits of
+.I SigId .
+In the case of an extended ID,
+.I EXIDE =1
+and the ID is sent in the lower 29 bits of
+.I SigId .
+.PP
+The signal encoding defines how the signal's raw value is encoded in the message that carries it.
+The encoding is sent in the
+.I Encoding
+field of the Signal Control Frame's DATA FIELD.
+.LP
+.I Start
+specifies the position of the signal within the DATA FIELD of the message.
+It corresponds to
+.CW start_bit
+in DBC.
+.PP
+.I Size
+specifies the size of the signal in bits.
+It corresponds to
+.CW signal_size
+in DBC.
+.PP
+.I Order
+specifies the signal's byte order.
+It corresponds to
+.CW byte_order
+in DBC.
+.TS
+tab(&);
+Ci
+L L.
+Order
+= 0 & Little-endian
+= 1 & Big-endian
+.TE
+.LP
+.I Sign
+specifies the signal as being of type unsigned or signed.
+It corresponds to
+.CW value_type
+in DBC.
+.TS
+tab(&);
+Ci
+L L.
+Sign
+= 0 & Unsigned
+= 1 & Signed
+.TE
