@@ -110,10 +110,12 @@ enum {
 	TXREQ = 0x08,
 	TXERR = 0x10,
 
-	// TXBnDLC
-	RTR = 0x40,
+	// SIDL registers
+	SRR = 0x10, // standard frame remote transmit request bit
+	IDE = 0x08, // extended identifier flag bit
 
-	IDE = 0x08, // extended identifier flag bit of SIDL registers
+	// DLC registers
+	RTR = 0x40,
 };
 
 // Instructions
@@ -243,7 +245,7 @@ packId(CanId *id, U8 sidh, U8 sidl, U8 eid8, U8 eid0) {
 		id->isExt = true;
 		id->eid = ((U32)eid0 << 0u) // id[7:0]
 			| ((U32)eid8 << 8u) // id[15:8]
-			| ((U32)((sidh & 0x7) | (sidl & 0x3) | (sidl >> 3u)) << 16u) // id[23:21], id[20:18], id[17:16]
+			| ((U32)((sidh << 5u) | (sidl >> 3u) | (sidl & 0x3)) << 16u) // id[23:21], id[20:18], id[17:16]
 			| ((U32)(sidh >> 3u) << 24u); // id[28:24]
 	} else { // standard ID
 		id->isExt = false;
@@ -270,7 +272,11 @@ readRxbn(U8 n, CanFrame *frame) {
 
 	// Read RTR and DLC
 	frame->dlc = spiTx(0u);
-	frame->rtr = frame->dlc & RTR;
+	if (frame->id.isExt) {
+		frame->rtr = frame->dlc & RTR;
+	} else {
+		frame->rtr = sidl & SRR;
+	}
 	frame->dlc &= 0xF;
 
 	// Read data
