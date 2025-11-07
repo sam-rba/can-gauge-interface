@@ -261,7 +261,7 @@ readRxbn(U8 n, CanFrame *frame) {
 	CAN_CS = 0;
 
 	// Start reading at RXBnSIDH
-	(void)spiTx(CMD_READ_RX | (U8)((n & 1u) << 2u));
+	(void)spiTx(CMD_READ_RX | (U8)((n & 1) << 2u));
 
 	// Read ID
 	sidh = spiTx(0u);
@@ -270,13 +270,9 @@ readRxbn(U8 n, CanFrame *frame) {
 	eid0 = spiTx(0u);
 	packId(&frame->id, sidh, sidl, eid8, eid0);
 
-	// Read RTR and DLC
+	// Read DLC and RTR
 	frame->dlc = spiTx(0u);
-	if (frame->id.isExt) {
-		frame->rtr = frame->dlc & RTR;
-	} else {
-		frame->rtr = sidl & SRR;
-	}
+	frame->rtr = (sidl & IDE) ? (frame->dlc & RTR) : (sidl & SRR);
 	frame->dlc &= 0xF;
 
 	// Read data

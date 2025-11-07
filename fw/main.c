@@ -17,11 +17,11 @@
 // TODO: auto baud detection
 #define CAN_TIMING CAN_TIMING_10K
 
-// Control frame CAN IDs
-enum {
-	TAB_CTRL_CAN_ID = 0x1272000, // Table Control Frame ID
-	SIG_CTRL_CAN_ID = 0x1272100, // Signal Control Frame ID
-};
+#define TAB_CTRL_CAN_ID 0x1272000 // Table Control Frame ID
+#define SIG_CTRL_CAN_ID 0x1272100 // Signal Control Frame ID
+#define ERR_CAN_ID 0x1272F00
+
+#define ERR __LINE__
 
 // Signals
 typedef enum {
@@ -115,7 +115,7 @@ loadSigFmts(void) {
 		status = serReadSigFmt(sigFmtAddrs[k], (SigFmt*)&sigFmts[k]);
 		if (status != OK) {
 			INTCONbits.GIE = oldGie; // restore previous interrupt setting
-			return FAIL;
+			return ERR;
 		}
 	}
 
@@ -143,7 +143,7 @@ main(void) {
 	// Load signals' encoding formats and CAN IDs from EEPROM
 	status = loadSigFmts();
 	if (status != OK) {
-		reset();
+		// TODO reset();
 	}
 
 	// Setup MCP2515 CAN controller
@@ -155,6 +155,12 @@ main(void) {
 		// RXB1 messages are filtered in software
 	canIE(true); // enable interrupts on MCP2515's INT pin
 	canSetMode(CAN_MODE_NORMAL);
+
+	// TODO: remove
+	// Setup TMR1
+	T1CON = 0x31; // Fosc/4, 1:8 prescaler
+	PIE1bits.TMR1IE = 1; // enable interrupts
+	PIR1bits.TMR1IF = 0; // clear flag
 
 	// Enable interrupts
 	INTCON = 0x00; // clear flags
@@ -184,7 +190,7 @@ respondSigCtrl(Signal sig) {
 	CanFrame response;
 
 	if (sig >= NSIG) {
-		return FAIL;
+		return ERR;
 	}
 	sigFmt = &sigFmts[sig];
 
@@ -225,15 +231,24 @@ setSigFmt(const CanFrame *frame) {
 	SigFmt sigFmt;
 	Status status;
 
+	// TODO:remove
+	CanFrame response;
+	response.id = (CanId){.isExt=true, .eid = 0xDEF};
+	response.rtr = false;
+	response.dlc = 2u;
+	response.data[0u] = 0xDE;
+	response.data[1u] = 0xFA;
+	canTx(&response);
+
 	// Extract signal number from ID
 	sig = frame->id.eid & 0xF;
 	if (sig >= NSIG) {
-		return FAIL;
+		return ERR;
 	}
 
 	// Prepare to unpack DATA FIELD
 	if (frame->dlc != 7u) {
-		return FAIL;
+		return ERR;
 	}
 
 	// Unpack SigId
@@ -260,13 +275,25 @@ setSigFmt(const CanFrame *frame) {
 	// Save to EEPROM
 	status = serWriteSigFmt(sigFmtAddrs[sig], &sigFmt);
 	if (status != OK) {
-		return FAIL;
+		return ERR;
 	}
 
 	// Update copy in RAM
 	sigFmts[sig] = sigFmt;
 
 	return OK;
+}
+
+static void
+echo(const CanFrame *frame) {
+	CanFrame response;
+
+	response.id = frame->id;
+	response.rtr = frame->rtr;
+	for (response.dlc = 0u; response.dlc < frame->dlc; response.dlc++) {
+		response.data[response.dlc] = frame->data[response.dlc] + 1u;
+	}
+	canTx(&response);
 }
 
 // Handle a Signal Control Frame.
@@ -291,13 +318,13 @@ driveGauge(Signal sig, Number raw) {
 	U16 val;
 
 	if (sig >= NSIG) {
-		return FAIL;
+		return ERR;
 	}
 
 	// Lookup gauge waveform value in EEPROM table
 	status = tabLookup(&tbls[sig], raw, &val);
 	if (status != OK) {
-		return FAIL;
+		return ERR;
 	}
 
 	switch (sig) {
@@ -320,7 +347,7 @@ driveGauge(Signal sig, Number raw) {
 		dacSet2b(val);
 		break;
 	default:
-		return FAIL; // invalid signal
+		return ERR; // invalid signal
 	}
 
 	// TODO
@@ -351,10 +378,23 @@ handleSigFrame(const CanFrame *frame) {
 	return result;
 }
 
+static void
+txErrFrame(Status err) {
+	CanFrame frame;
+
+	frame.id = (CanId){.isExt = true, .eid = ERR_CAN_ID};
+	frame.rtr = false;
+	frame.dlc = 2u;
+	frame.data[0u] = (err >> 8u) & 0xFF;
+	frame.data[1u] = (err >> 0u) & 0xFF;
+	(void)canTx(&frame);
+}
+
 void
 __interrupt() isr(void) {
 	U8 rxStatus;
 	CanFrame frame;
+	Status status;
 
 	if (INTCONbits.INTF) { // CAN interrupt
 		rxStatus = canRxStatus();
@@ -365,12 +405,31 @@ __interrupt() isr(void) {
 			break;
 		case 1u: // RXF1: signal ID control
 			canReadRxb0(&frame);
-			(void)handleSigCtrlFrame(&frame);
+			status = handleSigCtrlFrame(&frame);
+			if (status != OK) {
+				txErrFrame(status);
+			}
 			break;
 		default: // message in RXB1
 			canReadRxb1(&frame);
 			(void)handleSigFrame(&frame);
 		}
 		INTCONbits.INTF = 0; // clear flag
+	}
+
+	// TODO: remove
+	static U8 ctr = 0u;
+	if (PIR1bits.TMR1IF) {
+		if (++ctr == 228u) { // 10 period
+			frame.id = (CanId){.isExt=false, .sid=0x123};
+			frame.rtr = false;
+			frame.dlc = 3u;
+			frame.data[0u] = 0x11;
+			frame.data[1u] = 0x22;
+			frame.data[2u] = 0x33;
+			canTx(&frame);
+			ctr = 0u;
+		}
+		PIR1bits.TMR1IF = 0;
 	}
 }
