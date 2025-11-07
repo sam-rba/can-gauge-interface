@@ -34,9 +34,9 @@ Status serReadCanId(EepromAddr addr, CanId *id);
 // SigFmts use 8 bytes of space.
 // The ID is stored little-endian in the first 4 bytes: 0--3.
 // Start and Size occupy bytes 4 and 5.
-// The Byte-order and Signedness flags are bits 0 and 1 of byte 6, respectively.
-// Byte order: [6][0] = {0=>LE, 1=>BE}.
-// Signedness: [6][1] = {0=>unsigned, 1=>signed}.
+// The Byte-order and Signedness flags are bits 7 and 6 of byte 6, respectively.
+// Byte order: [6][7] = {0=>LE, 1=>BE}.
+// Signedness: [6][6] = {0=>unsigned, 1=>signed}.
 // Byte 7 is unused -- it's for alignment.
 Status serWriteSigFmt(EepromAddr addr, const SigFmt *sig);
 

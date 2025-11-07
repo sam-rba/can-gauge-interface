@@ -1,11 +1,17 @@
 /* Table datastructure for storing calibrations in the EEPROM.
  *
  * A table has a fixed number of rows that define a key/value mapping.
- * Keys and values are each U32.
- * T: U32->U32
+ * Keys and values are 32-bit and 16-bit respectively.
+ *
+ * Keys may be signed or unsigned; whether they are interpreted as
+ * signed or unsigned when they are read depends on the context. They
+ * must be monotonically increasing down the table.
+ *
+ * Values are unsigned 16-bit integers.
+ *
  * Numbers are stored little-endian.
  *
- * Keys must be monotonically increasing.
+ * See also: doc/datafmt.pdf
  *
  * Device: PIC16F1459
  * Compiler: XC8 v3.00

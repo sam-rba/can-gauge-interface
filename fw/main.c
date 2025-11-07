@@ -17,6 +17,12 @@
 // TODO: auto baud detection
 #define CAN_TIMING CAN_TIMING_10K
 
+// Control frame CAN IDs
+enum {
+	TAB_CTRL_CAN_ID = 0x1272000, // Table Control Frame ID
+	SIG_CTRL_CAN_ID = 0x1272100, // Signal Control Frame ID
+};
+
 // Signals
 typedef enum {
 	SIG_TACH = 0,
@@ -33,22 +39,20 @@ typedef enum {
 // Used for writing/reading calibration tables.
 static const CanId tblCtrlFilter = {
 	.isExt = true,
-	.eid = 0x01272000, // 112720XXh
-};
+	.eid = TAB_CTRL_CAN_ID};
 
-// ID Control filter.
-// Used for writing/reading the CAN ID associated with each signal.
-// See `doc/datafmt.ps'.
-static const CanId idCtrlFilter = {
+// Signal Control filter.
+// Used for writing/reading the CAN ID and encoding format of  each signal.
+// See `doc/datafmt.pdf'.
+static const CanId sigCtrlFilter = {
 	.isExt = true,
-	.eid = 0x01272100, // 127210Xh
-};
+	.eid = SIG_CTRL_CAN_ID};
 
 // Receive buffer 0 mask.
-// RXB0 receives Table and ID Control Frames.
+// RXB0 receives Table Control and Signal Control frames.
 static const CanId rxb0Mask = {
 	.isExt = true,
-	.eid = 0x1FFFFF00, // all buf LSB
+	.eid = 0x1FFFFF00, // all but LSB
 };
 
 // Receive buffer 1 mask.
@@ -146,7 +150,7 @@ main(void) {
 	canSetBitTiming(CAN_TIMING);
 	canSetMask0(&rxb0Mask); // RXB0 receives control messages
 	canSetFilter0(&tblCtrlFilter); // Table Control Frames
-	canSetFilter1(&idCtrlFilter); // ID Control Frames
+	canSetFilter1(&sigCtrlFilter); // Signal Control Frames
 	canSetMask1(&rxb1Mask); // RXB1 receives signal values
 		// RXB1 messages are filtered in software
 	canIE(true); // enable interrupts on MCP2515's INT pin
@@ -171,32 +175,66 @@ handleTblCtrlFrame(const CanFrame *frame) {
 	// TODO
 }
 
-// Transmit the response to an ID Control REMOTE FRAME.
-// The response is an ID Control DATA FRAME containing the CAN ID
-// of the requested signal.
+// Transmit the response to a Signal Control REMOTE FRAME.
+// The response is a Signal Control DATA FRAME containing the CAN ID
+// and encoding format of the requested signal.
 static Status
-respondIdCtrl(Signal sig) {
-	// TODO: "ID Control" will likely have to be renamed to "Signal Control" or "Encoding Control" or similar. It will carry a SigFmt structure instead of just a CAN ID. The datafmt doc will have to be updated too.
+respondSigCtrl(Signal sig) {
+	const volatile SigFmt *sigFmt;
+	CanFrame response;
+
+	if (sig >= NSIG) {
+		return FAIL;
+	}
+	sigFmt = &sigFmts[sig];
+
+	response.id = (CanId){
+		.isExt = true,
+		.eid = SIG_CTRL_CAN_ID | (sig & 0xF),
+	};
+	response.rtr = false;
+	response.dlc = 7u;
+
+	// SigId
+	if (sigFmt->id.isExt) { // extended
+		response.data[0u] = 0x80 | ((sigFmt->id.eid >> 24u) & 0x1F); // EXIDE=1
+		response.data[1u] = (sigFmt->id.eid >> 16u) & 0xFF;
+		response.data[2u] = (sigFmt->id.eid >> 8u) & 0xFF;
+		response.data[3u] = (sigFmt->id.eid >> 0u) & 0xFF;
+	} else { // standard
+		response.data[0u] = 0u; // EXIDE=0
+		response.data[1u] = 0u;
+		response.data[2u] = (sigFmt->id.sid >> 8u) & 0x07;
+		response.data[3u] = (sigFmt->id.sid >> 0u) & 0xFF;
+	}
+
+	// Encoding
+	response.data[4u] = sigFmt->start;
+	response.data[5u] = sigFmt->size;
+	response.data[6u] = (U8)((sigFmt->order & 0x1) << 7u)
+		| (U8)((sigFmt->isSigned) ? 0x40 : 0x00);
+
+	return canTx(&response);
 }
 
-// Set the CAN ID associated with a signal in response to an ID Control DATA FRAME.
+// Set the CAN ID and encoding format of a signal in response
+// to a Signal Control DATA FRAME.
 static Status
-setSigId(const CanFrame *frame) {
-	// TODO: this will likely have to be renamed to setSigFmt or similar. See above comment on updating datafmt doc.
+setSigFmt(const CanFrame *frame) {
+	// TODO
 }
 
-// Handle an ID Control Frame.
-// See `doc/datafmt.ps'
+// Handle a Signal Control Frame.
+// See `doc/datafmt.pdf'
 static Status
-handleIdCtrlFrame(const CanFrame *frame) {
+handleSigCtrlFrame(const CanFrame *frame) {
 	Signal sig;
 
-	// TODO: update datafmt doc to transceive entire signal encoding format instead of just the ID.
 	if (frame->rtr) { // REMOTE
 		sig = frame->id.eid & 0xF;
-		return respondIdCtrl(sig); // respond with the signal's CAN ID
+		return respondSigCtrl(sig); // respond with the signal's CAN ID and encoding format
 	} else { // DATA
-		return setSigId(frame);
+		return setSigFmt(frame);
 	}
 }
 
@@ -281,9 +319,8 @@ __interrupt() isr(void) {
 			(void)handleTblCtrlFrame(&frame);
 			break;
 		case 1u: // RXF1: signal ID control
-			// TODO: see above TODOs on updating datafmt doc
 			canReadRxb0(&frame);
-			(void)handleIdCtrlFrame(&frame);
+			(void)handleSigCtrlFrame(&frame);
 			break;
 		default: // message in RXB1
 			canReadRxb1(&frame);
