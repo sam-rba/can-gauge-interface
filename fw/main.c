@@ -221,7 +221,52 @@ respondSigCtrl(Signal sig) {
 // to a Signal Control DATA FRAME.
 static Status
 setSigFmt(const CanFrame *frame) {
-	// TODO
+	Signal sig;
+	SigFmt sigFmt;
+	Status status;
+
+	// Extract signal number from ID
+	sig = frame->id.eid & 0xF;
+	if (sig >= NSIG) {
+		return FAIL;
+	}
+
+	// Prepare to unpack DATA FIELD
+	if (frame->dlc != 7u) {
+		return FAIL;
+	}
+
+	// Unpack SigId
+	if (frame->data[0u] & 0x80) { // EXIDE
+		// Extended
+		sigFmt.id.isExt = true;
+		sigFmt.id.eid = (((U32)frame->data[0u] & 0x1F) << 24u)
+			| ((U32)frame->data[1u] << 16u)
+			| ((U32)frame->data[2u] << 8u)
+			| ((U32)frame->data[3u] << 0u);
+	} else {
+		// Standard
+		sigFmt.id.isExt = false;
+		sigFmt.id.sid = (((U16)frame->data[2u] & 0x07) << 8u)
+			| ((U16)frame->data[3u] << 0u);
+	}
+
+	// Unpack Encoding
+	sigFmt.start = frame->data[4u];
+	sigFmt.size = frame->data[5u];
+	sigFmt.order = (frame->data[6u] & 0x80) ? BIG_ENDIAN : LITTLE_ENDIAN;
+	sigFmt.isSigned = frame->data[6u] & 0x40;
+
+	// Save to EEPROM
+	status = serWriteSigFmt(sigFmtAddrs[sig], &sigFmt);
+	if (status != OK) {
+		return FAIL;
+	}
+
+	// Update copy in RAM
+	sigFmts[sig] = sigFmt;
+
+	return OK;
 }
 
 // Handle a Signal Control Frame.
