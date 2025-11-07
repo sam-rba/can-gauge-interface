@@ -2,9 +2,19 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"go.einride.tech/can/pkg/dbc"
 )
+
+func eprintf(format string, a ...any) {
+	weprintf(format, a...)
+	os.Exit(1)
+}
+
+func weprintf(format string, a ...any) {
+	fmt.Fprintf(os.Stderr, format, a...)
+}
 
 type ErrDupSig struct {
 	sig dbc.SignalDef
