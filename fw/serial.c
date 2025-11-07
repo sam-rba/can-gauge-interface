@@ -58,10 +58,43 @@ serReadCanId(U16 addr, CanId *id) {
 
 Status
 serWriteSigFmt(EepromAddr addr, const SigFmt *sig) {
-	// TODO
+	Status status;
+	U8 buf[3u];
+
+	// ID
+	status = serWriteCanId(addr, &sig->id);
+	if (status != OK) {
+		return status;
+	}
+
+	// Encoding
+	buf[0u] = sig->start;
+	buf[1u] = sig->size;
+	buf[2u] = (U8)((sig->order & 0x01) << 7u)
+		| ((sig->isSigned) ? 0x40 : 0x00);
+	return eepromWrite(addr+SER_CANID_SIZE, buf, sizeof(buf));
 }
 
 Status
 serReadSigFmt(EepromAddr addr, SigFmt *sig) {
-	// TODO
+	Status status;
+	U8 buf[3u];
+
+	// ID
+	status = serReadCanId(addr, &sig->id);
+	if (status != OK) {
+		return status;
+	}
+
+	// Encoding
+	status = eepromRead(addr+SER_CANID_SIZE, buf, sizeof(buf));
+	if (status != OK) {
+		return status;
+	}
+	sig->start = buf[0u];
+	sig->size = buf[1u];
+	sig->order = (buf[2u] & 0x80) ? BIG_ENDIAN : LITTLE_ENDIAN;
+	sig->isSigned = buf[2u] & 0x40;
+
+	return OK;
 }
