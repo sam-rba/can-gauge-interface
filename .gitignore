@@ -21,5 +21,6 @@ _autosave*
 *.toc
 *.zip
 
+sw/cal/cal
 sw/usbcom/usbcom
 mech/gcode
