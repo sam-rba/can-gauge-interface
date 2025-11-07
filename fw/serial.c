@@ -23,7 +23,7 @@ serWriteCanId(U16 addr, const CanId *id) {
 		buf[0u] = (id->sid>>0u) & 0xFF;
 		buf[1u] = (id->sid>>8u) & 0x07;
 		buf[2u] = 0u;
-		buf[3u] = 0u; // clear EID flag in bit 32
+		buf[3u] = 0u; // clear EID flag in bit 31
 	}
 
 	return eepromWrite(addr, buf, sizeof(buf));

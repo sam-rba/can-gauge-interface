@@ -176,10 +176,51 @@ main(void) {
 }
 
 // Handle a Table Control Frame.
-// See `doc/datafmt.ps'
+// See `doc/datafmt.pdf'
 static Status
 handleTblCtrlFrame(const CanFrame *frame) {
-	// TODO
+	U8 tab, row;
+	U32 key;
+	U16 val;
+	Status status;
+	CanFrame response;
+
+	// Extract table and row indices from ID
+	tab = (frame->id.eid & 0xE0) >> 5u;
+	row = frame->id.eid & 0x1F;
+	if (tab >= NSIG || row >= TAB_ROWS) {
+		return ERR;
+	}
+
+	if (frame->rtr) { // REMOTE
+		status = tabRead(&tbls[tab], row, &key, &val);
+		if (status != OK) {
+			return ERR;
+		}
+		response.id = (CanId){
+			.isExt = true,
+			.eid = TAB_CTRL_CAN_ID | ((tab << 5u) & 0xE0) | (row & 0x1F)};
+		response.rtr = false;
+		response.dlc = 6u;
+		response.data[0u] = (key >> 24u) & 0xFF;
+		response.data[1u] = (key >> 16u) & 0xFF;
+		response.data[2u] = (key >> 8u) & 0xFF;
+		response.data[3u] = (key >> 0u) & 0xFF;
+		response.data[4u] = (val >> 8u) & 0xFF;
+		response.data[5u] = (val >> 0u) & 0xFF;
+		return canTx(&response);
+	} else { // DATA
+		if (frame->dlc != 6u) {
+			return ERR;
+		}
+		key = ((U32)frame->data[0u] << 24u)
+			| ((U32)frame->data[1u] << 16u)
+			| ((U32)frame->data[2u] << 8u)
+			| ((U32)frame->data[3u] << 0u);
+		val = ((U16)frame->data[4u] << 8u)
+			| ((U16)frame->data[5u] << 0u);
+		return tabWrite(&tbls[tab], row, key, val);
+	}
 }
 
 // Transmit the response to a Signal Control REMOTE FRAME.
@@ -381,7 +422,10 @@ __interrupt() isr(void) {
 		switch (rxStatus & 0x7) { // check filter hit
 		case 0u: // RXF0: calibration table control
 			canReadRxb0(&frame);
-			(void)handleTblCtrlFrame(&frame);
+			status = handleTblCtrlFrame(&frame);
+			if (status != OK) {
+				txErrFrame(status);
+			}
 			break;
 		case 1u: // RXF1: signal ID control
 			canReadRxb0(&frame);
