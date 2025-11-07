@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"slices"
 
 	"go.einride.tech/can/pkg/dbc"
 )
@@ -46,66 +47,59 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
+	sigNames := nonEmpty(*tachSig, *speedSig, *an1Sig, *an2Sig, *an3Sig, *an4Sig)
 
 	// Parse signals in DBC file
-	signals, err := parseSignals(*dbcFilename)
+	sigDefs, err := parseSignals(*dbcFilename, sigNames)
 	if err != nil {
 		eprintf("Error parsing %s: %v\n", *dbcFilename, err)
 	}
 
-	fmt.Println(signals)
+	fmt.Println(sigDefs)
 }
 
-// Parse signals in the DBC file.
-func parseSignals(filename string) (Signals, error) {
+func nonEmpty(ss ...string) []string {
+	r := make([]string, 0, len(ss))
+	for _, s := range ss {
+		if s != "" {
+			r = append(r, s)
+		}
+	}
+	return r
+}
+
+// Extract signals from the DBC file.
+func parseSignals(filename string, names []string) ([]dbc.SignalDef, error) {
+	// Parse DBC file
 	msgDefs, err := parseDbcFile(filename)
 	if err != nil {
-		return Signals{}, err
+		return nil, err
 	}
 
-	// Search for signals in messages
-	var signals Signals
+	// Search for signals
+	sigPtrs := make([]*dbc.SignalDef, len(names))
 	for _, msg := range msgDefs {
-		for _, sig := range msg.Signals {
-			if err := tryAssignSignal(&signals.tach, sig, *tachSig); err != nil {
-				return signals, err
+		for i := range names {
+			j := slices.IndexFunc(msg.Signals, func(sig dbc.SignalDef) bool { return sig.Name == dbc.Identifier(names[i]) })
+			if j < 0 {
+				continue
 			}
-			if err := tryAssignSignal(&signals.speed, sig, *speedSig); err != nil {
-				return signals, err
+			if sigPtrs[i] != nil {
+				return nil, ErrDupSig{msg.Signals[j]}
 			}
-			if err := tryAssignSignal(&signals.an1, sig, *an1Sig); err != nil {
-				return signals, err
-			}
-			if err := tryAssignSignal(&signals.an2, sig, *an2Sig); err != nil {
-				return signals, err
-			}
-			if err := tryAssignSignal(&signals.an3, sig, *an3Sig); err != nil {
-				return signals, err
-			}
-			if err := tryAssignSignal(&signals.an4, sig, *an4Sig); err != nil {
-				return signals, err
-			}
+			sigPtrs[i] = &msg.Signals[j]
 		}
 	}
 
-	// Check all signals provided on command line are present in the DBC file
-	if *tachSig != "" && signals.tach == nil {
-		return signals, ErrNoSig{filename, *tachSig}
+	// Check all signals are present
+	if i := slices.IndexFunc(sigPtrs, func(sp *dbc.SignalDef) bool { return sp == nil }); i >= 0 {
+		return nil, ErrNoSig{filename, names[i]}
 	}
-	if *speedSig != "" && signals.speed == nil {
-		return signals, ErrNoSig{filename, *speedSig}
-	}
-	if *an1Sig != "" && signals.an1 == nil {
-		return signals, ErrNoSig{filename, *an1Sig}
-	}
-	if *an2Sig != "" && signals.an2 == nil {
-		return signals, ErrNoSig{filename, *an2Sig}
-	}
-	if *an3Sig != "" && signals.an3 == nil {
-		return signals, ErrNoSig{filename, *an3Sig}
-	}
-	if *an4Sig != "" && signals.an4 == nil {
-		return signals, ErrNoSig{filename, *an4Sig}
+
+	// Dereference
+	signals := make([]dbc.SignalDef, len(sigPtrs))
+	for i := range sigPtrs {
+		signals[i] = *sigPtrs[i]
 	}
 
 	return signals, nil
