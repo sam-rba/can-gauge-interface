@@ -9,9 +9,9 @@
  *
  * Values are unsigned 16-bit integers.
  *
- * Numbers are stored little-endian.
+ * Numbers are stored big-endian.
  *
- * See also: doc/datafmt.pdf
+ * See also: `doc/datafmt.pdf'
  *
  * Device: PIC16F1459
  * Compiler: XC8 v3.00

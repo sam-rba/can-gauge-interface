@@ -8,22 +8,44 @@
 
 #include "serial.h"
 
+void
+serU16Be(U8 buf[2u], U16 n) {
+	buf[0u] = (n >> 8u) & 0xFF;
+	buf[1u] = (n >> 0u) & 0xFF;
+}
+
+U16
+deserU16Be(const U8 buf[2u]) {
+	return ((U16)buf[0u] << 8u)
+		| ((U16)buf[1u] << 0u);
+}
+
+void
+serU32Be(U8 buf[4u], U32 n) {
+	buf[0u] = (n >> 24u) & 0xFF;
+	buf[1u] = (n >> 16u) & 0xFF;
+	buf[2u] = (n >> 8u) & 0xFF;
+	buf[3u] = (n >> 0u) & 0xFF;
+}
+
+U32
+deserU32Be(const U8 buf[4u]) {
+	return ((U32)buf[0u] << 24u)
+		| ((U32)buf[1u] << 16u)
+		| ((U32)buf[2u] << 8u)
+		| ((U32)buf[3u] << 0u);
+}
+
 Status
 serWriteCanId(U16 addr, const CanId *id) {
 	U8 buf[4u];
 
 	// Copy ID to buffer
 	if (id->isExt) { // extended
-		buf[0u] = (id->eid>>0u) & 0xFF;
-		buf[1u] = (id->eid>>8u) & 0xFF;
-		buf[2u] = (id->eid>>16u) & 0xFF;
-		buf[3u] = (id->eid>>24u) & 0x1F;
+		serU32Be(buf, id->eid & 0x1FFFFFFF);
 		buf[3u] |= 0x80; // set EID flag in bit 31
 	} else { // standard
-		buf[0u] = (id->sid>>0u) & 0xFF;
-		buf[1u] = (id->sid>>8u) & 0x07;
-		buf[2u] = 0u;
-		buf[3u] = 0u; // clear EID flag in bit 31
+		serU32Be(buf, id->sid & 0x7FF);
 	}
 
 	return eepromWrite(addr, buf, sizeof(buf));
@@ -43,14 +65,10 @@ serReadCanId(U16 addr, CanId *id) {
 	// Unpack
 	if (buf[3u] & 0x80) { // bit 31 is standard/extended flag
 		id->isExt = true; // extended
-		id->eid = ((U32)buf[0u] << 0u)
-			| ((U32)buf[1u] << 8u)
-			| ((U32)buf[2u] << 16u)
-			| (((U32)buf[3u] & 0x1F) << 24u);
+		id->eid = deserU32Be(buf) & 0x1FFFFFFF;
 	} else {
 		id->isExt = false; // standard
-		id->sid = ((U16)buf[0u] << 0u)
-			| (((U16)buf[1u] & 0x07) << 8u);
+		id->sid = deserU32Be(buf) & 0x7FF;
 	}
 
 	return OK;

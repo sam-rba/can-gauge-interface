@@ -4,19 +4,23 @@
 #include "types.h"
 #include "can.h"
 #include "eeprom.h"
+#include "signal.h"
+#include "serial.h"
 
 #include "table.h"
 
 Status
 tabWrite(const Table *tab, U8 k, U32 key, U16 val) {
+	U16 addr;
+	U8 row[sizeof(key) + sizeof(val)];
+
 	if (k >= TAB_ROWS) {
 		return FAIL;
 	}
 
-	U16 addr = tab->offset + k*TAB_ROW_SIZE;
-	U8 row[sizeof(key) + sizeof(val)] = {
-		(key>>0u)&0xFF, (key>>8u)&0xFF, (key>>16u)&0xFF, (key>>24u)&0xFF, // LE
-		(val>>0u)&0xFF, (val>>8u)&0xFF}; // LE
+	addr = tab->offset + k*TAB_ROW_SIZE;
+	serU32Be(row, key);
+	serU16Be(row+sizeof(key), val);
 	return eepromWrite(addr, row, sizeof(row));
 }
 
@@ -32,8 +36,8 @@ tabRead(const Table *tab, U8 k, U32 *key, U16 *val) {
 
 	addr = tab->offset + k*TAB_ROW_SIZE;
 	status = eepromRead(addr, row, sizeof(row));
-	*key = ((U32)row[0u]<<0u) | ((U32)row[1u]<<8u) | ((U32)row[2u]<<16u) | ((U32)row[3u]<<24u); // LE
-	*val = ((U16)row[4u]<<0u) | ((U16)row[5u]<<8u); // LE
+	*key = deserU32Be(row);
+	*val = deserU16Be(row+sizeof(U32));
 	return status;
 }
 

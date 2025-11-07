@@ -202,23 +202,15 @@ handleTblCtrlFrame(const CanFrame *frame) {
 			.eid = TAB_CTRL_CAN_ID | ((tab << 5u) & 0xE0) | (row & 0x1F)};
 		response.rtr = false;
 		response.dlc = 6u;
-		response.data[0u] = (key >> 24u) & 0xFF;
-		response.data[1u] = (key >> 16u) & 0xFF;
-		response.data[2u] = (key >> 8u) & 0xFF;
-		response.data[3u] = (key >> 0u) & 0xFF;
-		response.data[4u] = (val >> 8u) & 0xFF;
-		response.data[5u] = (val >> 0u) & 0xFF;
+		serU32Be(response.data, key);
+		serU16Be(response.data+4u, val);
 		return canTx(&response);
 	} else { // DATA
 		if (frame->dlc != 6u) {
 			return ERR;
 		}
-		key = ((U32)frame->data[0u] << 24u)
-			| ((U32)frame->data[1u] << 16u)
-			| ((U32)frame->data[2u] << 8u)
-			| ((U32)frame->data[3u] << 0u);
-		val = ((U16)frame->data[4u] << 8u)
-			| ((U16)frame->data[5u] << 0u);
+		key = deserU32Be(frame->data);
+		val = deserU16Be(frame->data+4u);
 		return tabWrite(&tbls[tab], row, key, val);
 	}
 }
@@ -245,15 +237,11 @@ respondSigCtrl(Signal sig) {
 
 	// SigId
 	if (sigFmt->id.isExt) { // extended
-		response.data[0u] = 0x80 | ((sigFmt->id.eid >> 24u) & 0x1F); // EXIDE=1
-		response.data[1u] = (sigFmt->id.eid >> 16u) & 0xFF;
-		response.data[2u] = (sigFmt->id.eid >> 8u) & 0xFF;
-		response.data[3u] = (sigFmt->id.eid >> 0u) & 0xFF;
+		serU32Be(response.data, sigFmt->id.eid & 0x1FFFFFFF);
+		response.data[0u] |= 0x80; // EXIDE=1
+
 	} else { // standard
-		response.data[0u] = 0u; // EXIDE=0
-		response.data[1u] = 0u;
-		response.data[2u] = (sigFmt->id.sid >> 8u) & 0x07;
-		response.data[3u] = (sigFmt->id.sid >> 0u) & 0xFF;
+		serU32Be(response.data, sigFmt->id.sid & 0x7FF);
 	}
 
 	// Encoding
@@ -288,15 +276,11 @@ setSigFmt(const CanFrame *frame) {
 	if (frame->data[0u] & 0x80) { // EXIDE
 		// Extended
 		sigFmt.id.isExt = true;
-		sigFmt.id.eid = (((U32)frame->data[0u] & 0x1F) << 24u)
-			| ((U32)frame->data[1u] << 16u)
-			| ((U32)frame->data[2u] << 8u)
-			| ((U32)frame->data[3u] << 0u);
+		sigFmt.id.eid = deserU32Be(frame->data) & 0x1FFFFFFF;
 	} else {
 		// Standard
 		sigFmt.id.isExt = false;
-		sigFmt.id.sid = (((U16)frame->data[2u] & 0x07) << 8u)
-			| ((U16)frame->data[3u] << 0u);
+		sigFmt.id.sid = deserU16Be(frame->data+2u) & 0x7FF;
 	}
 
 	// Unpack Encoding
