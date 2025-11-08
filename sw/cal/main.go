@@ -66,14 +66,8 @@ func main() {
 	sigNames := nonEmpty(*tachSig, *speedSig, *an1Sig, *an2Sig, *an3Sig, *an4Sig)
 	tblFilenames := nonEmpty(*tachTbl, *speedTbl, *an1Tbl, *an2Tbl, *an3Tbl, *an4Tbl)
 
-	// Parse signals in DBC file
-	fmt.Println("Parsing", *dbcFilename)
-	sigDefs, err := parseSignals(*dbcFilename, sigNames)
-	if err != nil {
-		eprintf("%v\n", err)
-	}
-
 	// Open CAN connection
+	fmt.Println("Opening connection to", *canDev)
 	conn, err := socketcan.Dial("can", *canDev)
 	if err != nil {
 		eprintf("%v\n", err)
@@ -82,23 +76,18 @@ func main() {
 	tx := socketcan.NewTransmitter(conn)
 	defer tx.Close()
 
-	// Write calibration tables to EEPROM
-	for k, filename := range tblFilenames {
-		fmt.Println("Parsing", filename)
-		tbl, err := parseTable(filename)
-		if err != nil {
-			eprintf("%v\n", err)
-		}
-
-		fmt.Println("Transmitting", filename)
-		if err := writeTable(tx, tbl, k); err != nil {
-			eprintf("%v\n", err)
-		}
+	// Parse DBC file and transmit encoding of each signal
+	if err := sendEncodings(*dbcFilename, sigNames, tx); err != nil {
+		eprintf("%v\n", err)
 	}
 
-	fmt.Println(sigDefs) // TODO
+	// Parse tables and transmit them
+	if err := sendTables(tblFilenames, tx); err != nil {
+		eprintf("%v\n", err)
+	}
 }
 
+// Return a map of non-empty strings keyed by their index in the given list.
 func nonEmpty(ss ...string) map[int]string {
 	m := make(map[int]string)
 	for i := range ss {
@@ -109,14 +98,46 @@ func nonEmpty(ss ...string) map[int]string {
 	return m
 }
 
-// Check that a calibration  table was provided for each given signal.
+// Check that the user provided a corresponding table for each signal they gave.
 func checkTablesProvided() error {
 	signals := []string{*tachSig, *speedSig, *an1Sig, *an2Sig, *an3Sig, *an4Sig}
 	tables := []string{*tachTbl, *speedTbl, *an1Tbl, *an2Tbl, *an3Tbl, *an4Tbl}
 	tableFlags := []string{tachTblFlag, speedTblFlag, an1TblFlag, an2TblFlag, an3TblFlag, an4TblFlag}
 	for i := range signals {
 		if signals[i] != "" && tables[i] == "" {
+			// No corresponding table
 			return fmt.Errorf("Missing flag -%s", tableFlags[i])
+		}
+	}
+	return nil // all present signals have a matching table
+}
+
+// Parse DBC file and transmit encoding of each signal using Signal Control frames.
+func sendEncodings(dbcFilename string, sigNames map[int]string, tx *socketcan.Transmitter) error {
+	// Parse DBC file
+	fmt.Println("Parsing", dbcFilename)
+	sigDefs, err := parseSignals(dbcFilename, sigNames)
+	if err != nil {
+		return err
+	}
+
+	// Transmit Signal Control frames
+
+	// TODO
+}
+
+// Parse each table and transmit them using Table Control frames.
+func sendTables(tblFilenames map[int]string, tx *socketcan.Transmitter) error {
+	for k, filename := range tblFilenames {
+		fmt.Println("Parsing", filename)
+		tbl, err := parseTable(filename)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Transmitting", filename)
+		if err := sendTable(tx, tbl, k); err != nil {
+			return err
 		}
 	}
 	return nil

@@ -17,25 +17,31 @@ const (
 	timeout = 5 * time.Second
 )
 
-// Write a calibration table to the EEPROM.
-func writeTable(tx *socketcan.Transmitter, tbl Table, sig int) error {
+// Transmit a table in Table Control frames so the Interface can store it in its EEPROM.
+func sendTable(tx *socketcan.Transmitter, tbl Table, sig int) error {
+	// Send populated rows
 	var i int
 	for i = 0; i < len(tbl.keys); i++ {
-		err := writeRow(tx, tbl.keys[i], tbl.vals[i], sig, i)
+		err := sendRow(tx, tbl.keys[i], tbl.vals[i], sig, i)
 		if err != nil {
 			return err
 		}
 	}
+
+	// Fill rest of table with last row
 	for ; i < tabRows; i++ {
-		err := writeRow(tx, tbl.keys[len(tbl.keys)-1], tbl.vals[len(tbl.keys)-1], sig, i)
+		err := sendRow(tx, tbl.keys[len(tbl.keys)-1], tbl.vals[len(tbl.keys)-1], sig, i)
 		if err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
-func writeRow(tx *socketcan.Transmitter, key int32, val uint16, sig int, row int) error {
+// Transmit a Table Control frame containing one row of a table.
+func sendRow(tx *socketcan.Transmitter, key int32, val uint16, sig int, row int) error {
+	// Serialize DATA FIELD
 	var data [8]byte
 	_, err := bin.Encode(data[0:4], bin.BigEndian, key)
 	if err != nil {
@@ -46,6 +52,7 @@ func writeRow(tx *socketcan.Transmitter, key int32, val uint16, sig int, row int
 		return err
 	}
 
+	// Construct ID and send frame
 	frame := can.Frame{
 		ID:         uint32(tblCtrlId) | uint32((sig<<5)&0xE0) | uint32(row&0x1F),
 		Length:     6,
@@ -54,18 +61,18 @@ func writeRow(tx *socketcan.Transmitter, key int32, val uint16, sig int, row int
 	}
 	ctx, _ := context.WithTimeout(context.Background(), timeout)
 	return transmit(tx, frame, ctx)
-
 }
 
+// Transmit a CAN frame to the bus, retrying if the buffer is full.
 func transmit(tx *socketcan.Transmitter, frame can.Frame, ctx context.Context) error {
 	for {
 		err := tx.TransmitFrame(ctx, frame)
 		if err == nil {
-			return nil
+			return nil // success
 		} else if strings.HasSuffix(err.Error(), "no buffer space available") {
-			continue
+			continue // retry
 		} else {
-			return err
+			return err // error, abort
 		}
 	}
 }
