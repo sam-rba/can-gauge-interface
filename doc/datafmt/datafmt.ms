@@ -7,7 +7,7 @@ Sam Anthony
 The Gauge Interface receives
 .I signals
 .[
-dbc07
+dbc10
 .]
 from other nodes via the vehicle's CAN bus.
 It also accepts frames from a host PC for calibration.
@@ -195,8 +195,8 @@ tab(&);
 Ci
 L L.
 Order
-= 0 & Little-endian
-= 1 & Big-endian
+= 0 & Big-endian
+= 1 & Little-endian
 .TE
 .LP
 .I Sign

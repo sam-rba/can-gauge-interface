@@ -286,7 +286,7 @@ setSigFmt(const CanFrame *frame) {
 	// Unpack Encoding
 	sigFmt.start = frame->data[4u];
 	sigFmt.size = frame->data[5u];
-	sigFmt.order = (frame->data[6u] & 0x80) ? BIG_ENDIAN : LITTLE_ENDIAN;
+	sigFmt.order = (frame->data[6u] & 0x80) ? LITTLE_ENDIAN : BIG_ENDIAN;
 	sigFmt.isSigned = frame->data[6u] & 0x40;
 
 	// Save to EEPROM

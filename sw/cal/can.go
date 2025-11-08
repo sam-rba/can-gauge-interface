@@ -65,7 +65,7 @@ func serializeEncodingData(def SignalDef, data *[8]byte) error {
 	data[5] = uint8(def.size)
 
 	// Order and sign flag bits
-	if def.isBigEndian {
+	if !def.isBigEndian {
 		data[6] |= 0x80
 	}
 	if def.isSigned {

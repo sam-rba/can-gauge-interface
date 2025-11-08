@@ -111,7 +111,7 @@ serReadSigFmt(EepromAddr addr, SigFmt *sig) {
 	}
 	sig->start = buf[0u];
 	sig->size = buf[1u];
-	sig->order = (buf[2u] & 0x80) ? BIG_ENDIAN : LITTLE_ENDIAN;
+	sig->order = (buf[2u] & 0x80) ? LITTLE_ENDIAN : BIG_ENDIAN;
 	sig->isSigned = buf[2u] & 0x40;
 
 	return OK;

@@ -15,8 +15,8 @@
 
 // Byte order
 typedef enum {
-	LITTLE_ENDIAN = 0,
-	BIG_ENDIAN,
+	BIG_ENDIAN = 0,
+	LITTLE_ENDIAN,
 } ByteOrder;
 
 // A Signal Format defines how a DBC signal is encoded in a CAN frame.
@@ -24,7 +24,7 @@ typedef struct {
 	CanId id; // ID of message containing the signal
 	U8 start; // start bit -- position of signal within DATA FIELD
 	U8 size; // size of the signal in bits
-	ByteOrder order; // little-endian/big-endian
+	ByteOrder order; // big-endian/little-endian
 	bool isSigned;
 } SigFmt;
 
