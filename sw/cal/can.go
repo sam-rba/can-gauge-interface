@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	bin "encoding/binary"
+	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -11,11 +13,69 @@ import (
 )
 
 const (
-	tblCtrlId = 0x1272000
-	sigCtrlId = 0x1272100
+	tblCtrlId uint32 = 0x1272000
+	sigCtrlId uint32 = 0x1272100
 
-	timeout = 5 * time.Second
+	stdMask = 0x7FF
+	extMask = 0x1FFFFFFF
+
+	timeout = 1 * time.Second
 )
+
+// Transmit a signal's encoding in a Signal Control frame so the Interface can store it in its EEPROM.
+func sendEncoding(def SignalDef, sig int, tx *socketcan.Transmitter) error {
+	// Serialize DATA FIELD
+	var data [8]byte
+	if err := serializeEncodingData(def, &data); err != nil {
+		return err
+	}
+	fmt.Println(data)
+
+	// Construct ID and send frame
+	frame := can.Frame{
+		ID:         sigCtrlId | uint32(sig&0xF),
+		Length:     7,
+		Data:       data,
+		IsExtended: true,
+	}
+	ctx, _ := context.WithTimeout(context.Background(), timeout)
+	return transmit(tx, frame, ctx)
+}
+
+// Serialize the DATA FIELD of a Signal Control frame.
+func serializeEncodingData(def SignalDef, data *[8]byte) error {
+	// SigId field
+	if _, err := bin.Encode(data[0:4], bin.BigEndian, uint32(def.id)&extMask); err != nil {
+		return err
+	}
+	if def.id.IsExtended() {
+		data[0] |= 0x80 // EXIDE
+	}
+
+	// Start field
+	if def.start > math.MaxUint8 {
+		return fmt.Errorf("%s: start bit out of range: %d>%d", def.name, def.start, math.MaxUint8)
+	}
+	data[4] = uint8(def.start)
+
+	// Size field
+	if def.size > math.MaxUint8 {
+		return fmt.Errorf("%s: size out of range: %d>%d", def.name, def.size, math.MaxUint8)
+	}
+	data[5] = uint8(def.size)
+
+	// Order and sign flag bits
+	if def.isBigEndian {
+		data[6] |= 0x80
+	}
+	if def.isSigned {
+		data[6] |= 0x40
+	}
+
+	fmt.Println(data)
+
+	return nil
+}
 
 // Transmit a table in Table Control frames so the Interface can store it in its EEPROM.
 func sendTable(tx *socketcan.Transmitter, tbl Table, sig int) error {
@@ -43,12 +103,10 @@ func sendTable(tx *socketcan.Transmitter, tbl Table, sig int) error {
 func sendRow(tx *socketcan.Transmitter, key int32, val uint16, sig int, row int) error {
 	// Serialize DATA FIELD
 	var data [8]byte
-	_, err := bin.Encode(data[0:4], bin.BigEndian, key)
-	if err != nil {
+	if _, err := bin.Encode(data[0:4], bin.BigEndian, key); err != nil {
 		return err
 	}
-	_, err = bin.Encode(data[4:6], bin.BigEndian, val)
-	if err != nil {
+	if _, err := bin.Encode(data[4:6], bin.BigEndian, val); err != nil {
 		return err
 	}
 

@@ -122,8 +122,15 @@ func sendEncodings(dbcFilename string, sigNames map[int]string, tx *socketcan.Tr
 	}
 
 	// Transmit Signal Control frames
+	for k, sigDef := range sigDefs {
+		fmt.Printf("Transmitting encoding of signal %d: %s\n", k, sigDef.name)
+		fmt.Println(sigDef)
+		if err := sendEncoding(sigDef, k, tx); err != nil {
+			return err
+		}
+	}
 
-	// TODO
+	return nil
 }
 
 // Parse each table and transmit them using Table Control frames.
@@ -135,7 +142,7 @@ func sendTables(tblFilenames map[int]string, tx *socketcan.Transmitter) error {
 			return err
 		}
 
-		fmt.Println("Transmitting", filename)
+		fmt.Printf("Transmitting table %d: %s\n", k, filename)
 		if err := sendTable(tx, tbl, k); err != nil {
 			return err
 		}
