@@ -1,10 +1,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
 	"go.einride.tech/can/pkg/dbc"
+)
+
+var (
+	errWrongId = errors.New("wrong ID")
 )
 
 func eprintf(format string, a ...any) {

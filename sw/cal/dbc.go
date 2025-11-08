@@ -8,27 +8,8 @@ import (
 	"go.einride.tech/can/pkg/dbc"
 )
 
-type SignalDef struct {
-	id          dbc.MessageID
-	name        string
-	start, size uint64
-	isBigEndian bool
-	isSigned    bool
-}
-
-func newSignalDef(msg *dbc.MessageDef, sig dbc.SignalDef) SignalDef {
-	return SignalDef{
-		msg.MessageID,
-		string(sig.Name),
-		sig.StartBit,
-		sig.Size,
-		sig.IsBigEndian,
-		sig.IsSigned,
-	}
-}
-
 // Extract signals from the DBC file.
-func parseSignals(filename string, names map[int]string) (map[int]SignalDef, error) {
+func parseSignals(filename string, names map[uint8]string) ([]SignalDef, error) {
 	// Parse DBC file
 	msgDefs, err := parseDbcFile(filename)
 	if err != nil {
@@ -36,26 +17,27 @@ func parseSignals(filename string, names map[int]string) (map[int]SignalDef, err
 	}
 
 	// Search for signals
-	signals := make(map[int]SignalDef)
+	signals := make([]SignalDef, 0, len(names))
 	for _, msg := range msgDefs {
 		for k, name := range names {
 			i := slices.IndexFunc(msg.Signals, func(sig dbc.SignalDef) bool { return sig.Name == dbc.Identifier(name) })
 			if i < 0 {
 				continue
 			}
-			if _, ok := signals[k]; ok {
-				return nil, ErrDupSig{msg.Signals[i]}
+			fmt.Printf("Found signal %v\n", msg.Signals[i])
+			sig, err := NewSignalDef(k, msg, msg.Signals[i])
+			if err != nil {
+				return nil, err
 			}
-			fmt.Println(msg.Signals[i])
-			signals[k] = newSignalDef(msg, msg.Signals[i])
+			signals = append(signals, sig)
 		}
 	}
 
 	// Check all signals are present
 	if len(signals) != len(names) {
-		for k, name := range names {
-			if _, ok := signals[k]; !ok {
-				return nil, ErrNoSig{filename, name}
+		for i := 0; i < len(signals); i++ {
+			if names[uint8(i)] != signals[i].name {
+				return nil, ErrNoSig{filename, names[uint8(i)]}
 			}
 		}
 	}

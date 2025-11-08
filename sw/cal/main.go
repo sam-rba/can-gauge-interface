@@ -3,10 +3,22 @@ package main
 import (
 	"flag"
 	"fmt"
+	"math"
 	"os"
+	"time"
 
 	"go.einride.tech/can/pkg/dbc"
-	"go.einride.tech/can/pkg/socketcan"
+
+	"git.samanthony.xyz/can_gauge_interface/sw/cal/canbus"
+)
+
+const (
+	stdMask = 0x7FF
+	extMask = 0x1FFFFFFF
+
+	timeout          = 1 * time.Second
+	eepromWriteDelay = 5 * time.Millisecond
+	maxRetries       = 8
 )
 
 type Signals struct {
@@ -68,31 +80,33 @@ func main() {
 
 	// Open CAN connection
 	fmt.Println("Opening connection to", *canDev)
-	conn, err := socketcan.Dial("can", *canDev)
+	bus, err := canbus.Connect(*canDev)
 	if err != nil {
 		eprintf("%v\n", err)
 	}
-	defer conn.Close()
-	tx := socketcan.NewTransmitter(conn)
-	defer tx.Close()
+	defer bus.Close()
 
 	// Parse DBC file and transmit encoding of each signal
-	if err := sendEncodings(*dbcFilename, sigNames, tx); err != nil {
+	if err := sendEncodings(*dbcFilename, sigNames, bus); err != nil {
 		eprintf("%v\n", err)
 	}
 
 	// Parse tables and transmit them
-	if err := sendTables(tblFilenames, tx); err != nil {
+	if err := sendTables(tblFilenames, bus); err != nil {
 		eprintf("%v\n", err)
 	}
 }
 
 // Return a map of non-empty strings keyed by their index in the given list.
-func nonEmpty(ss ...string) map[int]string {
-	m := make(map[int]string)
+func nonEmpty(ss ...string) map[uint8]string {
+	if len(ss) > math.MaxUint8 {
+		panic(len(ss))
+	}
+
+	m := make(map[uint8]string)
 	for i := range ss {
 		if ss[i] != "" {
-			m[i] = ss[i]
+			m[uint8(i)] = ss[i]
 		}
 	}
 	return m
@@ -113,19 +127,18 @@ func checkTablesProvided() error {
 }
 
 // Parse DBC file and transmit encoding of each signal using Signal Control frames.
-func sendEncodings(dbcFilename string, sigNames map[int]string, tx *socketcan.Transmitter) error {
+func sendEncodings(dbcFilename string, sigNames map[uint8]string, bus canbus.Bus) error {
 	// Parse DBC file
 	fmt.Println("Parsing", dbcFilename)
-	sigDefs, err := parseSignals(dbcFilename, sigNames)
+	sigs, err := parseSignals(dbcFilename, sigNames)
 	if err != nil {
 		return err
 	}
 
 	// Transmit Signal Control frames
-	for k, sigDef := range sigDefs {
-		fmt.Printf("Transmitting encoding of signal %d: %s\n", k, sigDef.name)
-		fmt.Println(sigDef)
-		if err := sendEncoding(sigDef, k, tx); err != nil {
+	for _, sig := range sigs {
+		fmt.Println("Sending signal encoding", sig)
+		if err := sig.SendEncoding(bus); err != nil {
 			return err
 		}
 	}
@@ -134,7 +147,7 @@ func sendEncodings(dbcFilename string, sigNames map[int]string, tx *socketcan.Tr
 }
 
 // Parse each table and transmit them using Table Control frames.
-func sendTables(tblFilenames map[int]string, tx *socketcan.Transmitter) error {
+func sendTables(tblFilenames map[uint8]string, bus canbus.Bus) error {
 	for k, filename := range tblFilenames {
 		fmt.Println("Parsing", filename)
 		tbl, err := parseTable(filename)
@@ -143,7 +156,7 @@ func sendTables(tblFilenames map[int]string, tx *socketcan.Transmitter) error {
 		}
 
 		fmt.Printf("Transmitting table %d: %s\n", k, filename)
-		if err := sendTable(tx, tbl, k); err != nil {
+		if err := tbl.Send(bus); err != nil {
 			return err
 		}
 	}
