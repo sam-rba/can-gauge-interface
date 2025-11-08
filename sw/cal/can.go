@@ -19,7 +19,8 @@ const (
 	stdMask = 0x7FF
 	extMask = 0x1FFFFFFF
 
-	timeout = 1 * time.Second
+	timeout          = 1 * time.Second
+	eepromWriteDelay = 5 * time.Millisecond
 )
 
 // Transmit a signal's encoding in a Signal Control frame so the Interface can store it in its EEPROM.
@@ -94,6 +95,7 @@ func sendTable(tx *socketcan.Transmitter, tbl Table, sig int) error {
 		if err != nil {
 			return err
 		}
+		time.Sleep(eepromWriteDelay)
 	}
 
 	return nil
