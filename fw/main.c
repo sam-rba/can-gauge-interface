@@ -316,16 +316,6 @@ driveGauge(Signal sig, Number raw) {
 	Status status;
 	U16 val;
 
-	// TODO: remove
-	CanFrame frame;
-	frame.id = (CanId){.isExt=false, .sid=0x123};
-	frame.rtr = false;
-	frame.dlc = 3u;
-	frame.data[0u] = sig & 0xFF;
-	frame.data[1u] = raw.type & 0xFF;
-	frame.data[2u] = raw.u8;
-	canTx(&frame);
-
 	if (sig >= NSIG) {
 		return ERR;
 	}
@@ -335,6 +325,17 @@ driveGauge(Signal sig, Number raw) {
 	if (status != OK) {
 		return ERR;
 	}
+
+	// TODO: remove
+	CanFrame frame;
+	frame.id = (CanId){.isExt=false, .sid=0x123};
+	frame.rtr = false;
+	frame.dlc = 5u;
+	frame.data[0u] = sig & 0xFF; // signal
+	frame.data[1u] = raw.type & 0xFF; // key type
+	frame.data[2u] = raw.u8; // key (U8)
+	serU16Be(frame.data+3, val); // val
+	canTx(&frame);
 
 	switch (sig) {
 	case SIG_TACH:
