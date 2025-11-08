@@ -157,12 +157,6 @@ main(void) {
 		reset();
 	}
 
-	// TODO: remove
-	// Setup TMR1
-	T1CON = 0x31; // Fosc/4, 1:8 prescaler
-	PIE1bits.TMR1IE = 1; // enable interrupts
-	PIR1bits.TMR1IF = 0; // clear flag
-
 	// Enable interrupts
 	INTCON = 0x00; // clear flags
 	OPTION_REGbits.INTEDG = 0; // interrupt on falling edge of INT pin
@@ -301,18 +295,6 @@ setSigFmt(const CanFrame *frame) {
 	return OK;
 }
 
-static void
-echo(const CanFrame *frame) {
-	CanFrame response;
-
-	response.id = frame->id;
-	response.rtr = frame->rtr;
-	for (response.dlc = 0u; response.dlc < frame->dlc; response.dlc++) {
-		response.data[response.dlc] = frame->data[response.dlc] + 1u;
-	}
-	canTx(&response);
-}
-
 // Handle a Signal Control Frame.
 // See `doc/datafmt.pdf'
 static Status
@@ -333,6 +315,16 @@ static Status
 driveGauge(Signal sig, Number raw) {
 	Status status;
 	U16 val;
+
+	// TODO: remove
+	CanFrame frame;
+	frame.id = (CanId){.isExt=false, .sid=0x123};
+	frame.rtr = false;
+	frame.dlc = 3u;
+	frame.data[0u] = sig & 0xFF;
+	frame.data[1u] = raw.type & 0xFF;
+	frame.data[2u] = raw.u8;
+	canTx(&frame);
 
 	if (sig >= NSIG) {
 		return ERR;
@@ -423,21 +415,5 @@ __interrupt() isr(void) {
 			(void)handleSigFrame(&frame);
 		}
 		INTCONbits.INTF = 0; // clear flag
-	}
-
-	// TODO: remove
-	static U8 ctr = 0u;
-	if (PIR1bits.TMR1IF) {
-		if (++ctr == 228u) { // 10 period
-			frame.id = (CanId){.isExt=false, .sid=0x123};
-			frame.rtr = false;
-			frame.dlc = 3u;
-			frame.data[0u] = 0x11;
-			frame.data[1u] = 0x22;
-			frame.data[2u] = 0x33;
-			canTx(&frame);
-			ctr = 0u;
-		}
-		PIR1bits.TMR1IF = 0;
 	}
 }
