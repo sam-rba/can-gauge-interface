@@ -9,7 +9,7 @@ import (
 )
 
 // Extract signals from the DBC file.
-func parseSignals(filename string, names []string) ([]dbc.SignalDef, error) {
+func parseSignals(filename string, names map[int]string) (map[int]dbc.SignalDef, error) {
 	// Parse DBC file
 	msgDefs, err := parseDbcFile(filename)
 	if err != nil {
@@ -17,29 +17,27 @@ func parseSignals(filename string, names []string) ([]dbc.SignalDef, error) {
 	}
 
 	// Search for signals
-	sigPtrs := make([]*dbc.SignalDef, len(names))
+	signals := make(map[int]dbc.SignalDef)
 	for _, msg := range msgDefs {
-		for i := range names {
-			j := slices.IndexFunc(msg.Signals, func(sig dbc.SignalDef) bool { return sig.Name == dbc.Identifier(names[i]) })
-			if j < 0 {
+		for k, name := range names {
+			i := slices.IndexFunc(msg.Signals, func(sig dbc.SignalDef) bool { return sig.Name == dbc.Identifier(name) })
+			if i < 0 {
 				continue
 			}
-			if sigPtrs[i] != nil {
-				return nil, ErrDupSig{msg.Signals[j]}
+			if _, ok := signals[k]; ok {
+				return nil, ErrDupSig{msg.Signals[i]}
 			}
-			sigPtrs[i] = &msg.Signals[j]
+			signals[k] = msg.Signals[i]
 		}
 	}
 
 	// Check all signals are present
-	if i := slices.IndexFunc(sigPtrs, func(sp *dbc.SignalDef) bool { return sp == nil }); i >= 0 {
-		return nil, ErrNoSig{filename, names[i]}
-	}
-
-	// Dereference
-	signals := make([]dbc.SignalDef, len(sigPtrs))
-	for i := range sigPtrs {
-		signals[i] = *sigPtrs[i]
+	if len(signals) != len(names) {
+		for k, name := range names {
+			if _, ok := signals[k]; !ok {
+				return nil, ErrNoSig{filename, name}
+			}
+		}
 	}
 
 	return signals, nil

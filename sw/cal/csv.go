@@ -1,33 +1,33 @@
 package main
 
 import (
-	"os"
+	"encoding/csv"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
-	"encoding/csv"
 )
 
-func parseTable(filename string) (map[int32]uint16, error) {
+func parseTable(filename string) (Table, error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		eprintf("%v\n", err)
 	}
 	defer f.Close()
 
-	tbl := make(map[int32]uint16)
+	var tbl Table
 	rdr := csv.NewReader(f)
 	for {
-		err := parseRow(rdr, tbl)
+		err := parseRow(rdr, &tbl)
 		if err == io.EOF {
 			return tbl, nil
 		} else if err != nil {
-			return nil, fmt.Errorf("%s:%v", filename, err)
+			return Table{}, fmt.Errorf("%s:%v", filename, err)
 		}
 	}
 }
 
-func parseRow(rdr *csv.Reader, tbl map[int32]uint16) error {
+func parseRow(rdr *csv.Reader, tbl *Table) error {
 	row, err := rdr.Read()
 	if err != nil {
 		return err
@@ -46,10 +46,9 @@ func parseRow(rdr *csv.Reader, tbl map[int32]uint16) error {
 		line, col := rdr.FieldPos(1)
 		return fmt.Errorf("%d:%d: %v", line, col, err)
 	}
-	if _, ok := tbl[int32(key)]; ok {
+	if err := tbl.Insert(int32(key), uint16(val)); err != nil {
 		line, col := rdr.FieldPos(0)
-		return fmt.Errorf("%d: %d: duplicate key %d", line, col, key)
+		return fmt.Errorf("%d:%d: %v", line, col, err)
 	}
-	tbl[int32(key)] = uint16(val)
 	return nil
 }

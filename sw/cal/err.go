@@ -32,3 +32,11 @@ type ErrNoSig struct {
 func (e ErrNoSig) Error() string {
 	return fmt.Sprintf("%s: no such signal '%s'", e.filename, e.signal)
 }
+
+type ErrDupKey struct {
+	key int32
+}
+
+func (e ErrDupKey) Error() string {
+	return fmt.Sprintf("duplicate key %d", e.key)
+}

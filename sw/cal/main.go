@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"go.einride.tech/can/pkg/dbc"
+	"go.einride.tech/can/pkg/socketcan"
 )
 
 const dev = "can0"
@@ -19,6 +20,10 @@ var (
 	// DBC file
 	dbcFilenameFlag = "dbc"
 	dbcFilename     = flag.String(dbcFilenameFlag, "", "DBC file name")
+
+	// SocketCAN device
+	canDevFlag = "can"
+	canDev     = flag.String(canDevFlag, "can0", "SocketCAN device")
 
 	// Signal names
 	tachSigFlag  = "tachSig"
@@ -70,11 +75,23 @@ func main() {
 		eprintf("%v\n", err)
 	}
 
-	// Parse calibration tables
-	for _, filename := range tblFilenames {
+	// Open CAN connection
+	conn, err := socketcan.Dial("can", *canDev)
+	if err != nil {
+		eprintf("%v\n", err)
+	}
+	defer conn.Close()
+	tx := socketcan.NewTransmitter(conn)
+
+	// Write calibration tables to EEPROM
+	for k, filename := range tblFilenames {
 		fmt.Println("Parsing", filename)
 		tbl, err := parseTable(filename)
 		if err != nil {
+			eprintf("%v\n", err)
+		}
+
+		if err := writeTable(tx, tbl, k); err != nil {
 			eprintf("%v\n", err)
 		}
 	}
