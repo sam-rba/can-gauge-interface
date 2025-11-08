@@ -3,16 +3,18 @@ package main
 import (
 	"context"
 	bin "encoding/binary"
+	"strings"
+	"time"
 
 	"go.einride.tech/can"
 	"go.einride.tech/can/pkg/socketcan"
 )
 
 const (
-
-	// CAN IDs
 	tblCtrlId = 0x1272000
 	sigCtrlId = 0x1272100
+
+	timeout = 5 * time.Second
 )
 
 // Write a calibration table to the EEPROM.
@@ -50,5 +52,20 @@ func writeRow(tx *socketcan.Transmitter, key int32, val uint16, sig int, row int
 		Data:       data,
 		IsExtended: true,
 	}
-	return tx.TransmitFrame(context.Background(), frame)
+	ctx, _ := context.WithTimeout(context.Background(), timeout)
+	return transmit(tx, frame, ctx)
+
+}
+
+func transmit(tx *socketcan.Transmitter, frame can.Frame, ctx context.Context) error {
+	for {
+		err := tx.TransmitFrame(ctx, frame)
+		if err == nil {
+			return nil
+		} else if strings.HasSuffix(err.Error(), "no buffer space available") {
+			continue
+		} else {
+			return err
+		}
+	}
 }

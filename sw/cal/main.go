@@ -9,8 +9,6 @@ import (
 	"go.einride.tech/can/pkg/socketcan"
 )
 
-const dev = "can0"
-
 type Signals struct {
 	tach, speed, an1, an2, an3, an4 *dbc.SignalDef
 }
@@ -82,6 +80,7 @@ func main() {
 	}
 	defer conn.Close()
 	tx := socketcan.NewTransmitter(conn)
+	defer tx.Close()
 
 	// Write calibration tables to EEPROM
 	for k, filename := range tblFilenames {
@@ -91,12 +90,13 @@ func main() {
 			eprintf("%v\n", err)
 		}
 
+		fmt.Println("Transmitting", filename)
 		if err := writeTable(tx, tbl, k); err != nil {
 			eprintf("%v\n", err)
 		}
 	}
 
-	fmt.Println(sigDefs)
+	fmt.Println(sigDefs) // TODO
 }
 
 func nonEmpty(ss ...string) map[int]string {
