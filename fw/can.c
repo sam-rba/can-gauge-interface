@@ -12,7 +12,10 @@
 // Oscillator startup timeout
 #define STARTUP_TIME 128u
 
-#define TX_RETRIES 10u
+enum {
+	TX_RETRIES = 32u,
+	RETRY_DELAY = 1024ul,
+};
 
 // Register addresses
 typedef enum {
@@ -245,12 +248,12 @@ packId(CanId *id, U8 sidh, U8 sidl, U8 eid8, U8 eid0) {
 		id->isExt = true;
 		id->eid = ((U32)eid0 << 0u) // id[7:0]
 			| ((U32)eid8 << 8u) // id[15:8]
-			| ((U32)((sidh << 5u) | (sidl >> 3u) | (sidl & 0x3)) << 16u) // id[23:21], id[20:18], id[17:16]
-			| ((U32)(sidh >> 3u) << 24u); // id[28:24]
+			| ((U32)(((sidh&0x07)<<5u) | ((sidl&0xE0)>>3u) | (sidl&0x3)) << 16u) // id[23:21], id[20:18], id[17:16]
+			| ((U32)((sidh&0xF8)>>3u) << 24u); // id[28:24]
 	} else { // standard ID
 		id->isExt = false;
-		id->sid = ((U16)((sidh << 3u) | (sidl >> 5u)) << 0u) // sid[7:0]
-			| ((U16)(sidh >> 5u) << 8u); // sid[10:8]
+		id->sid = ((U16)(((sidh&0x1F)<<3u) | ((sidl&0xE0)>>5u)) << 0u) // sid[7:0]
+			| ((U16)((sidh&0xE0)>>5u) << 8u); // sid[10:8]
 	}
 }
 
@@ -327,6 +330,9 @@ canTx(const CanFrame *frame) {
 	bitModify(REG_TXB0CTRL, TXREQ, TXREQ);
 	k = 0u;
 	do {
+		if (k > 0u) {
+			_delay(RETRY_DELAY);
+		}
 		ctrl = read(REG_TXB0CTRL);
 		if (ctrl & TXERR) {
 			// Error
