@@ -20,17 +20,17 @@
 void dacInit(void);
 
 // Set DAC1 VOUTA.
-// Only the lower 10 bits are used.
-void dacSet1a(U16 level);
+// Mv is the desired voltage in millivolts.
+void dacSet1a(U16 mv);
 
 // Set DAC1 VOUTB.
-// Only the lower 10 bits are used.
-void dacSet1b(U16 level);
+// Mv is the desired voltage in millivolts.
+void dacSet1b(U16 mv);
 
 // Set DAC2 VOUTA.
-// Only the lower 10 bits are used.
-void dacSet2a(U16 level);
+// Mv is the desired voltage in millivolts.
+void dacSet2a(U16 mv);
 
 // Set DAC2 VOUTB.
-// Only the lower 10 bits are used.
-void dacSet2b(U16 level);
+// Mv is the desired voltage in millivolts.
+void dacSet2b(U16 mv);

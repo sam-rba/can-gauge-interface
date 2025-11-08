@@ -8,6 +8,11 @@
 
 #include "dac.h"
 
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+
+// Nominal reference voltage in millivolts
+#define VREF_MV 5000
+
 // Configuration bits:
 // buffered, gain=1x, mode=active
 typedef enum {
@@ -30,7 +35,14 @@ dacInit(void) {
 }
 
 static void
-set(U8 dacNum, Conf conf, U16 level) {
+set(U8 dacNum, Conf conf, U16 mv) {
+	U16 level;
+
+	mv = min(mv, VREF_MV); // clamp to 5V
+
+	// D = 2^10 * Vout / Vref / (1000mV/V)
+	level = (U16)((U32)mv * (1u<<10u) / VREF_MV);
+
 	level <<= 2u; // D0 at bit 2
 	level = ((U16)conf & 0xF000) | (level & 0x0FFF); // set config bits
 
@@ -52,20 +64,20 @@ set(U8 dacNum, Conf conf, U16 level) {
 }
 
 void
-dacSet1a(U16 level) {
-	set(1u, CONFA, level);
+dacSet1a(U16 mv) {
+	set(1u, CONFA, mv);
 }
 
 void
-dacSet1b(U16 level) {
-	set(1u, CONFB, level);
+dacSet1b(U16 mv) {
+	set(1u, CONFB, mv);
 }
 
 void
-dacSet2a(U16 level) {
-	set(2u, CONFA, level);
+dacSet2a(U16 mv) {
+	set(2u, CONFA, mv);
 }
 void
-dacSet2b(U16 level) {
-	set(2u, CONFB, level);
+dacSet2b(U16 mv) {
+	set(2u, CONFB, mv);
 }
