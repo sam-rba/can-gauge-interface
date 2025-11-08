@@ -312,7 +312,7 @@ handleSigCtrlFrame(const CanFrame *frame) {
 // Generate the output signal being sent to one of the gauges.
 // Raw is the raw signal value extracted from a CAN frame.
 static Status
-driveGauge(Signal sig, Number raw) {
+driveGauge(Signal sig, I32 raw) {
 	Status status;
 	U16 val;
 
@@ -330,11 +330,11 @@ driveGauge(Signal sig, Number raw) {
 	CanFrame frame;
 	frame.id = (CanId){.isExt=false, .sid=0x123};
 	frame.rtr = false;
-	frame.dlc = 5u;
+	frame.dlc = 7u;
 	frame.data[0u] = sig & 0xFF; // signal
-	frame.data[1u] = raw.type & 0xFF; // key type
-	frame.data[2u] = raw.u8; // key (U8)
-	serU16Be(frame.data+3, val); // val
+	U32 uraw = *(U32 *)&raw;
+	serU32Be(frame.data+1, uraw); // key
+	serU16Be(frame.data+5, val); // val
 	canTx(&frame);
 
 	switch (sig) {
@@ -368,7 +368,7 @@ static Status
 handleSigFrame(const CanFrame *frame) {
 	Status status, result;
 	Signal sig;
-	Number raw;
+	I32 raw;
 
 	result = OK;
 

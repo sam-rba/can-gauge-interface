@@ -41,45 +41,40 @@ tabRead(const Table *tab, U8 k, U32 *key, U16 *val) {
 	return status;
 }
 
+// Linear interpolation.
+static U16
+interp(I32 x, I32 x1, U16 y1, I32 x2, U16 y2) {
+	return (U16)(y1 + ((I32)y2-y1) * (x-x1) / (x2-x1));
+}
+
 Status
-tabLookup(const Table *tab, Number key, U16 *val) {
+tabLookup(const Table *tab, I32 key, U16 *val) {
 	U8 row;
-	Number tkey1, tkey2;
+	U32 utkey;
+	I32 tkey1, tkey2;
 	U16 tval1, tval2;
 	Status status;
-	int ord;
 
 	// Search for key
-	for (row = 0u; row < (TAB_ROWS-1u); row++) {
-		status = tabRead(tab, row, &tkey1.u32, &tval1);
+	for (row = 0u; row < TAB_ROWS; row++) {
+		status = tabRead(tab, row, &utkey, &tval1);
 		if (status != OK) {
 			return FAIL;
 		}
+		tkey1 = *(I32 *)&utkey;
 
-		status = u32ToNum(tkey1.u32, key.type, &tkey1);
-		if (status != OK) {
-			return FAIL;
-		}
-
-		status = cmpNum(key, tkey1, &ord);
-		if (status != OK) {
-			return FAIL;
-		}
-		if (ord == 0) { // found exact key
+		if (key == tkey1) { // found exact key
 			*val = tval1; 
 			return OK;
-		} else if (ord < 0) { // key < tkey
+		} else if (key < tkey1) {
 			if (row > 0u) { // not first row
 				// Interpolate with previous row
-				status = tabRead(tab, row-1u, &tkey2.u32, &tval2);
+				status = tabRead(tab, row-1u, &utkey, &tval2);
 				if (status != OK) {
 					return FAIL;
 				}
-				status = u32ToNum(tkey2.u32, key.type, &tkey2);
-				if (status != OK) {
-					return FAIL;
-				}
-				*val = (tval1 + tval2) / 2u; // TODO: linear interpolation
+				tkey2 = *(I32 *)&utkey;
+				*val = interp(key, tkey1, tval1, tkey2, tval2);
 			} else { // key < key of first row
 				*val = tval1; // use first row value
 			}
@@ -91,6 +86,5 @@ tabLookup(const Table *tab, Number key, U16 *val) {
 
 	// Reached last row
 	*val = tval1; // last value in table
-
 	return OK;
 }

@@ -30,4 +30,4 @@ typedef struct {
 
 // Extract the raw signal value out of a CAN frame's DATA FIELD.
 // Assumes the frame's ID matches that of the signal.
-Status sigPluck(const SigFmt *sig, const CanFrame *frame, Number *raw);
+Status sigPluck(const SigFmt *sig, const CanFrame *frame, I32 *raw);

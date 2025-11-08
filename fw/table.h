@@ -47,4 +47,4 @@ Status tabRead(const Table *tab, U8 k, U32 *key, U16 *val);
 // Lookup the value associated with given key.
 // If key falls between two rows, the value is interpolated
 // from the two adjacent.
-Status tabLookup(const Table *tab, Number key, U16 *val);
+Status tabLookup(const Table *tab, I32 key, U16 *val);

@@ -54,7 +54,9 @@ pluckBE(const SigFmt *sig, const CanFrame *frame, U32 *raw) {
 }
 
 Status
-sigPluck(const SigFmt *sig, const CanFrame *frame, Number *raw) {
+sigPluck(const SigFmt *sig, const CanFrame *frame, I32 *raw) {
+	U32 uraw;
+
 	// Preconditions
 	if (
 		(sig->start >= (8u * frame->dlc)) // signal starts outside DATA FIELD
@@ -64,45 +66,16 @@ sigPluck(const SigFmt *sig, const CanFrame *frame, Number *raw) {
 		return FAIL;
 	}
 
-	// Read signal into U32
 	switch (sig->order) {
 	case LITTLE_ENDIAN:
-		pluckLE(sig, frame, &raw->u32);
+		pluckLE(sig, frame, &uraw);
 		break;
 	case BIG_ENDIAN:
-		pluckBE(sig, frame, &raw->u32);
+		pluckBE(sig, frame, &uraw);
 		break;
 	default:
 		return FAIL; // invalid byte order
 	}
-
-	// Shrink signal to appropriate size and set +/- sign
-	if (sig->size <= 8u) {
-		raw->u8 = raw->u32 & 0xFF;
-		if (sig->isSigned) {
-			raw->type = NUM_I8;
-			raw->i8 = *(I8 *)&raw->u8;
-		} else {
-			raw->type = NUM_U8;
-		}
-	} else if (sig->size <= 16u) {
-		raw->u16 = raw->u32 & 0xFFFF;
-		if (sig->isSigned) {
-			raw->type = NUM_I16;
-			raw->i16 = *(I16 *)&raw->u16;
-		} else {
-			raw->type = NUM_U16;
-		}
-	} else if (sig->size <= 32u) {
-		if (sig->isSigned) {
-			raw->type = NUM_I32;
-			raw->i32 = *(I32 *)&raw->u32;
-		} else {
-			raw->type = NUM_U32;
-		}
-	} else {
-		return FAIL; // signal too big
-	}
-
+	*raw = *(I32 *)&uraw;
 	return OK;
 }
