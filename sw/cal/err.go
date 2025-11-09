@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	errWrongId = errors.New("wrong ID")
+	errWrongId    = errors.New("wrong ID")
+	errVerifyFail = errors.New("verification failed")
 )
 
 func eprintf(format string, a ...any) {

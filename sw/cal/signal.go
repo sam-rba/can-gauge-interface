@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	bin "encoding/binary"
 	"fmt"
 	"math"
@@ -49,63 +48,21 @@ func NewSignalDef(index uint8, msg *dbc.MessageDef, sig dbc.SignalDef) (SignalDe
 	}, nil
 }
 
-// Transmit a signal's encoding in a Signal Control frame so the Interface can store it in its EEPROM.
+// Transmit a signal's encoding in a Signal Control frame
+// so the Interface can store it in its EEPROM.
 func (sig SignalDef) SendEncoding(bus canbus.Bus) error {
-	frame, err := sig.MarshalFrame()
-	if err != nil {
-		return err
-	}
-
-	var retry int
-	for retry = 0; retry < maxRetries; retry++ {
-		// Write to EEPROM
-		ctx, _ := context.WithTimeout(context.Background(), timeout)
-		if err := bus.Send(ctx, frame); err != nil {
-			return err
-		}
-
-		// Read back
-		request := sigCtrlRequest(sig.index)
-		ctx, _ = context.WithTimeout(context.Background(), timeout)
-		if err := bus.Send(ctx, request); err != nil {
-			return err
-		}
-		ctx, _ = context.WithTimeout(context.Background(), timeout)
-		reply, err := bus.Receive(ctx)
-		if err != nil {
-			return err
-		}
-		var rsig SignalDef
-		err = rsig.UnmarshalFrame(reply)
-		if err == errWrongId {
-			continue
-		} else if err != nil {
-			return err
-		}
-
-		// Verify
-		rsig.index = sig.index
-		rsig.name = sig.name
-		fmt.Println("Received signal encoding", rsig)
-		if rsig == sig {
-			fmt.Printf("Signal %d encoding OK\n", sig.index)
-			return nil // success
-		} else {
-			weprintf("Warning: signal %d verification failed; rewriting...\n", sig.index)
-			continue
-		}
-	}
-	// Max retries exceeded
-	return fmt.Errorf("signal %d verification failed", sig.index)
+	req := SignalControlRequest{sig.index}
+	reply := &SignalDef{}
+	isReply := func(reply *SignalDef) bool { return true }
+	return sendCtrlFrame(sig, req, reply, bus, isReply, verifySigCtrlReply)
 }
 
-// Construct a Signal Control REMOTE REQUEST frame.
-func sigCtrlRequest(index uint8) can.Frame {
-	return can.Frame{
-		ID:         sigCtrlId | uint32(index&0xF),
-		IsRemote:   true,
-		IsExtended: true,
-	}
+// Verify that the response to a Signal Control REMOTE REQUEST
+// is the same as what was commanded to be written.
+func verifySigCtrlReply(cmd SignalDef, reply *SignalDef) bool {
+	reply.index = cmd.index // ignore index and name of reply
+	reply.name = cmd.name
+	return *reply == cmd
 }
 
 func (sig SignalDef) MarshalFrame() (can.Frame, error) {
@@ -137,7 +94,7 @@ func (sig *SignalDef) UnmarshalFrame(frame can.Frame) error {
 		return errWrongId
 	}
 	if frame.Length != 7 {
-		return fmt.Errorf("Signal Control frame has wrong DLC: %d", frame.Length)
+		return fmt.Errorf("wrong DLC for Signal Control frame: %d", frame.Length)
 	}
 	sig.index = uint8(frame.ID & 0xF)
 	var id uint32
@@ -151,4 +108,17 @@ func (sig *SignalDef) UnmarshalFrame(frame can.Frame) error {
 	sig.isBigEndian = frame.Data[6]&0x80 == 0
 	sig.isSigned = frame.Data[6]&0x40 != 0
 	return nil
+}
+
+// SignalControlRequest is a Signal Control REMOTE REQUEST frame.
+type SignalControlRequest struct {
+	sigIndex uint8
+}
+
+func (r SignalControlRequest) MarshalFrame() (can.Frame, error) {
+	return can.Frame{
+		ID:         sigCtrlId | uint32(r.sigIndex&0xF),
+		IsRemote:   true,
+		IsExtended: true,
+	}, nil
 }

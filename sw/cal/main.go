@@ -5,20 +5,10 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"time"
 
 	"go.einride.tech/can/pkg/dbc"
 
 	"git.samanthony.xyz/can_gauge_interface/sw/cal/canbus"
-)
-
-const (
-	stdMask = 0x7FF
-	extMask = 0x1FFFFFFF
-
-	timeout          = 1 * time.Second
-	eepromWriteDelay = 5 * time.Millisecond
-	maxRetries       = 8
 )
 
 type Signals struct {
@@ -141,6 +131,7 @@ func sendEncodings(dbcFilename string, sigNames map[uint8]string, bus canbus.Bus
 		if err := sig.SendEncoding(bus); err != nil {
 			return err
 		}
+		fmt.Printf("Signal encoding %d OK\n", sig.index)
 	}
 
 	return nil
@@ -149,16 +140,17 @@ func sendEncodings(dbcFilename string, sigNames map[uint8]string, bus canbus.Bus
 // Parse each table and transmit them using Table Control frames.
 func sendTables(tblFilenames map[uint8]string, bus canbus.Bus) error {
 	for k, filename := range tblFilenames {
-		fmt.Println("Parsing", filename)
-		tbl, err := parseTable(filename)
+		fmt.Printf("Parsing table %d: %s\n", k, filename)
+		tbl, err := parseTable(filename, k)
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf("Transmitting table %d: %s\n", k, filename)
+		fmt.Printf("Sending table %d\n", k)
 		if err := tbl.Send(bus); err != nil {
 			return err
 		}
+		fmt.Printf("Table %d OK\n", k)
 	}
 	return nil
 }
