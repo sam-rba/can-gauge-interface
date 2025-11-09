@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	sigCtrlId   = 0x1272100
-	sigCtrlMask = 0x1FFFF00
+	sigCtrlId   uint32 = 0x1272100
+	sigCtrlMask uint32 = 0x1FFFF00
 
 	exide = 1 << 31
 )
@@ -78,7 +78,6 @@ func (sig SignalDef) SendEncoding(bus canbus.Bus) error {
 		var rsig SignalDef
 		err = rsig.UnmarshalFrame(reply)
 		if err == errWrongId {
-			fmt.Println("Wrong ID", reply, "; expected", sigCtrlId)
 			continue
 		} else if err != nil {
 			return err
