@@ -11,9 +11,9 @@ void
 spiInit(void) {
 	U8 junk;
 
-	TRISBbits.TRISB4 = IN; // SDI
-	TRISCbits.TRISC7 = OUT; // SDO
-	TRISBbits.TRISB6 = OUT; // SCK
+	TRISB4 = IN; // SDI
+	TRISC7 = OUT; // SDO
+	TRISB6 = OUT; // SCK
 
 	SSPSTAT = 0x40; // CKE=1
 	SSPCON1 = 0x22; // FOSC/64 => 750kHz SPI clock

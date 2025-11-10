@@ -12,8 +12,8 @@
  */
 
 // Pin mapping
-#define EEPROM_CS_TRIS TRISCbits.TRISC5
-#define EEPROM_CS LATCbits.LATC5
+#define EEPROM_CS_TRIS TRISC5
+#define EEPROM_CS RC5
 
 typedef U16 EepromAddr;
 

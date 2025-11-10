@@ -114,8 +114,8 @@ loadSigFmts(void) {
 	Status status;
 
 	// Disable interrupts so the volatile address pointers can be passed safely
-	oldGie = INTCONbits.GIE;
-	INTCONbits.GIE = 0;
+	oldGie = GIE;
+	GIE = 0;
 
 	for (k = 0u; k < NSIG; k++) {
 		status = serReadSigFmt(sigFmtAddrs[k], (SigFmt *)&sigFmts[k]);
@@ -186,7 +186,7 @@ main(void) {
 
 	// Enable interrupts
 	INTCON = 0x00; // clear flags
-	OPTION_REGbits.INTEDG = 0; // interrupt on falling edge of INT pin
+	INTEDG = 0; // interrupt on falling edge of INT pin
 	INTE = 1; // enable INT pin
 	PEIE = 1; // enable peripheral interrupts
 	GIE = 1; // enable global interrupts

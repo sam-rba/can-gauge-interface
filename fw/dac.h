@@ -12,10 +12,10 @@
  */
 
 // Pin mapping
-#define DAC1_CS_TRIS TRISBbits.TRISB7
-#define DAC1_CS LATBbits.LATB7
-#define DAC2_CS_TRIS TRISBbits.TRISB5
-#define DAC2_CS LATBbits.LATB5
+#define DAC1_CS_TRIS TRISB7
+#define DAC1_CS RB7
+#define DAC2_CS_TRIS TRISB5
+#define DAC2_CS RB5
 
 void dacInit(void);
 

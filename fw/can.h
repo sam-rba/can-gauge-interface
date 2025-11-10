@@ -15,8 +15,8 @@
  */
 
 // Pin mapping
-#define CAN_CS_TRIS TRISAbits.TRISA5
-#define CAN_CS LATAbits.LATA5
+#define CAN_CS_TRIS TRISA5
+#define CAN_CS RA5
 
 // Bit timings (CNF1, CNF2, CNF3)
 #define CAN_TIMING_10K 0xDD, 0xAD, 0x06 // BRP=30, PropSeg=6, PS1=6, PS2=7, SP=65%, SJW=4
