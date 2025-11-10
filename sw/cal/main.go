@@ -19,33 +19,26 @@ type Signals struct {
 var (
 	// DBC file
 	dbcFilenameFlag = "dbc"
-	dbcFilename     = flag.String(dbcFilenameFlag, "", "DBC file name")
+	dbcFilename     = flag.String(dbcFilenameFlag, "", "DBC file")
 
 	// SocketCAN device
-	canDevFlag = "can"
-	canDev     = flag.String(canDevFlag, "can0", "SocketCAN device")
+	canDev = flag.String("can", "can0", "SocketCAN device")
 
 	// Signal names
-	tachSigFlag  = "tachSig"
-	speedSigFlag = "speedSig"
-	an1SigFlag   = "an1Sig"
-	an2SigFlag   = "an2Sig"
-	an3SigFlag   = "an3Sig"
-	an4SigFlag   = "an4Sig"
-	tachSig      = flag.String(tachSigFlag, "", "tachometer signal name")
-	speedSig     = flag.String(speedSigFlag, "", "speedometer signal name")
-	an1Sig       = flag.String(an1SigFlag, "", "analog channel 1 signal name")
-	an2Sig       = flag.String(an2SigFlag, "", "analog channel 2 signal name")
-	an3Sig       = flag.String(an3SigFlag, "", "analog channel 3 signal name")
-	an4Sig       = flag.String(an4SigFlag, "", "analog channel 4 signal name")
+	tachSig  = flag.String("tachsig", "", "tachometer signal name")
+	speedSig = flag.String("speedsig", "", "speedometer signal name")
+	an1Sig   = flag.String("an1sig", "", "analog channel 1 signal name")
+	an2Sig   = flag.String("an2sig", "", "analog channel 2 signal name")
+	an3Sig   = flag.String("an3sig", "", "analog channel 3 signal name")
+	an4Sig   = flag.String("an4sig", "", "analog channel 4 signal name")
 
 	// Calibration tables
-	tachTblFlag  = "tachTbl"
-	speedTblFlag = "speedTbl"
-	an1TblFlag   = "an1Tbl"
-	an2TblFlag   = "an2Tbl"
-	an3TblFlag   = "an3Tbl"
-	an4TblFlag   = "an4Tbl"
+	tachTblFlag  = "tachtbl"
+	speedTblFlag = "speedtbl"
+	an1TblFlag   = "an1tbl"
+	an2TblFlag   = "an2tbl"
+	an3TblFlag   = "an3tbl"
+	an4TblFlag   = "an4tbl"
 	tachTbl      = flag.String(tachTblFlag, "", "tachometer calibration CSV file")
 	speedTbl     = flag.String(speedTblFlag, "", "speedometer calibration CSV file")
 	an1Tbl       = flag.String(an1TblFlag, "", "analog channel 1 calibration CSV file")
@@ -58,7 +51,7 @@ func main() {
 	// Parse command line args
 	flag.Parse()
 	if *dbcFilename == "" {
-		weprintf("Missing '%s' flag.\n", dbcFilenameFlag)
+		weprintf("Missing flag: -%s\n", dbcFilenameFlag)
 		flag.Usage()
 		os.Exit(1)
 	}
