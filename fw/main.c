@@ -29,6 +29,7 @@
 #define TACH_FACTOR 15000000ul
 #define TMR1_POST 6u // TMR1 postscaler -- must be multiple of 2
 #define EDGE_PER_PULSE 2u // rising and falling edge
+#define MIN_TACH_PULSE_PER_MIN 229u // (pulse/min) >= TACH_FACTOR / (2^16)
 
 // Signals
 typedef enum {
@@ -173,7 +174,6 @@ main(void) {
 	INTCON = 0x00; // clear flags
 	OPTION_REGbits.INTEDG = 0; // interrupt on falling edge of INT pin
 	INTE = 1; // enable INT pin
-	TMR1IE = 1; // enable TMR1 interrupts
 	PEIE = 1; // enable peripheral interrupts
 	GIE = 1; // enable global interrupts
 
@@ -325,7 +325,12 @@ handleSigCtrlFrame(const CanFrame *frame) {
 // Set frequency of tachometer output signal.
 static void
 driveTach(U16 pulsePerMin) {
-	tmr1Start = (((U32)1ul<<16u) - (U32)TACH_FACTOR / (U32)pulsePerMin) & 0xFFFF;
+	if (pulsePerMin < MIN_TACH_PULSE_PER_MIN) {
+		TMR1IE = 0;
+	} else {
+		TMR1IE = 1;
+		tmr1Start = (((U32)1ul<<16u) - (U32)TACH_FACTOR / (U32)pulsePerMin) & 0xFFFF;
+	}
 }
 
 // Generate the output signal being sent to one of the gauges.
