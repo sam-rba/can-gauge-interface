@@ -16,7 +16,7 @@ spiInit(void) {
 	TRISB6 = OUT; // SCK
 
 	SSPSTAT = 0x40; // CKE=1
-	SSPCON1 = 0x22; // FOSC/64 => 750kHz SPI clock
+	SSPCON1 = 0x21; // FOSC/16 => 3MHz SPI clock
 	junk = SSPBUF; // dummy read to clear BF
 	(void)junk;
 }
