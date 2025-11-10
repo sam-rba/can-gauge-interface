@@ -14,6 +14,8 @@
 #include "serial.h"
 #include "table.h"
 
+#define ERR __LINE__
+
 // TODO: auto baud detection
 #define CAN_TIMING CAN_TIMING_10K
 
@@ -21,7 +23,12 @@
 #define SIG_CTRL_CAN_ID 0x1272100 // Signal Control Frame ID
 #define ERR_CAN_ID 0x1272F00
 
-#define ERR __LINE__
+// (pulse/min) = 60 * (Fosc/4) / ((pre)*(post)*(2^16 - TMR1))
+//  = 60 * (48e6/4) / (8*6*(2^16 - TMR1))
+//  = 15000000 / (2^16 - TMR1)
+#define TACH_FACTOR 15000000ul
+#define TMR1_POST 6u // TMR1 postscaler -- must be multiple of 2
+#define EDGE_PER_PULSE 2u // rising and falling edge
 
 // Signals
 typedef enum {
@@ -86,6 +93,8 @@ static const EepromAddr sigFmtAddrs[NSIG] = {
 
 // Encoding format and CAN ID of each signal
 static volatile SigFmt sigFmts[NSIG];
+
+static volatile U16 tmr1Start = 0u;
 
 // Load signals' encoding formats and CAN IDs from EEPROM
 static Status
@@ -157,12 +166,16 @@ main(void) {
 		reset();
 	}
 
+	// Setup TMR1 for tachometer
+	T1CON = 0x31; // source=Fosc/4, prescaler=1:8, enable=1
+
 	// Enable interrupts
 	INTCON = 0x00; // clear flags
 	OPTION_REGbits.INTEDG = 0; // interrupt on falling edge of INT pin
-	INTCONbits.INTE = 1; // enable INT pin
-	INTCONbits.PEIE = 1; // enable peripheral interrupts
-	INTCONbits.GIE = 1; // enable global interrupts
+	INTE = 1; // enable INT pin
+	TMR1IE = 1; // enable TMR1 interrupts
+	PEIE = 1; // enable peripheral interrupts
+	GIE = 1; // enable global interrupts
 
 	for (;;) {
 
@@ -309,6 +322,12 @@ handleSigCtrlFrame(const CanFrame *frame) {
 	}
 }
 
+// Set frequency of tachometer output signal.
+static void
+driveTach(U16 pulsePerMin) {
+	tmr1Start = (((U32)1ul<<16u) - (U32)TACH_FACTOR / (U32)pulsePerMin) & 0xFFFF;
+}
+
 // Generate the output signal being sent to one of the gauges.
 // Raw is the raw signal value extracted from a CAN frame.
 static Status
@@ -339,7 +358,7 @@ driveGauge(Signal sig, I32 raw) {
 
 	switch (sig) {
 	case SIG_TACH:
-		// TODO
+		driveTach(val);
 		break;
 	case SIG_SPEED:
 		// TODO
@@ -361,6 +380,7 @@ driveGauge(Signal sig, I32 raw) {
 	}
 
 	// TODO
+	return OK;
 }
 
 // Handle a frame potentially holding a signal value.
@@ -390,11 +410,13 @@ handleSigFrame(const CanFrame *frame) {
 
 void
 __interrupt() isr(void) {
+	static U8 tmr1Ctr = 0u;
+
 	U8 rxStatus;
 	CanFrame frame;
 	Status status;
 
-	if (INTCONbits.INTF) { // CAN interrupt
+	if (INTF) { // CAN interrupt
 		rxStatus = canRxStatus();
 		switch (rxStatus & 0x7) { // check filter hit
 		case 0u: // RXF0: calibration table control
@@ -415,6 +437,15 @@ __interrupt() isr(void) {
 			canReadRxb1(&frame);
 			(void)handleSigFrame(&frame);
 		}
-		INTCONbits.INTF = 0; // clear flag
+		INTF = 0; // clear flag
+	}
+	if (TMR1IF) { // tachometer
+		if (++tmr1Ctr == (TMR1_POST/EDGE_PER_PULSE)) {
+			tmr1Ctr = 0u;
+			TACH_PIN ^= 1; // toggle tach output
+		}
+		TMR1H = (tmr1Start>>8u)&0xFF; // reset timer
+		TMR1L = (tmr1Start>>0u)&0xFF;
+		TMR1IF = 0;
 	}
 }

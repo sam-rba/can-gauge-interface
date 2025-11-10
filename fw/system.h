@@ -3,6 +3,10 @@
 
 #include "fixed_address_memory.h"
 
+// Pins
+#define TACH_PIN RC3
+#define TACH_TRIS TRISC3
+
 // TRIS
 enum {
 	OUT = 0,

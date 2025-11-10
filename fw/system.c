@@ -33,4 +33,8 @@ sysInit(void) {
 	ANSELA = 0;
 	ANSELB = 0;
 	ANSELC = 0;
+
+	// Init pins
+	TACH_TRIS = OUT;
+	TACH_PIN = 0;
 }
