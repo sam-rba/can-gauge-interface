@@ -23,13 +23,22 @@
 #define SIG_CTRL_CAN_ID 0x1272100 // Signal Control Frame ID
 #define ERR_CAN_ID 0x1272F00
 
+// Tachometer -- TMR1
 // (pulse/min) = 60 * (Fosc/4) / ((pre)*(post)*(2^16 - TMR1))
 //  = 60 * (48e6/4) / (8*6*(2^16 - TMR1))
 //  = 15000000 / (2^16 - TMR1)
 #define TACH_FACTOR 15000000ul
 #define TMR1_POST 6u // TMR1 postscaler -- must be multiple of 2
-#define EDGE_PER_PULSE 2u // rising and falling edge
 #define MIN_TACH_PULSE_PER_MIN 229u // (pulse/min) >= TACH_FACTOR / (2^16)
+
+// Speedometer -- TMR2
+// (pulse/min) = 60 * (Fosc/4) / ((pre)*(post)*(PR2+1)*(period))
+// = 60 * (48e6/4) / (64*16*10*(period))
+// = 70313 / (period)
+#define SPEED_FACTOR 70313ul
+#define MIN_SPEED_PULSE_PER_MIN 2u // (pulse/min) >= SPEED_FACTOR / period_max)
+
+#define EDGE_PER_PULSE 2u // rising and falling edge
 
 // Signals
 typedef enum {
@@ -96,6 +105,7 @@ static const EepromAddr sigFmtAddrs[NSIG] = {
 static volatile SigFmt sigFmts[NSIG];
 
 static volatile U16 tmr1Start = 0u;
+static volatile U16 tmr2Period = 0u;
 
 // Load signals' encoding formats and CAN IDs from EEPROM
 static Status
@@ -169,6 +179,10 @@ main(void) {
 
 	// Setup TMR1 for tachometer
 	T1CON = 0x31; // source=Fosc/4, prescaler=1:8, enable=1
+
+	// Setup TMR2 for speedometer
+	T2CON = 0x7F; // postscaler=1:16, enable=1, prescaler=1:64
+	PR2 = 10u-1u; // period = PR2+1
 
 	// Enable interrupts
 	INTCON = 0x00; // clear flags
@@ -333,6 +347,17 @@ driveTach(U16 pulsePerMin) {
 	}
 }
 
+// Set frequency of speedometer output signal.
+static void
+driveSpeed(U16 pulsePerMin) {
+	if (pulsePerMin < MIN_SPEED_PULSE_PER_MIN) {
+		TMR2IE = 0;
+	} else {
+		TMR2IE = 1;
+		tmr2Period = ((U32)SPEED_FACTOR / pulsePerMin) & 0xFFFF;
+	}
+}
+
 // Generate the output signal being sent to one of the gauges.
 // Raw is the raw signal value extracted from a CAN frame.
 static Status
@@ -366,7 +391,7 @@ driveGauge(Signal sig, I32 raw) {
 		driveTach(val);
 		break;
 	case SIG_SPEED:
-		// TODO
+		driveSpeed(val);
 		break;
 	case SIG_AN1:
 		dacSet1a(val);
@@ -416,6 +441,7 @@ handleSigFrame(const CanFrame *frame) {
 void
 __interrupt() isr(void) {
 	static U8 tmr1Ctr = 0u;
+	static U16 tmr2Ctr = 0u;
 
 	U8 rxStatus;
 	CanFrame frame;
@@ -445,12 +471,19 @@ __interrupt() isr(void) {
 		INTF = 0; // clear flag
 	}
 	if (TMR1IF) { // tachometer
-		if (++tmr1Ctr == (TMR1_POST/EDGE_PER_PULSE)) {
+		if (++tmr1Ctr >= (TMR1_POST/EDGE_PER_PULSE)) {
 			tmr1Ctr = 0u;
 			TACH_PIN ^= 1; // toggle tach output
 		}
 		TMR1H = (tmr1Start>>8u)&0xFF; // reset timer
 		TMR1L = (tmr1Start>>0u)&0xFF;
 		TMR1IF = 0;
+	}
+	if (TMR2IF) { // speedometer
+		if (++tmr2Ctr >= (tmr2Period/EDGE_PER_PULSE)) {
+			tmr2Ctr = 0u;
+			SPEED_PIN ^= 1; // toggle speedometer output
+		}
+		TMR2IF = 0;
 	}
 }

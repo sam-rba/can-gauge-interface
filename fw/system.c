@@ -35,6 +35,8 @@ sysInit(void) {
 	ANSELC = 0;
 
 	// Init pins
-	TACH_TRIS = OUT;
+	TACH_TRIS = OUT; // tachometer
 	TACH_PIN = 0;
+	SPEED_TRIS = OUT; // speedometer
+	SPEED_PIN = 0;
 }
