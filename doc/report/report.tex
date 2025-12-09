@@ -1,6 +1,7 @@
 \documentclass[lettersize,conference]{IEEEtran}
 \usepackage{biblatex}
 \usepackage{hyperref}
+\usepackage{graphicx}
 
 \addbibresource{../references.bib}
 
@@ -38,22 +39,38 @@ Combustion engines, such as those used to power passenger cars, require precise 
 Since the early 1970s, car engines have been electronically controlled by an EMS (engine management system) \cite{JapanSemi}.
 An EMS is an embedded system consisting of an ECU (electronic control unit), sensors, and actuators.
 The actuators include fuel injectors and spark plugs.
-The sensors measure things such as crankshaft angle, intake manifold pressure, coolant temperature, and so on.
+The sensors measure crankshaft angle, intake manifold pressure, coolant temperature, and so on.
 The ECU features a microcontroller that uses feedback from these sensor data to operate the actuators, thus allowing the engine to run.
 
 Sensor data are sent not only to the ECU, but also to a display system mounted in the cabin so that the driver may monitor the engine's health.
-The display system is typically a set of gauges showing, for instance, engine speed, oil pressure, oil pressure, and coolant temperature, among other things.
+The display system is typically a set of gauges showing, for instance, engine speed, oil pressure, oil and coolant temperature, among other things.
 
-The sensor data are transported about the car via a network; CAN (controller area network) \cite{can20b} is ubiquitous.
+The sensor data are transported about the car via a computer network; CAN (controller area network) \cite{can20b} is ubiquitous.
 Introduced by Bosch in the early 1990s and standardized by ISO 11898 \cite{CanHistory}, all cars sold in the United States are required to be equiped with a CAN bus \cite{CFR40.86.1806-05}.
 
 The display system in the cabin must convey sensor data to the driver.
 Each datum represents the instantaneous value of a continuous quantity---speed, temperature, pressure, etc.
 These data are visually encoded by the display system and shown to the driver.
-Each datum is most effectively encoded as a graduated radial analog scale with the instantaneous value marked on said scale \cite{Panchal2025}.
-The graduated scale takes advantage of vernier acuity: our ability to discern slight misalignment between line segments \cite{Strasburger2018}, while the radial marker leverages the hypercolumnar acuity of vision: our ability to detect minute changes in angle of a line segment \cite{Hubel1962}.
+The data are most effectively represented by graduated radial analog scales with the instantaneous value marked on said scale \cite{Panchal2025}.
+The graduated scale takes advantage of vernier acuity: our ability to discern slight misalignment between line segments \cite{Strasburger2018}, while the radial marker leverages the hypercolumnar acuity of vision: our ability to detect minute changes in angle of line segments \cite{Hubel1962}.
 Put simply, an analog needle gauge is the best way to display information to the driver.
-It is the reason why even modern digital display systems are often just skeuomorphs of analog gauges \cite{LifeRacingDisplays}.
+It is the reason why even modern digital display systems are often skeuomorphs of analog gauges \cite{LifeRacingDisplays}, as seen in Fig.~\ref{fig:Boeing}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{boeing}
+	\caption{Boeing 737 digital instrument panel.
+		\emph{Although fitted to an aeroplane as opposed to a car, this display serves as an example of quality design.
+		Automotive engineering is the poor man's aeronautics---much can be gleaned from the higher arts.}}
+	\label{fig:Boeing}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{r31}
+	\caption{Analog gauges fitted to 1987 Nissan Skyline GTS-R Group A \cite{r31}.}
+	\label{fig:R31}
+\end{figure}
 
 
 
