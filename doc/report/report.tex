@@ -2,6 +2,7 @@
 \usepackage{biblatex}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{subfigure}
 
 \addbibresource{../references.bib}
 
@@ -13,12 +14,14 @@
 \author{
 	\IEEEauthorblockN{Sam Anthony}
 	\IEEEauthorblockA{Concordia University\\
+		Montréal Québec, Canada\\
 		Student ID: 40271987\\
 		Email: sam@samanthony.xyz}
 	\and
 	\IEEEauthorblockN{Supervised by Hovhannes Harutyunyan, PhD}
 	\IEEEauthorblockA{Concordia University\\
 		Department of Computer Science and Software Engineering\\
+		Montréal Québec, Canada\\
 		Email: haruty@encs.concordia.ca}
 }
 
@@ -42,37 +45,63 @@ The actuators include fuel injectors and spark plugs.
 The sensors measure crankshaft angle, intake manifold pressure, coolant temperature, and so on.
 The ECU features a microcontroller that uses feedback from these sensor data to operate the actuators, thus allowing the engine to run.
 
-Sensor data are sent not only to the ECU, but also to a display system mounted in the cabin so that the driver may monitor the engine's health.
-The display system is typically a set of gauges showing, for instance, engine speed, oil pressure, oil and coolant temperature, among other things.
+Sensor data are used not only by the ECU, but also by a display system mounted in the cabin that allows the driver to monitor the engine's health.
+The display system is typically a set of gauges showing, for instance, engine speed, oil pressure, and coolant temperature, among other things.
 
-The sensor data are transported about the car via a computer network; CAN (controller area network) \cite{can20b} is ubiquitous.
-Introduced by Bosch in the early 1990s and standardized by ISO 11898 \cite{CanHistory}, all cars sold in the United States are required to be equiped with a CAN bus \cite{CFR40.86.1806-05}.
-
-The display system in the cabin must convey sensor data to the driver.
+The display system must visually encode sensor data and convey them to the driver.
 Each datum represents the instantaneous value of a continuous quantity---speed, temperature, pressure, etc.
-These data are visually encoded by the display system and shown to the driver.
-The data are most effectively represented by graduated radial analog scales with the instantaneous value marked on said scale \cite{Panchal2025}.
+The data are most effectively represented by a graduated radial analog scale with the instantaneous value marked on said scale \cite{Panchal2025}.
 The graduated scale takes advantage of vernier acuity: our ability to discern slight misalignment between line segments \cite{Strasburger2018}, while the radial marker leverages the hypercolumnar acuity of vision: our ability to detect minute changes in angle of line segments \cite{Hubel1962}.
-Put simply, an analog needle gauge is the best way to display information to the driver.
-It is the reason why even modern digital display systems are often skeuomorphs of analog gauges \cite{LifeRacingDisplays}, as seen in Fig.~\ref{fig:Boeing}.
+Simply put, an analog needle gauge is the best way to display information to the driver.
+It is the reason why even modern digital display systems are often skeuomorphs of analog gauges, as seen in Fig.~\ref{fig:Stack}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{boeing}
-	\caption{Boeing 737 digital instrument panel.
-		\emph{Although fitted to an aeroplane as opposed to a car, this display serves as an example of quality design.
-		Automotive engineering is the poor man's aeronautics---much can be gleaned from the higher arts.}}
-	\label{fig:Boeing}
+	\subfigure[]{\includegraphics[height=1.25in]{stack400} \label{subfig:Stack400}}
+	\subfigure[]{\includegraphics[height=1.25in]{stack9918} \label{subfig:Stack9918}}
+	\caption{\subref{subfig:Stack400} Analog needle gauge \cite{Stack400} and; \subref{subfig:Stack9918} skeuomorphic digital display emulating analog gauges \cite{Stack9918}.}
+	\label{fig:Stack}
 \end{figure}
+
+As engine performance increases, the operating window where it will run reliably shrinks, necessitating even tighter control.
+This drives demand for even more sensor data, both for the ECU---to precisely regulate the running of the engine---and for the driver, to monitor the engine's health and to ensure that it stays within its safe operating window.
+
+This is especially true in racing, where the engine must be fine-tuned to its limits while remaining reliable for the duration of its life.
+Race teams often fit additional sensors and gauges to the car in order to monitor the health of the engine (Fig.~\ref{fig:R31}).
 
 \begin{figure}
 	\centering
 	\includegraphics[width=2.5in]{r31}
-	\caption{Analog gauges fitted to 1987 Nissan Skyline GTS-R Group A \cite{r31}.}
+	\caption{Analog gauges fitted to 1987 Nissan Skyline GTS-R Group A race car \cite{r31}.}
 	\label{fig:R31}
 \end{figure}
 
+All these sensor data must somehow be transmitted throughout the car; a computer network handles this task well.
+CAN (controller area network) \cite{can20b} is ubiquitous: introduced by Bosch in the early 1990s and standardized by ISO 11898 \cite{CanHistory}, all cars sold in the United States are required to be equiped with a CAN bus \cite{CFR40.86.1806-05}.
 
+Most modern digital display systems, such as the one shown in Fig.~\ref{subfig:Stack9918}, come with a CAN interface, allowing them to display a practically unlimited array of information from whatever sensors may be equiped to the car.
+On the other hand, analog gauges have largely been abandoned by manufacturers, as digital panels can display myriad information at a fraction of the cost of an equivalent set of analog gauges.
+However, some, including myself, prefer a genuine analog gauge as opposed to a facsimile displayed on a screen.
+The trouble is, most analog gauges lack a CAN interface, with only a few companies making CAN-enabled analog gauges, mostly for industrial applications \cite{Vdo}.
+
+Those who wish to install an analog gauge typically do so by installing a sensor on the engine and running a wire directly to the gauge's analog input---this is the setup recommended by most gauge manufacturers \cite{Stack3307Manual}.
+While this does work, it is less than ideal for several reasons.
+
+Firstly, running a wire through the engine bay leaves the signal vulnerable to EMI (electromagnetic interference) as it travels near noisy components like the ignition coils.
+This can cause signal integrity issues that could have been avoided by transporting the signal via the CAN bus already present in the car.
+CAN uses a CRC (cyclic redundancy check) to provide data integrity.
+
+Secondly, the EMS already features a host of sensors, and installing another for the gauge often leads to duplication.
+While this may appear to provide redundancy, it in fact does not.
+On the contrary, it reduces reliability and increases complexity by introducing additional failure points into the system.
+A properly engineered solution would integrate the gauge into the EMS, allowing them to share sensor data, thus reducing the complexity of the system.
+
+This brings us finally to the subject of this paper: a device that allows analog gauges to be retofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
+
+TODO: outline.
+
+
+\section{Project Overview}
 
 TODO
 
