@@ -116,13 +116,18 @@ Two dual DACs (digital-to-analog converters) generate signals for the four analo
 These can drive up to four temperature or pressure gauges, or any gauge that accepts a 0--5V analog input.
 The microcontroller's timers produce two variable-frequency square waves which drive the tachometer and speedometer.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{diagram}
+	\caption{System diagram.}
+	\label{fig:BlockDiagram}
+\end{figure}
+
 As it is intended to be a generic part that can be retrofitted to existing cars, the device must work with any combination of sensors, gauges, and CAN encoding schemes.
 Thus, it is user-programmable, allowing it to be installed in any system.
 The user-configuration is programmed via CAN and stored in non-volatile memory, namely an EEPROM (electrically erasable programmable read-only memory) chip.
 
 TODO: mention software/firmware and that it will be discussed in the subsequent sections, after the hardware.
-
-TODO: block diagram.
 
 TODO
 
