@@ -28,6 +28,8 @@
 \begin{document}
 
 \maketitle
+\thispagestyle{plain} % enable page numbers
+\pagestyle{plain}
 
 \begin{abstract}
 	TODO
@@ -96,17 +98,31 @@ While this may appear to provide redundancy, it in fact does not.
 On the contrary, it reduces reliability and increases complexity by introducing additional failure points into the system.
 A properly engineered solution would integrate the gauge into the EMS, allowing them to share sensor data, thus reducing the complexity of the system.
 
-This brings us finally to the subject of this paper: a device that allows analog gauges to be retofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
+This brings us finally to the subject of the paper: a device that allows analog gauges to be retofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
 
 TODO: outline.
 
 
 \section{Project Overview}
 
-TODO
+At a high level, the device acts as an interface between the car's EMS and the analog gauges in the cabin.
+It receives sensor data encoded in CAN frames from the ECU, and transforms them into signals that the gauges can understand: such as a variable-frequency square wave for a tachometer, or a 0--5V analog signal for a pressure gauge.
+Thus, it is referred to as an \emph{analog gauge driver with a CAN interface}.
 
+A block diagram of the system is shown in Fig. \ref{fig:BlockDiagram}.
+The device has a CAN controller and transceiver for sending and receiving CAN frames.
+A microcontroller decodes and extracts sensor data from the frames, and communicates the data to the peripherals which drive the gauges.
+Two dual DACs (digital-to-analog converters) generate signals for the four analog outputs.
+These can drive up to four temperature or pressure gauges, or any gauge that accepts a 0--5V analog input.
+The microcontroller's timers produce two variable-frequency square waves which drive the tachometer and speedometer.
 
-\section{Objectives}
+As it is intended to be a generic part that can be retrofitted to existing cars, the device must work with any combination of sensors, gauges, and CAN encoding schemes.
+Thus, it is user-programmable, allowing it to be installed in any system.
+The user-configuration is programmed via CAN and stored in non-volatile memory, namely an EEPROM (electrically erasable programmable read-only memory) chip.
+
+TODO: mention software/firmware and that it will be discussed in the subsequent sections, after the hardware.
+
+TODO: block diagram.
 
 TODO
 
