@@ -1,8 +1,0 @@
-github.com/google/gousb v1.1.3 h1:xt6M5TDsGSZ+rlomz5Si5Hmd/Fvbmo2YCJHN+yGaK4o=
-github.com/google/gousb v1.1.3/go.mod h1:GGWUkK0gAXDzxhwrzetW592aOmkkqSGcj5KLEgmCVUg=
-github.com/gotmc/libusb/v2 v2.3.4 h1:xDKi52trBIq7QTMxlhHy9zgb+HRmimSBo8yhx+k1NWU=
-github.com/gotmc/libusb/v2 v2.3.4/go.mod h1:rU0mvps+snf/CHvEkISbxrwUlWpt6VluOkjqpKo6TFw=
-github.com/sam-rba/share v0.3.0 h1:aBVvgSbcBaH43Jrbq++iz15/DAso/D6oJDm+dDM4E40=
-github.com/sam-rba/share v0.3.0/go.mod h1:rDx/wFG1Vc6JO1F/F0eBnkcy2wHwV0T9100ig/hu12A=
-golang.org/x/sync v0.17.0 h1:l60nONMj9l5drqw6jlhIELNv9I0A4OFgRsG9k2oT9Ug=
-golang.org/x/sync v0.17.0/go.mod h1:9KTHXmSnoGruLpwFjVSX0lNNA75CykiMECbovNTZqGI=
