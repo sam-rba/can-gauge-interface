@@ -1,5 +1,5 @@
 .TL
-Frame Format for the CAN Gauge Interface
+User-Calibration CAN Frame Format
 .AU
 Sam Anthony
 .AI
