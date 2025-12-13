@@ -5,6 +5,7 @@
 \usepackage{subfigure}
 \usepackage{pgfgantt}
 \usepackage{amsmath,amssymb}
+\usepackage{placeins}
 
 \addbibresource{../references.bib}
 
@@ -204,7 +205,7 @@ To increase reliability, AEC-certified parts were chosen wherever possible \cite
 \paragraph*{Microcontroller}
 The microcontroller is at the heart of the design.
 A Microchip PIC16F1459 was chosen for its simplicity, robustness, feature-set, and low cost%
-\footnote{
+\footnote{ \label{foot:Usb}
 	The PIC16F1459 also features a USB (universal serial bus) interface.
 	The original design, as seen in the proposal \cite{proposal}, used USB to program the user-calibration.
 	However, later in the project, USB had to be dropped due to memory constraints; now the calibration is programmed via CAN.
@@ -281,7 +282,54 @@ This mistake is discussed further in \S\ref{section:Testing}.
 
 \subsection*{PCB design and manufacture} \label{subsection:PcbDesign}
 
-TODO
+The schematic (Fig. \ref{fig:Schematic}) and PCB (Figs. \ref{fig:PcbPours}, \ref{fig:Pcb3d}, and \ref{fig:PcbAssembled}) were designed in KiCad \cite{kicad}.
+JCLPCB manufactured the board \cite{jlcpcb}.
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=\textwidth]{"schematic-v0.2.pdf"}
+	\caption{Schematic.}
+	\label{fig:Schematic}
+\end{figure*}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{"pcb_pours-v0.2.pdf"}
+	\caption{PCB front and back copper pours.}
+	\label{fig:PcbPours}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{"pcb_3d-v0.2.png"}
+	\caption{3D render of the PCB. Note the vestigial USB-B connector in the top left, to be removed in a future revision (see footnote \ref{foot:Usb}).}
+	\label{fig:Pcb3d}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{"pcb_assembled-v0.2.jpg"}
+	\caption{Fully-assembled PCB sitting on 3D-printed stand.}
+	\label{fig:PcbAssembled}
+\end{figure}
+
+The board was layed out with PCB design best-practices in mind.
+It is a 4-layer design that uses a combination of surface-mount (SMD) and through-hole (THT) components%
+\footnote{
+	Not that mixing SMD and THT components is good practice---it is not.
+	The board was only designed this way to allow the DIP parts that were in-use on the breadboard to be reused on the prototype PCB.}.
+The top and bottom layers are for signals, and the two middle layers are solid ground planes; power is routed on the bottom layer.
+All traces are microstripped above a solid ground plane to keep the fields tight and to give the current a low-impedance return path.
+All signal vias are accompanied by a ground via, again to keep the fields from spreading out in the dielectric.
+Traces are widely-spaced to reduce interference.
+The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are on the opposite side of the board.
+
+One may notice that the board sports a USB-B connector: a vestige of the original design which used USB for user-calibration as opposed to CAN (see footnote \ref{foot:Usb}).
+The connector is no longer required and will be removed in a future revision.
+
+As mentioned above, most of the chosen ICs are available in DIP (through-hole) packages, and were used for prototyping on a breadboard (Fig. \ref{fig:Breadboard}).
+They were then transplanted into the PCB once it had been manufactured.
+This allowed firmware development to be carried out in parallel on the breadboard while waiting for the PCB to arrive (see the timeline in Fig \ref{fig:Timeline}).
 
 
 \section{Firmware} \label{section:Firmware}
@@ -304,6 +352,7 @@ TODO
 TODO
 
 
+\FloatBarrier
 \newpage
 \printbibliography
 \vfill
