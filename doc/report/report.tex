@@ -348,9 +348,14 @@ The EEPROM stores several tables that are mappings from sensor-reading-values to
 For example, one table maps engine speed (rpm) to tachometer pulse frequency.
 The \texttt{table} module makes use of the \texttt{eeprom} HAL module and provides a simple interface to read and manipulate these mapping tables stored in the EEPROM.
 
-Dependencies between the modules are shown in Fig. \ref{fig:Dependencies}.
+Dependencies between the modules are shown in Fig. \ref{fig:Deps}.
 
-TODO: module dependency graph.
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{deps.png}
+	\caption{Firmware module dependency graph.}
+	\label{fig:Deps}
+\end{figure}
 
 The \texttt{main} entrypoint of the firmware simply initializes the HAL and waits to receive an interrupt from the CAN controller or from a timer.
 The ISR (interrupt service routine) handles the reception and decoding of CAN frames.

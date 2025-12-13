@@ -1,0 +1,17 @@
+digraph deps {
+	main -> {system, types, eeprom, dac, can, signal, serial, table}
+	can -> {system, types, spi}
+	dac -> {system, types, spi}
+	eeprom -> {system, types, spi}
+	serial -> {types, eeprom, can, signal}
+	signal -> {types, can}
+	spi -> {system, types}
+	table -> {types, can, eeprom, signal, serial}
+
+	subgraph cluster_hal {
+		label="HAL"
+		style=dashed
+		rank=same
+		can; eeprom; dac;
+	}
+}
