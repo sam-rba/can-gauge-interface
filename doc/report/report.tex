@@ -198,7 +198,7 @@ The hardware is a PCB (printed circuit board) hosting a set of ICs (integrated c
 \subsection*{Component selection} \label{subsection:ComponentSelection}
 
 A car is a harsh environment.
-The device is subject to large variations in temperature, vibration, and EMI (electromagnetic interference).
+The device is subject to vibration, EMI (electromagnetic interference), and large variations in temperature.
 To increase reliability, AEC-certified parts were chosen wherever possible \cite{aec}.
 
 \paragraph*{Microcontroller}
@@ -237,13 +237,46 @@ It has an SPI interface, and its 2KiB of space is sufficient to store  the calib
 Four DACs (digital-to-analog converters) drive the four analog output channels of the board.
 Based on the characteristics of commonly-used pressure and temperature sensors \cite{bosch_pst}, it was determined that a resolution of 15mV/step was required.
 Given the operating voltage of 5V, this meant that the DACs must have at least $5\text{V}/15\text{mV} \approx 333$ steps of resolution.
-Thus, an 8-bit DAC with 256 steps would have been insufficient, and so a 10-bit DAC was selected: namely a Microchip MCP4912 \cite{mcp4912}.
+Thus, an 8-bit DAC with 256 steps would have been insufficient, and so a 10-bit DAC was selected: namely a Microchip MCP4912%
+\footnote{
+	Perhaps it is worth noting that I have no particular affinity to Microchip as a company.
+	The fact that all the chosen ICs ended up being made by them is purely a coincidence.
+	It just so happens that they make chips that are good for this application.}
+\cite{mcp4912}.
 The MCP4912 is a dual-channel 10-bit DAC, so two of them are required to drive the board's four analog outputs.
 
 
 \subsection*{Power supply}
 
-TODO
+Standard automotive electrical systems operate at a nominal voltage of around 13.7V, but can swing between 9 and 16V.
+The voltage supply often has a strong pulsating component as well, known as ripple.
+The board's ICs require a stable 5V to operate reliably.
+Thus, the board's power supply is very robust to tolerate the wide input voltage range and to rectify the ripple.
+
+
+The voltage drop $V_\text{Drop} = V_\text{In} - V_\text{Out}$ is $16\text{V} - 5\text{V} = 11\text{V}$ in the worst case.
+This ruled out the use of a linear regulator, since it would dissipate too much power---the power dissipation of a linear regulator is linear in $V_\text{Drop}$: $P = (V_\text{In} - V_\text{Out}) \times I$.
+The load current was estimated to be 250mA at most \cite{power_budget}.
+Hence, a linear regulator would dissipate up to 2.75W.
+That amount of power from a single chip would be difficult to cool.
+Therefore, a switching regular was deemed the correct choice for the design.
+
+The downside of a switching regulator is that it introduces noise and ripple into the PDN (power distribution network).
+To isolate the other components, a two-stage PDN is used.
+
+The first stage is the switching regulator itself, also known as a buck converter.
+It drops the voltage from the car's nominal 13.7V down to an intermediate 7V level.
+
+The second stage is then composed of two linear regulators that drop the voltage from 7V down to the final 5V that the ICs require.
+They are ST L78M05ABs \cite{l78m}.
+
+Just like a buck converter, switching digital ICs introduce noise into the PDN.
+Therefore, the second stage is split between two regulators in order to keep the analog and digital circuitry separate.
+
+The buck converter is a Texas Instruments TPS5430 \cite{tps5430}.
+It is accompanied by some RC and LC networks that set the output voltage level and dampen the output ripple.
+Unfortunately, the passive component values were calulated incorrectly, which resulted in the buck converter outputting the wrong voltage.
+This mistake is discussed further in \S\ref{section:Testing}.
 
 
 \subsection*{PCB design and manufacture} \label{subsection:PcbDesign}
