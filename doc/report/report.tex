@@ -3,6 +3,7 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{subfigure}
+\usepackage{pgfgantt}
 
 \addbibresource{../references.bib}
 
@@ -127,9 +128,65 @@ As it is intended to be a generic part that can be retrofitted to existing cars,
 Thus, it is user-programmable, allowing it to be installed in any system.
 The user-configuration is programmed via CAN and stored in non-volatile memory, namely an EEPROM (electrically erasable programmable read-only memory) chip.
 
-TODO: mention software/firmware and that it will be discussed in the subsequent sections, after the hardware.
+The project consisted of four tasks that were completed concurrently over the course of the term.
+The timeline of the project is shown in Fig. \ref{fig:Timeline}.
+The tasks to be completed were hardware design, firmware development, software development, and testing.
+Each of these topics are covered in the subsequent sections.
 
-TODO
+\begin{figure*}[p]
+	\centering
+	\begin{ganttchart}[
+		x unit=0.055in,
+		y unit title=0.3in,
+		y unit chart=0.275in,
+		newline shortcut=true,
+		bar label node/.append style={align=left},
+		milestone label node/.append style={align=left},
+		vrule label node/.append style={align=center},
+		time slot format=isodate
+	]{2025-09-01}{2025-12-18}
+		\gantttitlecalendar{year, month=name} \\
+
+		\ganttgroup{Hardware}{2025-09-01}{2025-10-22} \\
+		\ganttbar{PCB design}{2025-09-01}{2025-10-01} \\
+		\ganttlinkedbar{Manufacturing}{2025-10-01}{2025-10-15} \\
+		\ganttlinkedbar{Board testing}{2025-10-15}{2025-10-22} \\
+		\ganttlinkedmilestone{Board completed}{2025-10-22} \\
+
+		\ganttgroup{Firmware}{2025-09-04}{2025-11-10} \\
+		\ganttbar{Main}{2025-09-04}{2025-11-10} \\
+		\ganttbar{DAC}{2025-10-02}{2025-11-08} \\
+		\ganttbar{EEPROM}{2025-10-02}{2025-11-08} \\
+		\ganttbar{CAN}{2025-10-03}{2025-11-08} \\
+		\ganttmilestone{Migrate to board}{2025-10-22} \\
+		\ganttbar{Calibration}{2025-10-24}{2025-11-08} \\
+		\ganttbar{Serialization}{2025-11-01}{2025-11-08} \\
+		\ganttbar{Decoding}{2025-11-01}{2025-11-08} \\
+		\ganttbar{Tach./speedo.}{2025-11-10}{2025-11-10} \\
+
+		\ganttgroup{Software}{2025-10-03}{2025-11-10} \\
+		\ganttbar{CAN timing script}{2025-10-03}{2025-10-04} \\
+		\ganttbar{Calibration software}{2025-11-07}{2025-11-10} \\
+
+		\ganttgroup{Testing}{2025-09-04}{2025-11-10} \\
+		\ganttmilestone{First SPI test}{2025-10-02} \\
+		\ganttmilestone{First DAC test}{2025-10-02} \\
+		\ganttmilestone{First EEPROM test}{2025-10-02} \\
+		\ganttmilestone{First CAN test}{2025-10-23} \\
+		\ganttmilestone{First calibration}{2025-11-08} \\
+		\ganttmilestone{First tach./speedo.\ganttalignnewline{}signals}{2025-11-10} \\
+
+		\ganttgroup{Documentation}{2025-09-01}{2025-12-18} \\
+		\ganttbar{Power supply}{2025-09-07}{2025-09-27} \\
+		\ganttbar{Midterm report}{2025-10-13}{2025-10-14} \\
+		\ganttbar{Cal. frame format}{2025-10-25}{2025-11-08} \\
+		\ganttbar{Final report}{2025-12-08}{2025-12-18}
+
+		\ganttvrule{Board completed}{2025-10-22}
+	\end{ganttchart}
+	\caption{Project timeline.}
+	\label{fig:Timeline}
+\end{figure*}
 
 
 \section{Hardware}
