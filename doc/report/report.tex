@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{subfigure}
 \usepackage{pgfgantt}
+\usepackage{amsmath,amssymb}
 
 \addbibresource{../references.bib}
 
@@ -39,7 +40,7 @@
 \tableofcontents
 
 
-\section{Introduction}
+\section{Introduction} \label{section:Introduction}
 
 Combustion engines, such as those used to power passenger cars, require precise control over their operation in order to run efficiently and reliably.
 Since the early 1970s, car engines have been electronically controlled by an EMS (engine management system) \cite{JapanSemi}.
@@ -104,7 +105,7 @@ This brings us finally to the subject of the paper: a device that allows analog 
 TODO: outline.
 
 
-\section{Project Overview}
+\section{Project Overview} \label{section:ProjectOverview}
 
 At a high level, the device acts as an interface between the car's EMS and the analog gauges in the cabin.
 It receives sensor data encoded in CAN frames from the ECU, and transforms them into signals that the gauges can understand: such as a variable-frequency square wave for a tachometer, or a 0--5V analog signal for a pressure gauge.
@@ -126,7 +127,7 @@ The microcontroller's timers produce two variable-frequency square waves which d
 
 As it is intended to be a generic part that can be retrofitted to existing cars, the device must work with any combination of sensors, gauges, and CAN encoding schemes.
 Thus, it is user-programmable, allowing it to be installed in any system.
-The user-configuration is programmed via CAN and stored in non-volatile memory, namely an EEPROM (electrically erasable programmable read-only memory) chip.
+The user-calibration is programmed via CAN and stored in non-volatile memory, namely an EEPROM (electrically erasable programmable read-only memory) chip.
 
 The project consisted of four tasks that were completed concurrently over the course of the term.
 The timeline of the project is shown in Fig. \ref{fig:Timeline}.
@@ -189,27 +190,83 @@ Each of these topics are covered in the subsequent sections.
 \end{figure*}
 
 
-\section{Hardware}
+\section{Hardware} \label{section:Hardware}
+
+The hardware is a PCB (printed circuit board) hosting a set of ICs (integrated circuits)---as listed in the previous section (Fig \ref{fig:BlockDiagram})---and some supporting passive components: resistors, capacitors, and an inductor.
+
+
+\subsection*{Component selection} \label{subsection:ComponentSelection}
+
+A car is a harsh environment.
+The device is subject to large variations in temperature, vibration, and EMI (electromagnetic interference).
+To increase reliability, AEC-certified parts were chosen wherever possible \cite{aec}.
+
+\paragraph*{Microcontroller}
+The microcontroller is at the heart of the design.
+A Microchip PIC16F1459 was chosen for its simplicity, robustness, feature-set, and low cost%
+\footnote{
+	The PIC16F1459 also features a USB (universal serial bus) interface.
+	The original design, as seen in the proposal \cite{proposal}, used USB to program the user-calibration.
+	However, later in the project, USB had to be dropped due to memory constraints; now the calibration is programmed via CAN.
+	In a future revision of the board, the PIC16F1459 could be replaced with a chip lacking a USB interface in order to reduce cost.}
+\cite{pic16f1459}.
+It is an 8-bit microcontroller with an SPI peripheral for communicating with the other ICs, and timers for generating the tachometer and speedometer signals.
+The PIC is a proven design that Microchip recommends for automotive applications.
+It is available in a DIP (dual in-line) package, making it convenient for breadboard prototyping (Fig. \ref{fig:Breadboard}).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=2.5in]{breadboard}
+	\caption{Breadboard circuit for CAN testing.}
+	\label{fig:Breadboard}
+\end{figure}
+
+\paragraph*{CAN controller and transceiver}
+The CAN controller handles the reception and transmission of CAN frames.
+It is complemented by a CAN transceiver which acts as a buffer between the controller's logic level signals and the differential signals on the bus.
+A Microchip MCP2515 controller \cite{mcp2515} and MCP2561 transceiver \cite{mcp2561} were chosen to fill these roles.
+The MCP2515 supports CAN 2.0B up to 1Mbps and it has an SPI interface for communicating with the PIC.
+Like the PIC, both these chips are available in DIP packages for breadboard prototyping.
+
+\paragraph*{EEPROM}
+The EEPROM stores the user-calibration that defines how sensor signals are encoded in CAN frames, as well a table that maps sensor readings to output signal values.
+A Microchip 25LC160C EEPROM \cite{25lc160c} was selected.
+It has an SPI interface, and its 2KiB of space is sufficient to store  the calibration.
+
+\paragraph*{DACs}
+Four DACs (digital-to-analog converters) drive the four analog output channels of the board.
+Based on the characteristics of commonly-used pressure and temperature sensors \cite{bosch_pst}, it was determined that a resolution of 15mV/step was required.
+Given the operating voltage of 5V, this meant that the DACs must have at least $5\text{V}/15\text{mV} \approx 333$ steps of resolution.
+Thus, an 8-bit DAC with 256 steps would have been insufficient, and so a 10-bit DAC was selected: namely a Microchip MCP4912 \cite{mcp4912}.
+The MCP4912 is a dual-channel 10-bit DAC, so two of them are required to drive the board's four analog outputs.
+
+
+\subsection*{Power supply}
 
 TODO
 
 
-\section{Firmware}
+\subsection*{PCB design and manufacture} \label{subsection:PcbDesign}
 
 TODO
 
 
-\section{Software}
+\section{Firmware} \label{section:Firmware}
 
 TODO
 
 
-\section{Testing}
+\section{Software} \label{section:Software}
 
 TODO
 
 
-\section{Conclusion}
+\section{Testing} \label{section:Testing}
+
+TODO
+
+
+\section{Conclusion} \label{section:Conclusion}
 
 TODO
 
