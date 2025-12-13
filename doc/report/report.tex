@@ -370,8 +370,26 @@ The waves' frequencies are controlled by setting the timers' periods.
 
 \subsection*{Calibration}
 
+In order for the device to work with any combination of sensors, gauges, and CAN encoding schemes, it must be configurable by the end-user.
 
-TODO
+The user-calibration defines the mapping between sensor readings and output signal values that drive the gauges.
+It also defines how sensor readings are encoded in CAN frames.
+
+The \texttt{signal} module defines a \texttt{SigFmt} datastructure which specifies the format of a sensor reading, or \emph{signal} as it is known in the DBC format \cite{dbc10}, within the payload of a CAN frame.
+This includes the CAN ID of the carrier frame, the size and offset of the signal within the frame's payload, and the byte order of the signal.
+
+The format of each signal is stored in the EEPROM as part of the user-calibration.
+The calibration includes six signals: tachometer, speedometer, and the four analog channels.
+
+The user-calibration is programmed onto the board via special CAN frames, called \emph{calibration} or \emph{control} frames.
+There are two control frames, each with a unique ID.
+The first is the \emph{table control frame} which is used to read or write rows of the mapping tables.
+The second is the \emph{signal control frame} which is used to read or write the encoding format of each signal.
+The control frames' formats are defined in the \emph{calfmt} document in the project's source repository \cite{calfmt}.
+
+When the device receives a control frame, the ISR decodes it and either, in the event of a write-request, updates the appropriate segment of the calibration in the EEPROM; or in the event of a read-request, reads the appropriate segment and sends back a CAN frame in response.
+This allows the calibration to be flashed onto the board using write requests and verified using read requests.
+The calibration is sent to the device from a personal computer running the calibration software, which is discussed in the next section.
 
 
 \section{Software} \label{section:Software}
