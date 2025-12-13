@@ -328,11 +328,43 @@ One may notice that the board sports a USB-B connector: a vestige of the origina
 The connector is no longer required and will be removed in a future revision.
 
 As mentioned above, most of the chosen ICs are available in DIP (through-hole) packages, and were used for prototyping on a breadboard (Fig. \ref{fig:Breadboard}).
-They were then transplanted into the PCB once it had been manufactured.
+They were then transplanted into the PCB once it had been manufactured (Fig. \ref{fig:PcbAssembled}).
 This allowed firmware development to be carried out in parallel on the breadboard while waiting for the PCB to arrive (see the timeline in Fig \ref{fig:Timeline}).
 
 
 \section{Firmware} \label{section:Firmware}
+
+Firmware is the program that runs on the board's microcontroller.
+It is responsible for interacting with the peripherals, decoding CAN frames, and transforming sensor data into output signal levels to drive the gauges.
+It is written in ISO C (C99) \cite{c99}, and it is compiled for the PIC16F1459 using Microchip's XC8 compiler \cite{xc8}.
+
+The program is divided into a set of C modules.
+Each peripheral (MCP2515, 25LC160C, MCP4912) has a corresponding module (\texttt{can}, \texttt{eeprom}, \texttt{dac}).
+Collectively, these are known as the HAL (hardware abstraction layer).
+
+There are also higher-level modules that make use of the HAL.
+One example is the \texttt{table} module.
+The EEPROM stores several tables that are mappings from sensor-reading-values to output-signal-values.
+For example, one table maps engine speed (rpm) to tachometer pulse frequency.
+The \texttt{table} module makes use of the \texttt{eeprom} HAL module and provides a simple interface to read and manipulate these mapping tables stored in the EEPROM.
+
+Dependencies between the modules are shown in Fig. \ref{fig:Dependencies}.
+
+TODO: module dependency graph.
+
+The \texttt{main} entrypoint of the firmware simply initializes the HAL and waits to receive an interrupt from the CAN controller or from a timer.
+The ISR (interrupt service routine) handles the reception and decoding of CAN frames.
+Upon receiving a frame, the ISR decodes the sensor signal contained therein, and looks up the corresponding output signal value in the mapping table.
+It then directs one of the peripherals to generate the appropriate output signal accordingly.
+For instance, it may instruct one of the DACs to change the voltage being driven to a temperature/pressure gauge, or it may set the period of the tachometer wave.
+
+The variable-frequency square waves for the tachometer and speedometer are generated using the PIC's built-in timer peripherals.
+Upon overflow, the timers trigger the ISR to toggle the apropriate GPIO (general-purpose input/output) pin.
+The waves' frequencies are controlled by setting the timers' periods.
+
+
+\subsection*{Calibration}
+
 
 TODO
 
