@@ -84,9 +84,9 @@ Race teams often fit additional sensors and gauges to the car in order to monito
 \end{figure}
 
 All these sensor data must somehow be transmitted throughout the car; a computer network handles this task well.
-CAN (controller area network) \cite{can20b} is ubiquitous: introduced by Bosch in the early 1990s and standardized by ISO 11898 \cite{CanHistory}, all cars sold in the United States are required to be equiped with a CAN bus \cite{CFR40.86.1806-05}.
+CAN (controller area network) \cite{can20b} is ubiquitous: introduced by Bosch in the early 1990s and standardized by ISO 11898 \cite{CanHistory}, all cars sold in the United States are required to be equipped with a CAN bus \cite{CFR40.86.1806-05}.
 
-Most modern digital display systems, such as the one shown in Fig.~\ref{subfig:Stack9918}, come with a CAN interface, allowing them to display a practically unlimited array of information from whatever sensors may be equiped to the car.
+Most modern digital display systems, such as the one shown in Fig.~\ref{subfig:Stack9918}, come with a CAN interface, allowing them to display a practically unlimited array of information from whatever sensors may be equipped to the car.
 On the other hand, analog gauges have largely been abandoned by manufacturers, as digital panels can display myriad information at a fraction of the cost of an equivalent set of analog gauges.
 However, some, including myself, prefer a genuine analog gauge as opposed to a facsimile displayed on a screen.
 The trouble is, most analog gauges lack a CAN interface, with only a few companies making CAN-enabled analog gauges, mostly for industrial applications \cite{Vdo}.
@@ -103,9 +103,7 @@ While this may appear to provide redundancy, it in fact does not.
 On the contrary, it reduces reliability and increases complexity by introducing additional failure points into the system.
 A properly engineered solution would integrate the gauge into the EMS, allowing them to share sensor data, thus reducing the complexity of the system.
 
-This brings us finally to the subject of the paper: a device that allows analog gauges to be retofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
-
-TODO: outline.
+This brings us finally to the subject of the paper: a device that allows analog gauges to be retrofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
 
 
 \section{Project Overview} \label{section:ProjectOverview}
@@ -278,14 +276,14 @@ Therefore, the second stage is split between two regulators in order to keep the
 
 The buck converter is a Texas Instruments TPS5430 \cite{tps5430}.
 It is accompanied by some RC and LC networks that set the output voltage level and dampen the output ripple.
-Unfortunately, the passive component values were calulated incorrectly, which resulted in the buck converter outputting the wrong voltage.
+Unfortunately, the passive component values were calculated incorrectly, which resulted in the buck converter outputting the wrong voltage.
 This mistake is discussed further in \S\ref{section:Testing}.
 
 
 \subsection{PCB design and manufacture} \label{subsection:PcbDesign}
 
 The schematic (Fig. \ref{fig:Schematic}) and PCB (Figs. \ref{fig:PcbPours}, \ref{fig:Pcb3d}, and \ref{fig:PcbAssembled}) were designed in KiCad \cite{kicad}.
-JCLPCB manufactured the board \cite{jlcpcb}.
+JLCPCB manufactured the board \cite{jlcpcb}.
 
 \begin{figure*}
 	\centering
@@ -315,7 +313,7 @@ JCLPCB manufactured the board \cite{jlcpcb}.
 	\label{fig:PcbAssembled}
 \end{figure}
 
-The board was layed out with PCB design best-practices in mind.
+The board was laid out with PCB design best-practices in mind.
 It is a 4-layer design that uses a combination of surface-mount (SMD) and through-hole (THT) components%
 \footnote{
 	Not that mixing SMD and THT components is good practice---it is not.
@@ -361,14 +359,14 @@ Dependencies between the modules are shown in Fig. \ref{fig:Deps}.
 	\label{fig:Deps}
 \end{figure}
 
-The \texttt{main} entrypoint of the firmware simply initializes the HAL and waits to receive an interrupt from the CAN controller or from a timer.
+The \texttt{main} entry point of the firmware simply initializes the HAL and waits to receive an interrupt from the CAN controller or from a timer.
 The ISR (interrupt service routine) handles the reception and decoding of CAN frames.
 Upon receiving a frame, the ISR decodes the sensor signal contained therein, and looks up the corresponding output signal value in the mapping table.
 It then directs one of the peripherals to generate the appropriate output signal accordingly.
 For instance, it may instruct one of the DACs to change the voltage being driven to a temperature/pressure gauge, or it may set the period of the tachometer wave.
 
 The variable-frequency square waves for the tachometer and speedometer are generated using the PIC's built-in timer peripherals.
-Upon overflow, the timers trigger the ISR to toggle the apropriate GPIO (general-purpose input/output) pin.
+Upon overflow, the timers trigger the ISR to toggle the appropriate GPIO (general-purpose input/output) pin.
 The waves' frequencies are controlled by setting the timers' periods.
 
 
@@ -379,7 +377,7 @@ In order for the device to work with any combination of sensors, gauges, and CAN
 The user-calibration defines the mapping between sensor readings and output signal values that drive the gauges.
 It also defines how sensor readings are encoded in CAN frames.
 
-The \texttt{signal} module defines a \texttt{SigFmt} datastructure which specifies the format of a sensor reading, or \emph{signal} as it is known in the DBC format \cite{dbc10}, within the payload of a CAN frame.
+The \texttt{signal} module defines a \texttt{SigFmt} data structure which specifies the format of a sensor reading, or \emph{signal} as it is known in the DBC format \cite{dbc10}, within the payload of a CAN frame.
 This includes the CAN ID of the carrier frame, the size and offset of the signal within the frame's payload, and the byte order of the signal.
 
 The format of each signal is stored in the EEPROM as part of the user-calibration.
@@ -432,17 +430,17 @@ The second program is a small script for calculating CAN bit timing parameters.
 Each node in a CAN network has its own clock generator.
 The bit timing parameters can be configured individually at each node in order to achieve a common bit rate throughout the network even though the nodes' clock periods may be slightly out of sync.
 
-The script, named \texttt{bittiming.py} \cite{BitTimingScript}, calculates a set of valid combinations of timing parameters for a given clock frequency and bitrate.
+The script, named \texttt{bittiming.py} \cite{BitTimingScript}, calculates a set of valid combinations of timing parameters for a given clock frequency and bit rate.
 It displays these parameter combinations as configuration words for the MCP2515 CAN controller.
 
 The configuration words are hard-coded in the firmware and are written to the MCP2515's configuration registers at startup time.
-Although the birate is currently a constant, set at compile time, the firmware includes a set of bit timing configuration words for each commonly-used bitrate \cite{CanBitrates} so that an automatic baudrate detection algorithm can be implemented in the future.
+Although the bit rate is currently a constant, set at compile time, the firmware includes a set of bit timing configuration words for each commonly-used bit rate \cite{CanBitrates} so that an automatic baud rate detection algorithm can be implemented in the future.
 
 A flaw in the board was discovered while calculating the bit timing parameters.
 The CAN controller requires an external oscillator.
 On the prototype board, the CAN controller's clock input is connected to the microcontroller's clock output which runs at 12MHz.
-12MHz is not fast enough to run a bitrate of 800kbps or greater.
-Therefore, although the MCP2515 supports bitrates up to 1Mbps, the board is limited to 500kbps with the current clock setup.
+12MHz is not fast enough to run a bit rate of 800kbps or greater.
+Therefore, although the MCP2515 supports bit rates up to 1Mbps, the board is limited to 500kbps with the current clock setup.
 This can be remedied in a future revision by adding a dedicated 20MHz oscillator for the CAN controller.
 
 
@@ -462,7 +460,7 @@ Some special equipment was required for testing.
 A USBtin USB-to-CAN interface enabled reading and writing CAN frames to the bus from a workstation computer \cite{usbtin}.
 It was used to monitor the bus during CAN system testing, and to flash the user-calibration onto the device.
 
-An EpoTek Labrador is an inexpensive all-in-one oscilloscope, signal generator, power supply, and logic analyzer \cite{espotek_labrador}.
+An EspoTek Labrador is an inexpensive all-in-one oscilloscope, signal generator, power supply, and logic analyzer \cite{espotek_labrador}.
 It proved invaluable during testing.
 The power supply provided 12V to the board.
 The logic analyzer was used to debug the SPI (serial peripheral interface) bus while developing the HAL firmware modules.
@@ -475,7 +473,7 @@ Finally, a simple multimeter was used for continuity testing to verify the desig
 
 An issue with the power supply was uncovered while testing the circuit board.
 As mentioned in \S\ref{subsection:PowerSupply}, the first stage of the power supply is supposed to output 7V.
-However, upon receiving the board, this rail measured only 5V, revealing a mistake in the calulation of the passive components surrounding the buck converter that control its output voltage.
+However, upon receiving the board, this rail measured only 5V, revealing a mistake in the calculation of the passive components surrounding the buck converter that control its output voltage.
 While this issue will have to be corrected in a future revision, it did not prevent the existing board from being used for the remainder of the project.
 Bypassing the second stage of the power supply by jumping the 7V and 5V rails, thus providing the ICs with the correct voltage, allowed the board to function well enough.
 This workaround can be seen in Fig. \ref{fig:TestSetup}.
@@ -498,7 +496,7 @@ Furthermore, it can be configured for any combination of sensors, gauges, and CA
 
 \section{Conclusion} \label{section:Conclusion}
 
-In conclusion, the project was a success; the device fulfils all of its requirements.
+In conclusion, the project was a success; the device fulfills all of its requirements.
 What follows is a summary of the goals, proceedings, and outcomes of the project.
 
 The goal was to design an electronic device that would allow analog gauges to be retrofitted into a car's EMS (engine management system) while leveraging the capabilities of the car's CAN (controller area network) bus.
@@ -518,7 +516,7 @@ Suites of unit and system tests were developed to verify the device's various su
 Hardware testing revealed some flaws in the board that will have to be fixed in a subsequent revision.
 However, they were not catastrophic, and development was able  to proceed using the existing board.
 
-Ultimately, testing confirmed that, despite minor flaws in the board, the device operates correctly and fulfils all of its requirements.
+Ultimately, testing confirmed that, despite minor flaws in the board, the device operates correctly and fulfills all of its requirements.
 It is able to receive CAN frames from the bus, decode them, and generate signals to drive up to six analog gauges accordingly.
 Furthermore, it can be configured for any combination of sensors, gauges, and CAN encoding schemes by flashing a user-calibration with the \emph{cal} program.
 Hereby the project is deemed a success.
