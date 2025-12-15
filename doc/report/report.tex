@@ -227,7 +227,7 @@ The CAN controller handles the reception and transmission of CAN frames.
 It is complemented by a CAN transceiver which acts as a buffer between the controller's logic level signals and the differential signals on the bus.
 A Microchip MCP2515 controller \cite{mcp2515} and MCP2561 transceiver \cite{mcp2561} were chosen to fill these roles.
 The MCP2515 supports CAN 2.0B up to 1Mbps and it has an SPI interface for communicating with the PIC.
-Like the PIC, both these chips are available in DIP packages for breadboard prototyping.
+Both these chips are available in DIP packages for breadboard prototyping.
 
 \paragraph*{EEPROM}
 The EEPROM stores the user-calibration that defines how sensor signals are encoded in CAN frames, as well a table that maps sensor readings to output signal values.
@@ -252,13 +252,12 @@ The MCP4912 is a dual-channel 10-bit DAC, so two of them are required to drive t
 Standard automotive electrical systems operate at a nominal voltage of around 13.7V, but can swing between 9 and 16V.
 The voltage supply often has a strong pulsating component as well, known as ripple.
 The board's ICs require a stable 5V to operate reliably.
-Thus, the board's power supply is very robust to tolerate the wide input voltage range and to rectify the ripple.
+Hence, the board's power supply is very robust to tolerate the wide input voltage range and to rectify the ripple.
 
 
 The voltage drop $V_\text{Drop} = V_\text{In} - V_\text{Out}$ is $16\text{V} - 5\text{V} = 11\text{V}$ in the worst case.
 This ruled out the use of a linear regulator, since it would dissipate too much power---the power dissipation of a linear regulator is linear in $V_\text{Drop}$: $P = (V_\text{In} - V_\text{Out}) \times I$.
-The load current was estimated to be 250mA at most \cite{power_budget}.
-Hence, a linear regulator would dissipate up to 2.75W.
+The load current was estimated to be 250mA at most \cite{power_budget}, so a linear regulator would dissipate up to 2.75W.
 That amount of power from a single chip would be difficult to cool.
 Therefore, a switching regular was deemed the correct choice for the design.
 
@@ -268,13 +267,20 @@ To isolate the other components, a two-stage PDN is used.
 The first stage is the switching regulator itself, also known as a buck converter.
 It drops the voltage from the car's nominal 13.7V down to an intermediate 7V level.
 
-The second stage is then composed of two linear regulators that drop the voltage from 7V down to the final 5V that the ICs require.
-They are ST L78M05ABs \cite{l78m}.
-
 Just like a buck converter, switching digital ICs introduce noise into the PDN.
 Therefore, the second stage is split between two regulators in order to keep the analog and digital circuitry separate.
+It is composed of two ST L78M05AB \cite{l78m} LDOs (low-dropout regulators) that bring the voltage from 7V down to the final 5V that the ICs require.
 
-The buck converter is a Texas Instruments TPS5430 \cite{tps5430}.
+A diagram of the PDN is shown in Fig. \ref{fig:Pdn}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.9\columnwidth]{pdn.png}
+	\caption{Power distribution network.}
+	\label{fig:Pdn}
+\end{figure}
+
+The buck converter in the first stage is a Texas Instruments TPS5430 \cite{tps5430}.
 It is accompanied by some RC and LC networks that set the output voltage level and dampen the output ripple.
 Unfortunately, the passive component values were calculated incorrectly, which resulted in the buck converter outputting the wrong voltage.
 This mistake is discussed further in \S\ref{section:Testing}.
