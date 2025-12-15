@@ -196,7 +196,7 @@ Each of these topics are covered in the subsequent sections.
 The hardware is a PCB (printed circuit board) hosting a set of ICs (integrated circuits)---as listed in the previous section (Fig \ref{fig:BlockDiagram})---and some supporting passive components: resistors, capacitors, and an inductor.
 
 
-\subsection*{Component selection} \label{subsection:ComponentSelection}
+\subsection{Component selection} \label{subsection:ComponentSelection}
 
 A car is a harsh environment.
 The device is subject to vibration, EMI (electromagnetic interference), and large variations in temperature.
@@ -247,7 +247,7 @@ Thus, an 8-bit DAC with 256 steps would have been insufficient, and so a 10-bit 
 The MCP4912 is a dual-channel 10-bit DAC, so two of them are required to drive the board's four analog outputs.
 
 
-\subsection*{Power supply}
+\subsection{Power supply}
 
 Standard automotive electrical systems operate at a nominal voltage of around 13.7V, but can swing between 9 and 16V.
 The voltage supply often has a strong pulsating component as well, known as ripple.
@@ -280,7 +280,7 @@ Unfortunately, the passive component values were calulated incorrectly, which re
 This mistake is discussed further in \S\ref{section:Testing}.
 
 
-\subsection*{PCB design and manufacture} \label{subsection:PcbDesign}
+\subsection{PCB design and manufacture} \label{subsection:PcbDesign}
 
 The schematic (Fig. \ref{fig:Schematic}) and PCB (Figs. \ref{fig:PcbPours}, \ref{fig:Pcb3d}, and \ref{fig:PcbAssembled}) were designed in KiCad \cite{kicad}.
 JCLPCB manufactured the board \cite{jlcpcb}.
@@ -370,7 +370,7 @@ Upon overflow, the timers trigger the ISR to toggle the apropriate GPIO (general
 The waves' frequencies are controlled by setting the timers' periods.
 
 
-\subsection*{Calibration}
+\subsection{Calibration} \label{subsection:FwCalibration}
 
 In order for the device to work with any combination of sensors, gauges, and CAN encoding schemes, it must be configurable by the end-user.
 
@@ -400,9 +400,32 @@ In addition to the firmware, several other pieces of software were developed ove
 In contrast with the firmware which runs on the device's microcontroller, these programs target a personal computer.
 
 
-\subsection*{CAN bit timing calculation}
+\subsection{Calibration software} \label{subsection:SwCalibration}
 
-The first program is a small Python script for calculating CAN bit timing parameters.
+As described above, the user-calibration, stored in the board's EEPROM, allows the device to be configured for any combination of sensors, gauges, and CAN encoding schemes.
+
+The \emph{cal} program flashes the calibration from a personal computer onto the device via the CAN bus \cite{Cal}.
+Cal takes a set of files containing the user-calibration as input, and outputs CAN frames that are sent to the device.
+These are the special \emph{control} frames mentioned in \S\ref{subsection:FwCalibration} and defined fully in \cite{calfmt}.
+
+The calibration is defined by a DBC file \cite{dbc10} and a set of CSV files.
+The DBC file specifies the CAN encoding scheme which describes how sensor readings, represented as \emph{signals} in the DBC file, are encoded into CAN frames.
+The DBC file can specify one signal for each gauge, e.g., \texttt{EngineSpeed} for the tachometer, \texttt{EngineOilPressure} for one of the analog gauges, and so on.
+This allows the device to be configured for the CAN encoding scheme that the car's EMS uses.
+
+The CSV files define the tables which map sensor-reading-values to output-signal-values which drive the gauges.
+There is one table, and thus one CSV file, for each signal.
+This allows the device to be configured for the particular sensors and gauges installed in the car.
+
+Cal is written in 674 lines of Go \cite{Golang}.
+It uses the Linux kernel's SocketCAN \cite{SocketCan} facility to access the CAN bus.
+Thus, its support is limited to Linux.
+Ideally it should be ported to other operating systems in the future.
+
+
+\subsection{CAN bit timing calculation} \label{subsection:Bittiming}
+
+The second program is a small Python script for calculating CAN bit timing parameters.
 
 Each node in a CAN network has its own clock generator.
 The bit timing parameters can be configured individually at each node in order to achieve a common bit rate throughout the network even though the nodes' clock periods may be slightly out of sync.
@@ -419,11 +442,6 @@ On the prototype board, the CAN controller's clock input is connected to the mic
 12MHz is not fast enough to run a bitrate of 800kbps or greater.
 Therefore, although the MCP2515 supports bitrates up to 1Mbps, the board is limited to 500kbps with the current clock setup.
 This can be remedied in a future revision by adding a dedicated 20MHz oscillator for the CAN controller.
-
-
-\subsection*{Calibration software}
-
-TODO
 
 
 \section{Testing} \label{section:Testing}
