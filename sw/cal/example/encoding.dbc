@@ -1,0 +1,12 @@
+VERSION "2025.11.10"
+
+BO_ 2365480959 GPM13: 8 Vector__XXX
+
+BO_ 2365480958 GPM13: 8 Vector__XXX
+ SG_ VehicleSpeed : 48|16@1+ (0.00390625,0) [0|250.996] "km/hr" Vector__XXX
+ SG_ EngineSpeed : 24|16@1+ (0.125,0) [0|8031.88] "rpm" Vector__XXX
+
+BO_ 2566808574 GPM15: 8 Vector__XXX
+ SG_ EngineOilPressure : 24|8@1+ (4,0) [0|1000] "kPa" Vector__XXX
+ SG_ EngineCoolantTemperature : 16|8@1+ (1,-40) [-40|210] "deg C" Vector__XXX
+ SG_ EngineOilTemperature : 0|16@1+ (0.03125,-273) [-273|1735] "deg C" Vector__XXX
