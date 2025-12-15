@@ -336,7 +336,9 @@ This allowed firmware development to be carried out in parallel on the breadboar
 
 Firmware is the program that runs on the board's microcontroller.
 It is responsible for interacting with the peripherals, decoding CAN frames, and transforming sensor data into output signal levels to drive the gauges.
-It is written in ISO C (C99) \cite{c99}, and it is compiled for the PIC16F1459 using Microchip's XC8 compiler \cite{xc8}.
+It is written in ISO C (C99) \cite{c99}.
+The program is compiled for the PIC16F1459 using Microchip's XC8 compiler \cite{xc8}.
+In total, the firmware is 1601 lines of C code \cite{repo}.
 
 The program is divided into a set of C modules.
 Each peripheral (MCP2515, 25LC160C, MCP4912) has a corresponding module (\texttt{can}, \texttt{eeprom}, \texttt{dac}).
@@ -393,6 +395,33 @@ The calibration is sent to the device from a personal computer running the calib
 
 
 \section{Software} \label{section:Software}
+
+In addition to the firmware, several other pieces of software were developed over the course of the project.
+In contrast with the firmware which runs on the device's microcontroller, these programs target a personal computer.
+
+
+\subsection*{CAN bit timing calculation}
+
+The first program is a small Python script for calculating CAN bit timing parameters.
+
+Each node in a CAN network has its own clock generator.
+The bit timing parameters can be configured individually at each node in order to achieve a common bit rate throughout the network even though the nodes' clock periods may be slightly out of sync.
+
+The script, named \texttt{bittiming.py} \cite{BitTimingScript}, calculates a set of valid combinations of timing parameters for a given clock frequency and bitrate.
+It displays these parameter combinations as configuration words for the MCP2515 CAN controller.
+
+The configuration words are hard-coded in the firmware and are written to the MCP2515's configuration registers at startup time.
+Although the birate is currently a constant, set at compile time, the firmware includes a set of bit timing configuration words for each commonly-used bitrate \cite{CanBitrates} so that an automatic baudrate detection algorithm can be implemented in the future.
+
+A flaw in the board was discovered while calculating the bit timing parameters.
+The CAN controller requires an external oscillator.
+On the prototype board, the CAN controller's clock input is connected to the microcontroller's clock output which runs at 12MHz.
+12MHz is not fast enough to run a bitrate of 800kbps or greater.
+Therefore, although the MCP2515 supports bitrates up to 1Mbps, the board is limited to 500kbps with the current clock setup.
+This can be remedied in a future revision by adding a dedicated 20MHz oscillator for the CAN controller.
+
+
+\subsection*{Calibration software}
 
 TODO
 
