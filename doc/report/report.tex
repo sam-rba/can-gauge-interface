@@ -62,8 +62,8 @@ It is the reason why even modern digital display systems are often skeuomorphs o
 
 \begin{figure}
 	\centering
-	\subfigure[]{\includegraphics[height=1.25in]{stack400} \label{subfig:Stack400}}
-	\subfigure[]{\includegraphics[height=1.25in]{stack9918} \label{subfig:Stack9918}}
+	\subfigure[]{\includegraphics[height=0.4\columnwidth]{stack400} \label{subfig:Stack400}}
+	\subfigure[]{\includegraphics[height=0.4\columnwidth]{stack9918} \label{subfig:Stack9918}}
 	\caption{\subref{subfig:Stack400} Analog needle gauge \cite{Stack400} and; \subref{subfig:Stack9918} skeuomorphic digital display emulating analog gauges \cite{Stack9918}.}
 	\label{fig:Stack}
 \end{figure}
@@ -76,7 +76,7 @@ Race teams often fit additional sensors and gauges to the car in order to monito
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{r31}
+	\includegraphics[width=0.9\columnwidth]{r31}
 	\caption{Analog gauges fitted to 1987 Nissan Skyline GTS-R Group A race car \cite{r31}.}
 	\label{fig:R31}
 \end{figure}
@@ -121,7 +121,7 @@ The microcontroller's timers produce two variable-frequency square waves which d
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{diagram}
+	\includegraphics[width=0.9\columnwidth]{diagram}
 	\caption{System diagram.}
 	\label{fig:BlockDiagram}
 \end{figure}
@@ -217,7 +217,7 @@ It is available in a DIP (dual in-line) package, making it convenient for breadb
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{breadboard}
+	\includegraphics[width=0.9\columnwidth]{breadboard}
 	\caption{Breadboard circuit for CAN testing.}
 	\label{fig:Breadboard}
 \end{figure}
@@ -294,21 +294,21 @@ JCLPCB manufactured the board \cite{jlcpcb}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{pcb_pours-v0.2}
+	\includegraphics[width=0.9\columnwidth]{pcb_pours-v0.2}
 	\caption{PCB front and back copper pours.}
 	\label{fig:PcbPours}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{pcb_3d-v0.2}
+	\includegraphics[width=0.9\columnwidth]{pcb_3d-v0.2}
 	\caption{3D render of the PCB. Note the vestigial USB-B connector in the top left, to be removed in a future revision (see footnote \ref{foot:Usb}).}
 	\label{fig:Pcb3d}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{pcb_assembled-v0.2}
+	\includegraphics[width=0.9\columnwidth]{pcb_assembled-v0.2}
 	\caption{Fully-assembled PCB sitting on 3D-printed stand.}
 	\label{fig:PcbAssembled}
 \end{figure}
@@ -319,7 +319,7 @@ It is a 4-layer design that uses a combination of surface-mount (SMD) and throug
 	Not that mixing SMD and THT components is good practice---it is not.
 	The board was only designed this way to allow the DIP parts that were in-use on the breadboard to be reused on the prototype PCB.}.
 The top and bottom layers are for signals, and the two middle layers are solid ground planes; power is routed on the bottom layer.
-All traces are microstripped above a solid ground plane to keep the fields tight and to give the current a low-impedance return path.
+All traces are microstripped above a solid ground plane to keep the fields tightly coupled and to give the current a low-impedance return path.
 All signal vias are accompanied by a ground via, again to keep the fields from spreading out in the dielectric.
 Traces are widely-spaced to reduce interference.
 The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are on the opposite side of the board.
@@ -354,7 +354,7 @@ Dependencies between the modules are shown in Fig. \ref{fig:Deps}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{deps.png}
+	\includegraphics[width=0.9\columnwidth]{deps.png}
 	\caption{Firmware module dependency graph.}
 	\label{fig:Deps}
 \end{figure}
@@ -480,7 +480,7 @@ This workaround can be seen in Fig. \ref{fig:TestSetup}.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=2.5in]{test_setup-v0.2}
+	\includegraphics[width=0.9\columnwidth]{test_setup-v0.2}
 	\caption{%
 		Testing setup: EspoTek Labrador (top), USBtin (left), gauge driver (center), PIC programmer (right).
 		Yellow wire jumps the 7V, 5V-analog, and 5V-digital rails, providing power to the board and circumventing the flaw in the first stage of the power supply.}
@@ -496,7 +496,30 @@ Furthermore, it can be configured for any combination of sensors, gauges, and CA
 
 \section{Conclusion} \label{section:Conclusion}
 
-TODO
+In conclusion, the project was a success; the device fulfils all of its requirements.
+What follows is a summary of the goals, proceedings, and outcomes of the project.
+
+The goal was to design an electronic device that would allow analog gauges to be retrofitted into a car's EMS (engine management system) while leveraging the capabilities of the car's CAN (controller area network) bus.
+The device transforms sensor reading data from the CAN bus into electric signals suitable for driving the gauges.
+
+In the first phase of the project, the device's hardware was designed: a PCB (printed circuit board) hosting a set of ICs (integrated circuits) that, together as a system, perform the necessary functions of the device.
+
+Firmware---software that runs on the device's microcontroller---was developed to operate the device's hardware.
+The firmware is responsible for interacting with the various peripherals on the board, decoding CAN frames, and transforming the sensor data contained therein into output signal values to drive the gauges.
+
+In addition to the firmware, another piece of software was developed: a program for flashing a user-calibration onto the device.
+This program, called \emph{cal}, reads the calibration from a set of files and writes it to the device via the CAN bus.
+The calibration allows the device to be configured for any combination of sensors, gauges, and CAN encoding schemes that the car's EMS may use.
+
+Both the software and hardware of the device were tested continually over the course of the project.
+Suites of unit and system tests were developed to verify the device's various subsystems and firmware modules.
+Hardware testing revealed some flaws in the board that will have to be fixed in a subsequent revision.
+However, they were not catastrophic, and development was able  to proceed using the existing board.
+
+Ultimately, testing confirmed that, despite minor flaws in the board, the device operates correctly and fulfils all of its requirements.
+It is able to receive CAN frames from the bus, decode them, and generate signals to drive up to six analog gauges accordingly.
+Furthermore, it can be configured for any combination of sensors, gauges, and CAN encoding schemes by flashing a user-calibration with the \emph{cal} program.
+Hereby the project is deemed a success.
 
 
 \FloatBarrier
