@@ -60,7 +60,7 @@ Each datum represents the instantaneous value of a continuous quantity---speed, 
 The data are most effectively represented by a graduated radial analog scale with the instantaneous value marked on said scale \cite{Panchal2025}.
 The graduated scale takes advantage of vernier acuity: our ability to discern slight misalignment between line segments \cite{Strasburger2018}, while the radial marker leverages the hypercolumnar acuity of vision: our ability to detect minute changes in angle of line segments \cite{Hubel1962}.
 Simply put, an analog needle gauge is the best way to display information to the driver.
-It is the reason why even modern digital display systems are often skeuomorphs of analog gauges, as seen in Fig.~\ref{fig:Stack}.
+That is why even modern digital display systems are often skeuomorphs of analog gauges, as seen in Fig.~\ref{fig:Stack}.
 
 \begin{figure}
 	\centering
@@ -71,7 +71,7 @@ It is the reason why even modern digital display systems are often skeuomorphs o
 \end{figure}
 
 As engine performance increases, the operating window where it will run reliably shrinks, necessitating even tighter control.
-This drives demand for even more sensor data, both for the ECU---to precisely regulate the running of the engine---and for the driver, to monitor the engine's health and to ensure that it stays within its safe operating window.
+This spurs demand for even more sensor data, both for the ECU---to precisely regulate the running of the engine---and for the driver, to monitor the engine's health and to ensure that it stays within its safe operating window.
 
 This is especially true in racing, where the engine must be fine-tuned to its limits while remaining reliable for the duration of its life.
 Race teams often fit additional sensors and gauges to the car in order to monitor the health of the engine (Fig.~\ref{fig:R31}).
@@ -95,15 +95,14 @@ Those who wish to install an analog gauge typically do so by installing a sensor
 While this does work, it is less than ideal for several reasons.
 
 Firstly, running a wire through the engine bay leaves the signal vulnerable to EMI (electromagnetic interference) as it travels near noisy components like the ignition coils.
-This can cause signal integrity issues that could have been avoided by transporting the signal via the CAN bus already present in the car.
-CAN uses a CRC (cyclic redundancy check) to provide data integrity.
+This can cause signal integrity issues that can otherwise be avoided by transporting the signal via the CAN bus that the car is likely to have already---CAN uses a CRC (cyclic redundancy check) to provide data integrity.
 
 Secondly, the EMS already features a host of sensors, and installing another for the gauge often leads to duplication.
 While this may appear to provide redundancy, it in fact does not.
 On the contrary, it reduces reliability and increases complexity by introducing additional failure points into the system.
 A properly engineered solution would integrate the gauge into the EMS, allowing them to share sensor data, thus reducing the complexity of the system.
 
-This brings us finally to the subject of the paper: a device that allows analog gauges to be retrofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
+This brings us finally to the subject of the report: a device that allows analog gauges to be retrofitted into a car while leveraging the capabilities of the CAN bus already present in the vehicle.
 
 
 \section{Project Overview} \label{section:ProjectOverview}
@@ -193,7 +192,7 @@ Each of these topics are covered in the subsequent sections.
 
 \section{Hardware} \label{section:Hardware}
 
-The hardware is a PCB (printed circuit board) hosting a set of ICs (integrated circuits)---as listed in the previous section (Fig \ref{fig:BlockDiagram})---and some supporting passive components: resistors, capacitors, and an inductor.
+The hardware is a PCB (printed circuit board) hosting a set of ICs (integrated circuits)---the microcontroller and peripherals listed in the previous section (Fig \ref{fig:BlockDiagram})---and some supporting passive components: resistors, capacitors, and an inductor.
 
 
 \subsection{Component selection} \label{subsection:ComponentSelection}
@@ -207,7 +206,7 @@ The microcontroller is at the heart of the design.
 A Microchip PIC16F1459 was chosen for its simplicity, robustness, feature-set, and low cost%
 \footnote{ \label{foot:Usb}
 	The PIC16F1459 also features a USB (universal serial bus) interface.
-	The original design, as seen in the proposal \cite{proposal}, used USB to program the user-calibration.
+	The original design, as shown in the proposal \cite{proposal}, used USB to program the user-calibration.
 	However, later in the project, USB had to be dropped due to memory constraints; now the calibration is programmed via CAN.
 	In a future revision of the board, the PIC16F1459 could be replaced with a chip lacking a USB interface in order to reduce cost.}
 \cite{pic16f1459}.
@@ -230,19 +229,19 @@ The MCP2515 supports CAN 2.0B up to 1Mbps and it has an SPI interface for commun
 Both these chips are available in DIP packages for breadboard prototyping.
 
 \paragraph*{EEPROM}
-The EEPROM stores the user-calibration that defines how sensor signals are encoded in CAN frames, as well a table that maps sensor readings to output signal values.
-A Microchip 25LC160C EEPROM \cite{25lc160c} was selected.
+The EEPROM stores the user-calibration that defines how sensor signals are encoded in CAN frames, as well as tables that map sensor readings to output signal values.
+A Microchip 25LC160C EEPROM was selected \cite{25lc160c}.
 It has an SPI interface, and its 2KiB of space is sufficient to store  the calibration.
 
 \paragraph*{DACs}
-Four DACs (digital-to-analog converters) drive the four analog output channels of the board.
+Two dual-channel DACs (digital-to-analog converters) drive the four analog outputs of the board.
 Based on the characteristics of commonly-used pressure and temperature sensors \cite{bosch_pst}, it was determined that a resolution of 15mV/step was required.
-Given the operating voltage of 5V, this meant that the DACs must have at least $5\text{V}/15\text{mV} \approx 333$ steps of resolution.
+Given the operating voltage of 5V, this meant that the DACs would need at least $5\text{V}/15\text{mV} \approx 333$ steps of resolution.
 Thus, an 8-bit DAC with 256 steps would have been insufficient, and so a 10-bit DAC was selected: namely a Microchip MCP4912%
 \footnote{
 	Perhaps it is worth noting that I have no particular affinity to Microchip as a company.
-	The fact that all the chosen ICs ended up being made by them is purely a coincidence.
-	It just so happens that they make chips that are good for this application.}
+	It is purely a coincidence that all the chosen ICs ended up being made by them.
+	It just so happens that they make good chips for this application.}
 \cite{mcp4912}.
 The MCP4912 is a dual-channel 10-bit DAC, so two of them are required to drive the board's four analog outputs.
 
@@ -256,16 +255,16 @@ Hence, the board's power supply is very robust to tolerate the wide input voltag
 
 
 The voltage drop $V_\text{Drop} = V_\text{In} - V_\text{Out}$ is $16\text{V} - 5\text{V} = 11\text{V}$ in the worst case.
-This ruled out the use of a linear regulator, since it would dissipate too much power---the power dissipation of a linear regulator is linear in $V_\text{Drop}$: $P = (V_\text{In} - V_\text{Out}) \times I$.
+This ruled out the use of a linear regulator, since it would dissipate too much power---the power dissipation of a linear regulator is linear in $V_\text{Drop}$: $P = V_\text{Drop} \times I$.
 The load current was estimated to be 250mA at most \cite{power_budget}, so a linear regulator would dissipate up to 2.75W.
 That amount of power from a single chip would be difficult to cool.
-Therefore, a switching regular was deemed the correct choice for the design.
+Therefore, a linear regulator was deemed inadequate, necessitating the use of a switching regulator instead.
 
 The downside of a switching regulator is that it introduces noise and ripple into the PDN (power distribution network).
 To isolate the other components, a two-stage PDN is used.
 
 The first stage is the switching regulator itself, also known as a buck converter.
-It drops the voltage from the car's nominal 13.7V down to an intermediate 7V level.
+It drops the voltage from the car's 9--16V down to an intermediate 7V level.
 
 Just like a buck converter, switching digital ICs introduce noise into the PDN.
 Therefore, the second stage is split between two regulators in order to keep the analog and digital circuitry separate.
@@ -289,7 +288,7 @@ This mistake is discussed further in \S\ref{section:Testing}.
 \subsection{PCB design and manufacture} \label{subsection:PcbDesign}
 
 The schematic (Fig. \ref{fig:Schematic}) and PCB (Figs. \ref{fig:PcbPours}, \ref{fig:Pcb3d}, and \ref{fig:PcbAssembled}) were designed in KiCad \cite{kicad}.
-JLCPCB manufactured the board \cite{jlcpcb}.
+JLCPCB manufactured the PCB \cite{jlcpcb}.
 
 \begin{figure*}
 	\centering
@@ -323,30 +322,30 @@ The board was laid out with PCB design best-practices in mind.
 It is a 4-layer design that uses a combination of surface-mount (SMD) and through-hole (THT) components%
 \footnote{
 	Not that mixing SMD and THT components is good practice---it is not.
-	The board was only designed this way to allow the DIP parts that were in-use on the breadboard to be reused on the prototype PCB.}.
+	The board was only designed this way to allow the DIP parts that were used on the breadboard to be reused on the prototype PCB.}.
 The top and bottom layers are for signals, and the two middle layers are solid ground planes; power is routed on the bottom layer.
 All traces are microstripped above a solid ground plane to keep the fields tightly coupled and to give the current a low-impedance return path.
 All signal vias are accompanied by a ground via, again to keep the fields from spreading out in the dielectric.
-Traces are widely-spaced to reduce interference.
+Traces are widely-spaced to reduce interference with one another.
 The noisy switching regulator is placed far away from the other components to reduce EMI---the sensitive analog signals and the DACs are on the opposite side of the board.
 
-One may notice that the board sports a USB-B connector: a vestige of the original design which used USB for user-calibration as opposed to CAN (see footnote \ref{foot:Usb}).
+One may notice that the board sports a USB-B connector: a vestige of the original design which used USB for user-calibration, as opposed to CAN which it uses currently (see footnote \ref{foot:Usb}).
 The connector is no longer required and will be removed in a future revision.
 
 As mentioned above, most of the chosen ICs are available in DIP (through-hole) packages, and were used for prototyping on a breadboard (Fig. \ref{fig:Breadboard}).
 They were then transplanted into the PCB once it had been manufactured (Fig. \ref{fig:PcbAssembled}).
-This allowed firmware development to be carried out in parallel on the breadboard while waiting for the PCB to arrive (see the timeline in Fig \ref{fig:Timeline}).
+This allowed firmware development to be carried out in parallel on the breadboard while waiting for the PCB to arrive, as the timeline in Fig. \ref{fig:Timeline} shows.
 
 
 \section{Firmware} \label{section:Firmware}
 
 Firmware is the program that runs on the board's microcontroller.
 It is responsible for interacting with the peripherals, decoding CAN frames, and transforming sensor data into output signal levels to drive the gauges.
-It is written in ISO C (C99) \cite{c99}.
+It is written in ISO~C (C99) \cite{c99}.
 The program is compiled for the PIC16F1459 using Microchip's XC8 compiler \cite{xc8}.
 In total, the firmware is 1601 lines of C code \cite{repo}.
 
-The program is divided into a set of C modules.
+The firmware is divided into a set of C modules.
 Each peripheral (MCP2515, 25LC160C, MCP4912) has a corresponding module (\texttt{can}, \texttt{eeprom}, \texttt{dac}).
 Collectively, these are known as the HAL (hardware abstraction layer).
 
@@ -354,7 +353,7 @@ There are also higher-level modules that make use of the HAL.
 One example is the \texttt{table} module.
 The EEPROM stores several tables that are mappings from sensor-reading-values to output-signal-values.
 For example, one table maps engine speed (rpm) to tachometer pulse frequency.
-The \texttt{table} module makes use of the \texttt{eeprom} HAL module and provides a simple interface to read and manipulate these mapping tables stored in the EEPROM.
+The \texttt{table} module makes use of the \texttt{eeprom} HAL module and provides a simple interface to read and manipulate these tables stored in the EEPROM.
 
 Dependencies between the modules are shown in Fig. \ref{fig:Deps}.
 
@@ -365,13 +364,14 @@ Dependencies between the modules are shown in Fig. \ref{fig:Deps}.
 	\label{fig:Deps}
 \end{figure}
 
-The \texttt{main} entry point of the firmware simply initializes the HAL and waits to receive an interrupt from the CAN controller or from a timer.
+The \texttt{main} entry point of the firmware simply initializes the HAL and waits to receive an interrupt from either the CAN controller or a timer.
+
 The ISR (interrupt service routine) handles the reception and decoding of CAN frames.
 Upon receiving a frame, the ISR decodes the sensor signal contained therein, and looks up the corresponding output signal value in the mapping table.
 It then directs one of the peripherals to generate the appropriate output signal accordingly.
 For instance, it may instruct one of the DACs to change the voltage being driven to a temperature/pressure gauge, or it may set the period of the tachometer wave.
 
-The variable-frequency square waves for the tachometer and speedometer are generated using the PIC's built-in timer peripherals.
+The variable-frequency square waves that drive the tachometer and speedometer are generated using the PIC's built-in timer peripherals.
 Upon overflow, the timers trigger the ISR to toggle the appropriate GPIO (general-purpose input/output) pin.
 The waves' frequencies are controlled by setting the timers' periods.
 
@@ -383,7 +383,7 @@ In order for the device to work with any combination of sensors, gauges, and CAN
 The user-calibration defines the mapping between sensor readings and output signal values that drive the gauges.
 It also defines how sensor readings are encoded in CAN frames.
 
-The \texttt{signal} module defines a \texttt{SigFmt} data structure which specifies the format of a sensor reading, or \emph{signal} as it is known in the DBC format \cite{dbc10}, within the payload of a CAN frame.
+The \texttt{signal} module defines a data structure that specifies the format of a sensor reading, or \emph{signal} as it is known in the DBC format \cite{dbc10}, within the payload of a CAN frame.
 This includes the CAN ID of the carrier frame, the size and offset of the signal within the frame's payload, and the byte order of the signal.
 
 The format of each signal is stored in the EEPROM as part of the user-calibration.
@@ -393,9 +393,9 @@ The user-calibration is programmed onto the board via special CAN frames, called
 There are two control frames, each with a unique ID.
 The first is the \emph{table control frame} which is used to read or write rows of the mapping tables.
 The second is the \emph{signal control frame} which is used to read or write the encoding format of each signal.
-The control frames' formats are defined in the \emph{calfmt} document in the project's source repository \cite{calfmt}.
+These control frames are defined in full by the \emph{calfmt} document in the project's source repository \cite{calfmt}.
 
-When the device receives a control frame, the ISR decodes it and either, in the event of a write-request, updates the appropriate segment of the calibration in the EEPROM; or in the event of a read-request, reads the appropriate segment and sends back a CAN frame in response.
+When the device receives a control frame, the ISR decodes it and either, in the event of a write-request, updates the appropriate segment of the calibration in the EEPROM; or in the event of a read-request, reads the appropriate segment and responds by sending it back in a CAN frame.
 This allows the calibration to be flashed onto the board using write requests and verified using read requests.
 The calibration is sent to the device from a personal computer running the calibration software, which is discussed in the next section.
 
@@ -414,18 +414,18 @@ The \emph{cal} program flashes the calibration from a personal computer onto the
 Cal takes a set of files containing the user-calibration as input, and outputs CAN frames that are sent to the device.
 These are the special \emph{control} frames mentioned in \S\ref{subsection:FwCalibration} and defined fully in \cite{calfmt}.
 
-The calibration is defined by a DBC file \cite{dbc10} and a set of CSV files.
-The DBC file specifies the CAN encoding scheme which describes how sensor readings, represented as \emph{signals} in the DBC file, are encoded into CAN frames.
-The DBC file can specify one signal for each gauge, e.g., \texttt{EngineSpeed} for the tachometer, \texttt{EngineOilPressure} for one of the analog gauges, and so on.
+The calibration is represented by a DBC file \cite{dbc10} and a set of CSV files.
+The DBC file specifies the CAN encoding scheme which defines how sensor readings, called \emph{signals} in the DBC file, are encoded into CAN frames.
+The DBC file can specify one signal for each gauge, e.g., \texttt{EngineSpeed} for the tachometer, \texttt{EngineOilPressure} for one of the analog gauges, and so on, each with a corresponding CAN ID and encoding format.
 This allows the device to be configured for the CAN encoding scheme that the car's EMS uses.
 
-The CSV files define the tables which map sensor-reading-values to output-signal-values which drive the gauges.
+The CSV files define the tables that map sensor-reading-values to output-signal-values.
 There is one table, and thus one CSV file, for each signal.
 This allows the device to be configured for the particular sensors and gauges installed in the car.
 
 Cal is written in 674 lines of Go \cite{Golang}.
 It uses the Linux kernel's SocketCAN \cite{SocketCan} facility to access the CAN bus.
-Thus, its support is limited to Linux.
+Thus, its support is limited to Linux only.
 Ideally it should be ported to other operating systems in the future.
 
 
@@ -434,13 +434,14 @@ Ideally it should be ported to other operating systems in the future.
 The second program is a small script for calculating CAN bit timing parameters.
 
 Each node in a CAN network has its own clock generator.
-The bit timing parameters can be configured individually at each node in order to achieve a common bit rate throughout the network even though the nodes' clock periods may be slightly out of sync.
+The bit timing parameters can be configured individually at each node in order to achieve a common bit rate throughout the network even though the nodes' clock periods may be slightly out of sync \cite{CanBitTiming}.
 
 The script, named \texttt{bittiming.py} \cite{BitTimingScript}, calculates a set of valid combinations of timing parameters for a given clock frequency and bit rate.
-It displays these parameter combinations as configuration words for the MCP2515 CAN controller.
+It displays these parameter combinations in the form of configuration words for the MCP2515 CAN controller.
 
 The configuration words are hard-coded in the firmware and are written to the MCP2515's configuration registers at startup time.
-Although the bit rate is currently a constant, set at compile time, the firmware includes a set of bit timing configuration words for each commonly-used bit rate \cite{CanBitrates} so that an automatic baud rate detection algorithm can be implemented in the future.
+Although the bit rate is currently a constant set at compile time, the firmware includes several sets of bit timing configuration words, one for each commonly-used bit rate as defined by CANopen \cite{CanBitrates}.
+This is to facilitate the addition of an automatic baud rate detection algorithm to the firmware at a later date.
 
 A flaw in the board was discovered while calculating the bit timing parameters.
 The CAN controller requires an external oscillator.
@@ -456,7 +457,7 @@ A suite of tests was developed to verify the functionality of the device.
 Each system test is a standalone firmware image designed to test a particular subsystem.
 For example, there are system tests for the CAN, DAC, and EEPROM modules, and for the tachometer and speedometer signal generation systems.
 There are also several unit tests to verify some of the more complex routines, such as the CAN decoding functions.
-The tests were used continually to check the functionality of each firmware module as they were being developed, and to detect regression as changes were made and new modules added.
+The tests were used continually throughout the project to check the functionality of each firmware module as they were being developed, and to detect regression as changes were made and new modules added.
 
 
 \subsection{Equipment} \label{subsection:TestEquipment}
@@ -518,14 +519,14 @@ This program, called \emph{cal}, reads the calibration from a set of files and w
 The calibration allows the device to be configured for any combination of sensors, gauges, and CAN encoding schemes that the car's EMS may use.
 
 Both the software and hardware of the device were tested continually over the course of the project.
-Suites of unit and system tests were developed to verify the device's various subsystems and firmware modules.
+Suites of unit and system tests were developed to verify the device's subsystems and firmware modules.
 Hardware testing revealed some flaws in the board that will have to be fixed in a subsequent revision.
 However, they were not catastrophic, and development was able  to proceed using the existing board.
 
 Ultimately, testing confirmed that, despite minor flaws in the board, the device operates correctly and fulfills all of its requirements.
-It is able to receive CAN frames from the bus, decode them, and generate signals to drive up to six analog gauges accordingly.
+It is able to receive CAN frames from the bus, decode them, and generate signals to drive up to six analog gauges.
 Furthermore, it can be configured for any combination of sensors, gauges, and CAN encoding schemes by flashing a user-calibration with the \emph{cal} program.
-Hereby the project is deemed a success.
+Hereby the project is considered a success.
 
 
 \FloatBarrier
