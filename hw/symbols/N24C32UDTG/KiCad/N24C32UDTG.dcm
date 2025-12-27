@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP N24C32UDTG
+D Supports Standard, Fast and FastPlus I2C Protocol; 1.7 V / 1.6 V to 5.5 V Supply Voltage Range; 32Byte Page Write Buffer; Fast Write Time (4 ms max); Hardware Write Protection for Entire Memory; Schmitt Triggers and Noise Suppression Filters on I2C Bus Inputs (SCL and SDA); Low Power CMOS Technology; 1,000,000 Program/Erase Cycles; 100 Year Data Retention; Industrial and Automotive Grade 1 Temperature Range; US 8lead Package Compliant; This Device is PbFree, Halogen Free/BFR Free, and RoHS
+K
+F https://www.onsemi.com/pub/Collateral/N24C32-D.PDF
+$ENDCMP
+#
+#End Doc Library
