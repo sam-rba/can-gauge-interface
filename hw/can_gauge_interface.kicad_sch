@@ -5395,7 +5395,7 @@
 					)
 				)
 			)
-			(property "Footprint" "Package_DFN_QFN:Texas_RGW0020A_VQFN-20-1EP_5x5mm_P0.65mm_EP3.15x3.15mm"
+			(property "Footprint" "Package_DFN_QFN:Texas_RGW0020A_VQFN-20-1EP_5x5mm_P0.65mm_EP3.15x3.15mm_ThermalVias"
 				(at -32.258 6.858 0)
 				(effects
 					(font
@@ -10336,7 +10336,7 @@
 				)
 			)
 		)
-		(property "Footprint" "SOIC8_SN_MCH"
+		(property "Footprint" "footprints:SOIC8_SN_MCH"
 			(at 300.99 208.28 0)
 			(effects
 				(font
@@ -11006,7 +11006,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_DFN_QFN:Texas_RGW0020A_VQFN-20-1EP_5x5mm_P0.65mm_EP3.15x3.15mm"
+		(property "Footprint" "Package_DFN_QFN:Texas_RGW0020A_VQFN-20-1EP_5x5mm_P0.65mm_EP3.15x3.15mm_ThermalVias"
 			(at 101.092 158.242 0)
 			(effects
 				(font
@@ -15881,7 +15881,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "LQFP48_STM"
+		(property "Footprint" "footprints:LQFP48_STM"
 			(at 273.05 55.88 0)
 			(effects
 				(font

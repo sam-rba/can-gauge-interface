@@ -1,4 +1,4 @@
-24745235346927758
+24748769094070448
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -99526,6 +99526,13 @@ SO exposed pad
 9
 9
 footprints
+LQFP48_STM
+
+STM32C092CBT6 
+0
+48
+48
+footprints
 Molex_Mini-Fit_Jr_5569-06A2_2x03_P4.20mm_Horizontal
 Molex Mini-Fit Jr. Power Connectors, old mpn/engineering number: 5569-06A2, example for new mpn: 39-30-0060, 3 Pins per row, Mounting: Snap-in Plastic Peg PCB Lock (http://www.molex.com/pdm_docs/sd/039300020_sd.pdf), generated with kicad-footprint-generator
 connector Molex Mini-Fit_Jr top entryplastic_peg
@@ -99536,6 +99543,13 @@ footprints
 Molex_Mini-Fit_Jr_5569-08A2_2x04_P4.20mm_Horizontal
 Molex Mini-Fit Jr. Power Connectors, old mpn/engineering number: 5569-08A2, example for new mpn: 39-30-0080, 4 Pins per row, Mounting: Snap-in Plastic Peg PCB Lock (http://www.molex.com/pdm_docs/sd/039300020_sd.pdf), generated with kicad-footprint-generator
 connector Molex Mini-Fit_Jr top entryplastic_peg
+0
+8
+8
+footprints
+SOIC8_SN_MCH
+
+ATA6563-GAQW1 
 0
 8
 8
