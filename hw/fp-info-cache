@@ -1,4 +1,4 @@
-24748769094070448
+24750535971031155
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -99560,6 +99560,13 @@ Integrated Circuit
 0
 8
 8
+footprints
+SW_TS-1088_XNP
+
+TS-1088-AR02016 
+0
+2
+2
 footprints
 USB_B_Lumberg_2411_02_Horizontal
 USB 2.0 receptacle type B, horizontal version, through-hole, https://downloads.lumberg.com/datenblaetter/en/2411_02.pdf

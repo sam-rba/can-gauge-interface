@@ -5712,6 +5712,24 @@
 						)
 					)
 				)
+				(pin passive line
+					(at 21.59 -17.78 90)
+					(length 2.54)
+					(name "EP"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "21"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin power_in line
 					(at 24.13 5.08 270)
 					(length 2.54)
@@ -7911,6 +7929,16 @@
 	)
 	(wire
 		(pts
+			(xy 154.94 182.88) (xy 154.94 184.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "988cc2e0-9eab-41ae-884c-b936868d054e")
+	)
+	(wire
+		(pts
 			(xy 152.4 140.97) (xy 152.4 154.94)
 		)
 		(stroke
@@ -8348,6 +8376,16 @@
 			(type default)
 		)
 		(uuid "c4614d87-7e2b-4afb-852e-7d458845ff1e")
+	)
+	(wire
+		(pts
+			(xy 154.94 184.15) (xy 152.4 184.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c8277b5c-9da9-4912-9c3e-2a6ef6e5164e")
 	)
 	(wire
 		(pts
@@ -10998,7 +11036,7 @@
 			)
 		)
 		(property "Value" "MCP48FVB14/MQ"
-			(at 153.67 182.118 0)
+			(at 155.956 181.864 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11092,6 +11130,9 @@
 		)
 		(pin "3"
 			(uuid "e2c81b39-1fdd-4f17-be8b-38d640a51705")
+		)
+		(pin "21"
+			(uuid "ed06ce61-2dab-4227-8a85-18b60990e325")
 		)
 		(instances
 			(project ""
@@ -15881,7 +15922,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "footprints:LQFP48_STM"
+		(property "Footprint" "LQFP48_STM"
 			(at 273.05 55.88 0)
 			(effects
 				(font
