@@ -9083,6 +9083,16 @@
 		)
 		(uuid "c02e4c30-5c90-4a46-90e5-2f011bfc4eb0")
 	)
+	(label "PH"
+		(at 82.55 55.88 180)
+		(effects
+			(font
+				(size 0.635 0.635)
+			)
+			(justify right bottom)
+		)
+		(uuid "e4ea9c95-ee94-4fa2-a7ab-3d65bb8e5886")
+	)
 	(global_label "SWDIO"
 		(shape bidirectional)
 		(at 260.35 88.9 180)
