@@ -9129,7 +9129,7 @@
 	)
 	(global_label "SWCLK"
 		(shape output)
-		(at 233.68 196.85 0)
+		(at 233.68 199.39 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9139,7 +9139,7 @@
 		)
 		(uuid "22d7725d-441a-4e38-9722-85d3cd8df416")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 242.8942 196.85 0)
+			(at 242.8942 199.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9635,7 +9635,7 @@
 	)
 	(global_label "SWDIO"
 		(shape bidirectional)
-		(at 233.68 194.31 0)
+		(at 233.68 196.85 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9645,7 +9645,7 @@
 		)
 		(uuid "a404702a-0ce0-4320-9a67-ce37344508c2")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 243.6427 194.31 0)
+			(at 243.6427 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9789,7 +9789,7 @@
 	)
 	(global_label "NRST"
 		(shape tri_state)
-		(at 233.68 199.39 0)
+		(at 233.68 194.31 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9799,7 +9799,7 @@
 		)
 		(uuid "ce3d67ab-bd15-4fe9-a244-2ec7bcde71b0")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 242.5541 199.39 0)
+			(at 242.5541 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
