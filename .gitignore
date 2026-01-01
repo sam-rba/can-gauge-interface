@@ -1,16 +1,14 @@
-_autosave*
-\#auto_saved_files\#
-*.aux
 *-backups
+*.FCBak
+*.FCStd1
+*.aux
 *.bak
 *.bbl
 *.bcf
 *.blg
-*.FCBak
-*.FCStd1
 *.html
+*.kicad_sch-bak
 *.lck
-*.~lock*
 *.log
 *.out
 *.pdf
@@ -20,6 +18,9 @@ _autosave*
 *.stl
 *.toc
 *.zip
+*.~lock*
+\#auto_saved_files\#
+_autosave*
 
 sw/cal/cal
 sw/usbcom/usbcom
