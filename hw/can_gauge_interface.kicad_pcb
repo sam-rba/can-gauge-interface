@@ -17419,6 +17419,19 @@
 			(justify left)
 		)
 	)
+	(gr_text "SCK"
+		(at 111.76 94.615 0)
+		(layer "F.SilkS")
+		(uuid "21e53bde-473a-4e9a-b828-6b6e7581d554")
+		(effects
+			(font
+				(size 1.2 1.2)
+				(thickness 0.2)
+				(bold yes)
+			)
+			(justify right bottom)
+		)
+	)
 	(gr_text "SCL"
 		(at 130.175 99.06 0)
 		(layer "F.SilkS")
@@ -17443,6 +17456,19 @@
 				(bold yes)
 			)
 			(justify left)
+		)
+	)
+	(gr_text "MISO"
+		(at 116.84 94.615 0)
+		(layer "F.SilkS")
+		(uuid "67b5c13d-922d-4815-aa60-33a9f4bdc353")
+		(effects
+			(font
+				(size 1.2 1.2)
+				(thickness 0.2)
+				(bold yes)
+			)
+			(justify left bottom)
 		)
 	)
 	(gr_text "SWDIO"
@@ -17573,6 +17599,19 @@
 				(bold yes)
 			)
 			(justify left)
+		)
+	)
+	(gr_text "MOSI"
+		(at 114.3 94.615 0)
+		(layer "F.SilkS")
+		(uuid "e029f392-2a08-4b65-91cf-8a22611dabd6")
+		(effects
+			(font
+				(size 1.2 1.2)
+				(thickness 0.2)
+				(bold yes)
+			)
+			(justify bottom)
 		)
 	)
 	(gr_text "3.3"
