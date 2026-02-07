@@ -1378,7 +1378,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(bus_alias "CAN"
+	(bus_alias "CAN_IF"
 		(members "TX" "RX")
 	)
 	(bus_alias "CAN_PHY"
@@ -2282,7 +2282,7 @@
 		)
 		(uuid "f9d82dd0-c45d-4961-a703-f0059545eef9")
 	)
-	(label "FDCAN1.TX"
+	(label "CAN1.TX"
 		(at 41.91 114.3 0)
 		(effects
 			(font
@@ -2372,7 +2372,7 @@
 		)
 		(uuid "7ccdaeb5-1d4b-458b-ab5c-c91f899a1246")
 	)
-	(label "FDCAN1.RX"
+	(label "CAN1.RX"
 		(at 93.98 99.06 180)
 		(effects
 			(font
@@ -2392,7 +2392,7 @@
 		)
 		(uuid "904f3090-bcc6-436e-8086-c16f7a9f76b4")
 	)
-	(label "FDCAN1.RX"
+	(label "CAN1.RX"
 		(at 41.91 111.76 0)
 		(effects
 			(font
@@ -2462,7 +2462,7 @@
 		)
 		(uuid "d02f09c1-a1c1-4fa7-b91a-4f22b4998f2c")
 	)
-	(label "FDCAN1.TX"
+	(label "CAN1.TX"
 		(at 160.02 63.5 0)
 		(effects
 			(font
@@ -2538,7 +2538,7 @@
 		)
 		(uuid "a93cd4f1-2d59-45f8-a294-67e83c99b7e4")
 	)
-	(hierarchical_label "FDCAN1{CAN}"
+	(hierarchical_label "CAN1{CAN_IF}"
 		(shape bidirectional)
 		(at 38.1 114.3 180)
 		(effects

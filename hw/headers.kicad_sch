@@ -1257,7 +1257,7 @@
 		)
 		(uuid "ff78af74-6bde-4d94-a2ff-152660e9fd82")
 	)
-	(label "FDCAN1.RX"
+	(label "CAN1.RX"
 		(at 43.18 104.14 0)
 		(effects
 			(font
@@ -1307,7 +1307,7 @@
 		)
 		(uuid "9c48615d-d48e-4c40-bab0-15b986360916")
 	)
-	(label "FDCAN1.TX"
+	(label "CAN1.TX"
 		(at 43.18 101.6 0)
 		(effects
 			(font
@@ -1414,7 +1414,7 @@
 		)
 		(uuid "d1bb3557-0180-45b7-b3f2-788c40a2873f")
 	)
-	(hierarchical_label "FDCAN1{CAN}"
+	(hierarchical_label "CAN1{CAN_IF}"
 		(shape input)
 		(at 63.5 99.06 0)
 		(effects

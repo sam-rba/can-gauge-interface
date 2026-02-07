@@ -1684,7 +1684,7 @@
 		)
 		(uuid "616c5fd7-e848-4672-84f6-13f0bec1b8ed")
 	)
-	(label "CANbus{CAN_PHY}"
+	(label "CAN1{CAN_PHY}"
 		(at 78.74 71.12 0)
 		(effects
 			(font
@@ -1793,16 +1793,6 @@
 			(justify left bottom)
 		)
 		(uuid "f0f1c99c-f241-46af-bb91-ed4445081492")
-	)
-	(label "FDCAN1{CAN}"
-		(at 129.54 73.66 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f8af8663-276b-4684-8a7a-34dfc88d914f")
 	)
 	(label "Speed"
 		(at 41.91 53.34 0)
@@ -3015,16 +3005,6 @@
 				(justify right)
 			)
 		)
-		(pin "FDCAN1{CAN}" bidirectional
-			(at 152.4 78.74 180)
-			(uuid "80d26d40-e69e-4b2d-960d-2cb94de3340d")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
 		(pin "I2C1{I2C}" bidirectional
 			(at 152.4 83.82 180)
 			(uuid "a77c5f45-6660-49d5-b946-9f31c76ad032")
@@ -3068,6 +3048,16 @@
 		(pin "SWD{SWD NRST}" bidirectional
 			(at 152.4 86.36 180)
 			(uuid "b99d6572-39e8-457d-a082-845c438e62e9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "CAN1{CAN_IF}" bidirectional
+			(at 152.4 78.74 180)
+			(uuid "ade3a8e9-b89b-42f5-8fa3-837d8ba53704")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3199,16 +3189,6 @@
 				(justify left top)
 			)
 		)
-		(pin "FDCAN1{CAN}" input
-			(at 152.4 43.18 180)
-			(uuid "4b171431-51dd-4676-904e-1d4f5ad3bacc")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
 		(pin "SPI1{SPI DAC_~{CS}}" input
 			(at 152.4 45.72 180)
 			(uuid "b8f7fa10-1f4c-48cb-8cd6-fe7a4e6db975")
@@ -3277,6 +3257,16 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+		(pin "CAN1{CAN_IF}" input
+			(at 152.4 43.18 180)
+			(uuid "e249bcde-b2f2-4e2c-8661-eb40a99f0528")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 		(instances
@@ -3381,9 +3371,9 @@
 				(justify left)
 			)
 		)
-		(pin "CANbus{CAN_PHY}" bidirectional
+		(pin "CAN1{CAN_PHY}" bidirectional
 			(at 76.2 71.12 0)
-			(uuid "be0b717f-5c19-468e-978f-66efb9d7ea93")
+			(uuid "3313fef2-faef-465a-8c89-034e4ccaa0d3")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3433,16 +3423,6 @@
 				(justify left top)
 			)
 		)
-		(pin "FDCAN1{CAN}" bidirectional
-			(at 127 73.66 0)
-			(uuid "39d926d1-e258-461a-b691-ac16a5bd94f8")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
 		(pin "+3.3V" input
 			(at 124.46 50.8 90)
 			(uuid "b005c460-10a8-4cea-a90c-3fe1e0d983d9")
@@ -3453,16 +3433,6 @@
 				(justify right)
 			)
 		)
-		(pin "CANbus{CAN_PHY}" bidirectional
-			(at 101.6 71.12 180)
-			(uuid "fd926bed-ffe7-42e6-9aea-a18d1b10944d")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
 		(pin "+5V" input
 			(at 119.38 50.8 90)
 			(uuid "1ac34e0b-624b-4c8b-b490-ecb51efe9665")
@@ -3471,6 +3441,26 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+		(pin "CAN1{CAN_IF}" bidirectional
+			(at 127 73.66 0)
+			(uuid "059891ef-b1d0-4adf-9cea-3e7d178bab16")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "CAN1{CAN_PHY}" bidirectional
+			(at 101.6 71.12 180)
+			(uuid "69b08487-d200-4896-bf91-fcd6cc289f5d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 		(instances

@@ -1216,7 +1216,7 @@
 		)
 		(uuid "feca919c-1616-4ec7-92fe-97d482be8c05")
 	)
-	(label "CAN.L"
+	(label "CAN1.L"
 		(at 127 60.96 0)
 		(effects
 			(font
@@ -1226,7 +1226,7 @@
 		)
 		(uuid "1a6a0a4e-7545-414c-8b11-5845f78ced7b")
 	)
-	(label "FDCAN1.RX"
+	(label "CAN1.RX"
 		(at 58.42 63.5 180)
 		(effects
 			(font
@@ -1236,7 +1236,7 @@
 		)
 		(uuid "23b6cc23-e714-4fd9-98f1-4cdb3dddd4cc")
 	)
-	(label "FDCAN1.TX"
+	(label "CAN1.TX"
 		(at 58.42 55.88 180)
 		(effects
 			(font
@@ -1246,7 +1246,7 @@
 		)
 		(uuid "3b260afe-392e-4a20-9b03-ccabcae403f1")
 	)
-	(label "CAN.H"
+	(label "CAN1.H"
 		(at 127 58.42 0)
 		(effects
 			(font
@@ -1256,7 +1256,7 @@
 		)
 		(uuid "3ee37e89-8e41-4ea0-bfd4-e37bcadd159e")
 	)
-	(hierarchical_label "CANbus{CAN_PHY}"
+	(hierarchical_label "CAN1{CAN_PHY}"
 		(shape bidirectional)
 		(at 139.7 55.88 0)
 		(effects
@@ -1265,9 +1265,9 @@
 			)
 			(justify left)
 		)
-		(uuid "389e6a98-1271-4761-8b33-c4fdecf008c6")
+		(uuid "2ca968ea-0a2e-4a4b-8c46-895285abbc7a")
 	)
-	(hierarchical_label "FDCAN1{CAN}"
+	(hierarchical_label "CAN1{CAN_IF}"
 		(shape bidirectional)
 		(at 38.1 53.34 180)
 		(effects

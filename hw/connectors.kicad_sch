@@ -1131,15 +1131,6 @@
 		(uuid "b52a53f4-af0d-4205-8d36-64e9e81719c3")
 	)
 	(bus_entry
-		(at 76.2 38.1)
-		(size -2.54 2.54)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0b9970f9-8f55-4e9a-9cfd-ec17e7305ebd")
-	)
-	(bus_entry
 		(at 76.2 104.14)
 		(size -2.54 2.54)
 		(stroke
@@ -1158,6 +1149,15 @@
 		(uuid "1f48208a-b4be-47c8-a53e-2b5e4e9bc76a")
 	)
 	(bus_entry
+		(at 76.2 40.64)
+		(size -2.54 2.54)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6099981e-288c-48d4-8cbf-5a5e43511e32")
+	)
+	(bus_entry
 		(at 76.2 101.6)
 		(size -2.54 2.54)
 		(stroke
@@ -1167,13 +1167,13 @@
 		(uuid "7031b28f-0a37-49f8-991e-59d38cd8b82a")
 	)
 	(bus_entry
-		(at 76.2 40.64)
+		(at 76.2 38.1)
 		(size -2.54 2.54)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b88c3f42-965e-47c1-8662-6dc12df79cea")
+		(uuid "f24ca7c1-634d-433d-95cb-0823fa241889")
 	)
 	(wire
 		(pts
@@ -1237,16 +1237,6 @@
 	)
 	(wire
 		(pts
-			(xy 57.15 40.64) (xy 73.66 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "24a1a1b6-b861-4453-9f86-babed3fef778")
-	)
-	(wire
-		(pts
 			(xy 43.18 106.68) (xy 73.66 106.68)
 		)
 		(stroke
@@ -1287,6 +1277,16 @@
 	)
 	(wire
 		(pts
+			(xy 57.15 40.64) (xy 73.66 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "47b9bc5f-0ad6-4164-ae90-58da236040d9")
+	)
+	(wire
+		(pts
 			(xy 43.18 48.26) (xy 43.18 49.53)
 		)
 		(stroke
@@ -1314,16 +1314,6 @@
 			(type default)
 		)
 		(uuid "5c7bc381-1f48-4a8a-909d-11e53c7bef67")
-	)
-	(wire
-		(pts
-			(xy 57.15 43.18) (xy 73.66 43.18)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "64323c98-6d35-4feb-ab32-9dcca714b7da")
 	)
 	(wire
 		(pts
@@ -1465,6 +1455,16 @@
 		)
 		(uuid "d35bda09-9da3-4a8b-8ea5-98bb3771e024")
 	)
+	(wire
+		(pts
+			(xy 57.15 43.18) (xy 73.66 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dcedbcef-3bc4-4235-ace4-1a149817ffe6")
+	)
 	(bus
 		(pts
 			(xy 76.2 104.14) (xy 76.2 106.68)
@@ -1545,16 +1545,6 @@
 		)
 		(uuid "4f50f099-e995-4b8e-b60f-058e605b2568")
 	)
-	(label "CAN.L"
-		(at 57.15 43.18 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "57221f61-83fa-4e0a-84df-e4164a2e4c44")
-	)
 	(label "SWD.IO"
 		(at 43.18 106.68 0)
 		(effects
@@ -1564,6 +1554,26 @@
 			(justify left bottom)
 		)
 		(uuid "608b761b-f7ce-4454-baf5-a42f900611a9")
+	)
+	(label "CAN1.H"
+		(at 57.15 40.64 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "8ffea966-497c-425d-88df-d8a7822eee1a")
+	)
+	(label "CAN1.L"
+		(at 57.15 43.18 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a19d203b-e43f-4487-b6c1-70cc80352039")
 	)
 	(label "An4"
 		(at 57.15 63.5 0)
@@ -1575,16 +1585,6 @@
 		)
 		(uuid "ac5bb90f-9739-4249-8d62-7dd8086ccd6c")
 	)
-	(label "CAN.H"
-		(at 57.15 40.64 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "e25d14b7-2bd1-473b-9e7f-09024bff5e02")
-	)
 	(label "An2"
 		(at 44.45 63.5 180)
 		(effects
@@ -1595,7 +1595,7 @@
 		)
 		(uuid "fe1bca60-f871-4d9d-9559-04e1d38f2d4c")
 	)
-	(hierarchical_label "CANbus{CAN_PHY}"
+	(hierarchical_label "CAN1{CAN_PHY}"
 		(shape bidirectional)
 		(at 76.2 38.1 0)
 		(effects
@@ -1604,7 +1604,7 @@
 			)
 			(justify left)
 		)
-		(uuid "1c7cfe89-3694-4361-b65d-420f7a4927f1")
+		(uuid "24cf4204-1631-4fe3-86d1-ea4bd9fe26b2")
 	)
 	(hierarchical_label "Tach"
 		(shape input)
