@@ -1,0 +1,303 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "b91d9012-b05f-4c09-83d0-69978b57e5a7")
+	(paper "A5")
+	(lib_symbols)
+	(junction
+		(at 107.95 57.15)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "237e43a5-f026-4c6e-98ca-16c1a5a315bc")
+	)
+	(wire
+		(pts
+			(xy 63.5 57.15) (xy 76.2 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1de344a0-94f5-49aa-81a0-7f6a4822763f")
+	)
+	(wire
+		(pts
+			(xy 107.95 69.85) (xy 152.4 69.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "657db1c1-5d09-4198-b205-74f23968e5ee")
+	)
+	(wire
+		(pts
+			(xy 107.95 57.15) (xy 114.3 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7ff0b04b-9e52-4710-9cf8-b63c6bbaa14c")
+	)
+	(wire
+		(pts
+			(xy 25.4 57.15) (xy 38.1 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "994723a1-0772-4967-9567-4d27c90c7191")
+	)
+	(wire
+		(pts
+			(xy 107.95 57.15) (xy 107.95 69.85)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a96fdac1-5040-44e0-96c7-a5b404530ed7")
+	)
+	(wire
+		(pts
+			(xy 139.7 57.15) (xy 152.4 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9ee023c-cac5-4e5c-a93b-15f116f377ce")
+	)
+	(wire
+		(pts
+			(xy 101.6 57.15) (xy 107.95 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b32febf7-f3c0-4f85-81b2-4faecda1188f")
+	)
+	(hierarchical_label "+12V"
+		(shape input)
+		(at 25.4 57.15 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "1d6b0c58-bbe5-44c9-8907-c7f7f65feae8")
+	)
+	(hierarchical_label "+3.3V"
+		(shape output)
+		(at 152.4 57.15 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "be59f4f7-f0db-4dcb-8d58-eb3086a7029f")
+	)
+	(hierarchical_label "+5V"
+		(shape output)
+		(at 152.4 69.85 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c321933e-6489-4056-86bf-a09422782d7b")
+	)
+	(sheet
+		(at 38.1 50.8)
+		(size 25.4 12.7)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "345271ef-257f-45f6-8c05-0ea08b09784e")
+		(property "Sheetname" "+7.5V Power Supply"
+			(at 38.1 50.0884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power_7v5.kicad_sch"
+			(at 38.1 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "+12V" input
+			(at 38.1 57.15 180)
+			(uuid "498b4053-0c80-481b-b75b-c14e83eaa1eb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "+7.5V" output
+			(at 63.5 57.15 0)
+			(uuid "5d1a47d8-98f0-4ebd-a905-736151c1b2c5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "can_gauge_interface"
+				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f/7fdcc277-deb4-4e2d-82f2-deca2ca7c7f6"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 50.8)
+		(size 25.4 12.7)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "5984716d-2d3e-4700-b922-be0b56a5891b")
+		(property "Sheetname" "+5V Power Supply"
+			(at 76.2 50.0884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power_5v.kicad_sch"
+			(at 76.2 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "+7.5V" input
+			(at 76.2 57.15 180)
+			(uuid "0454c8ca-3c34-44be-ac8c-aa13bd2cd640")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "+5V" output
+			(at 101.6 57.15 0)
+			(uuid "d7a14bee-0080-4b88-913a-d4204c700f16")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "can_gauge_interface"
+				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f/7fdcc277-deb4-4e2d-82f2-deca2ca7c7f6"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 114.3 50.8)
+		(size 25.4 12.7)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d8e02a03-0b82-4f49-a609-cdedf22c5b14")
+		(property "Sheetname" "+3.3V Power Supply"
+			(at 114.3 50.0884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power_3v3.kicad_sch"
+			(at 114.3 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "+5V" input
+			(at 114.3 57.15 180)
+			(uuid "3714ef7c-2e91-4b32-a63f-368111c42f46")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "+3.3V" output
+			(at 139.7 57.15 0)
+			(uuid "463de8f3-c0e4-4b79-8099-700dccc8ddba")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "can_gauge_interface"
+				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f/7fdcc277-deb4-4e2d-82f2-deca2ca7c7f6"
+					(page "6")
+				)
+			)
+		)
+	)
+)

@@ -703,6 +703,22 @@
     [
       "33b225d0-a911-4767-9aa8-2eca0c3d3133",
       "Microcontroller"
+    ],
+    [
+      "7fdcc277-deb4-4e2d-82f2-deca2ca7c7f6",
+      "Power Supply"
+    ],
+    [
+      "345271ef-257f-45f6-8c05-0ea08b09784e",
+      "+7.5V Power Supply"
+    ],
+    [
+      "5984716d-2d3e-4700-b922-be0b56a5891b",
+      "+5V Power Supply"
+    ],
+    [
+      "d8e02a03-0b82-4f49-a609-cdedf22c5b14",
+      "+3.3V Power Supply"
     ]
   ],
   "text_variables": {}
