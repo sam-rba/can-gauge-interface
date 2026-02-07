@@ -727,6 +727,10 @@
     [
       "e66ff388-371e-4ca1-a494-ab7be123c31a",
       "DAC"
+    ],
+    [
+      "c967d27d-30be-4d9e-b855-90be856ffdb4",
+      "EEPROM"
     ]
   ],
   "text_variables": {}
