@@ -731,6 +731,10 @@
     [
       "c967d27d-30be-4d9e-b855-90be856ffdb4",
       "EEPROM"
+    ],
+    [
+      "be71905d-5640-46e7-b332-3c1eef9d785c",
+      "CAN Transceiver"
     ]
   ],
   "text_variables": {}
