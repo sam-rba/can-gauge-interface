@@ -735,6 +735,10 @@
     [
       "be71905d-5640-46e7-b332-3c1eef9d785c",
       "CAN Transceiver"
+    ],
+    [
+      "a266a916-0834-4993-bdb0-de17c8dd233c",
+      "Headers"
     ]
   ],
   "text_variables": {}
