@@ -1595,6 +1595,17 @@
 		)
 		(uuid "fe1bca60-f871-4d9d-9559-04e1d38f2d4c")
 	)
+	(hierarchical_label "CANbus{CAN_PHY}"
+		(shape bidirectional)
+		(at 76.2 38.1 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1c7cfe89-3694-4361-b65d-420f7a4927f1")
+	)
 	(hierarchical_label "Tach"
 		(shape input)
 		(at 44.45 38.1 180)
@@ -1649,17 +1660,6 @@
 			(justify left)
 		)
 		(uuid "b6d61bec-0caa-46c5-957a-cdd61cee7ec0")
-	)
-	(hierarchical_label "CAN{CAN_PHY}"
-		(shape bidirectional)
-		(at 76.2 38.1 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "bc2011c6-b4bf-480d-a31b-0179cb62c274")
 	)
 	(hierarchical_label "+3.3V"
 		(shape input)

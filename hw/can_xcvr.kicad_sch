@@ -1256,6 +1256,17 @@
 		)
 		(uuid "3ee37e89-8e41-4ea0-bfd4-e37bcadd159e")
 	)
+	(hierarchical_label "CANbus{CAN_PHY}"
+		(shape bidirectional)
+		(at 139.7 55.88 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "389e6a98-1271-4761-8b33-c4fdecf008c6")
+	)
 	(hierarchical_label "FDCAN1{CAN}"
 		(shape bidirectional)
 		(at 38.1 53.34 180)
@@ -1266,17 +1277,6 @@
 			(justify right)
 		)
 		(uuid "43e7cb5d-6a5a-45ef-b69d-84b895869809")
-	)
-	(hierarchical_label "CAN{CAN_PHY}"
-		(shape bidirectional)
-		(at 139.7 55.88 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "a2cabe2b-a65e-4708-ba83-24be9bdade82")
 	)
 	(hierarchical_label "+5V"
 		(shape input)
