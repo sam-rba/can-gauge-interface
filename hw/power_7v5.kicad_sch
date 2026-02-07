@@ -980,6 +980,107 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(rectangle
 		(start 105.41 34.29)
@@ -1103,6 +1204,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d4493412-5985-40f3-a21c-60c314cdca5a")
+	)
+	(junction
+		(at 133.35 33.02)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e09919bf-2a7e-48e2-ba8e-bc50791ceb55")
 	)
 	(junction
 		(at 95.25 63.5)
@@ -1239,6 +1346,16 @@
 			(type default)
 		)
 		(uuid "3f12c595-8717-4a30-851f-277565caff54")
+	)
+	(wire
+		(pts
+			(xy 139.7 31.75) (xy 139.7 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e199edb-b6f0-4bc3-82ea-1160604752bb")
 	)
 	(wire
 		(pts
@@ -1412,7 +1529,7 @@
 	)
 	(wire
 		(pts
-			(xy 133.35 31.75) (xy 133.35 38.1)
+			(xy 133.35 31.75) (xy 133.35 33.02)
 		)
 		(stroke
 			(width 0)
@@ -1512,6 +1629,16 @@
 	)
 	(wire
 		(pts
+			(xy 139.7 33.02) (xy 133.35 33.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d256d0b5-2f5b-4419-9d64-810cbb62e917")
+	)
+	(wire
+		(pts
 			(xy 95.25 40.64) (xy 95.25 38.1)
 		)
 		(stroke
@@ -1549,6 +1676,16 @@
 			(type default)
 		)
 		(uuid "e67c85b6-9c20-4fa2-80c1-87d2de678682")
+	)
+	(wire
+		(pts
+			(xy 133.35 33.02) (xy 133.35 38.1)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee5daa5f-512f-4cc8-b585-458a4ae33e40")
 	)
 	(wire
 		(pts
@@ -2476,6 +2613,71 @@
 			(project "can_gauge_interface"
 				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f/7fdcc277-deb4-4e2d-82f2-deca2ca7c7f6/345271ef-257f-45f6-8c05-0ea08b09784e"
 					(reference "#PWR020")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 139.7 31.75 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "aa28acad-08ee-460d-8305-ea3f224cc0e1")
+		(property "Reference" "#FLG02"
+			(at 139.7 29.845 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+7.5V"
+			(at 139.7 27.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 139.7 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 139.7 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 139.7 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "efbb22d6-463b-4664-b864-3ed0b7c2ee78")
+		)
+		(instances
+			(project ""
+				(path "/11aaed46-be21-4424-b899-cb4c1a8c3e5f/7fdcc277-deb4-4e2d-82f2-deca2ca7c7f6/345271ef-257f-45f6-8c05-0ea08b09784e"
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)
