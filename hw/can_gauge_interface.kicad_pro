@@ -719,6 +719,10 @@
     [
       "d8e02a03-0b82-4f49-a609-cdedf22c5b14",
       "+3.3V Power Supply"
+    ],
+    [
+      "b9706cd7-2da9-438f-9acc-f87feba25416",
+      "Connectors"
     ]
   ],
   "text_variables": {}
