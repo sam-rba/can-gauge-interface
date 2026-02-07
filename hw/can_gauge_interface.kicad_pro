@@ -472,6 +472,7 @@
       "single_global_label": "ignore",
       "unannotated": "error",
       "unconnected_wire_endpoint": "warning",
+      "undefined_netclass": "error",
       "unit_value_mismatch": "error",
       "unresolved_variable": "error",
       "wire_dangling": "error"
@@ -698,6 +699,10 @@
     [
       "11aaed46-be21-4424-b899-cb4c1a8c3e5f",
       "Root"
+    ],
+    [
+      "33b225d0-a911-4767-9aa8-2eca0c3d3133",
+      "Microcontroller"
     ]
   ],
   "text_variables": {}
