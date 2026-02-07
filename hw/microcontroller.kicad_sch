@@ -1601,6 +1601,15 @@
 		(uuid "61a3f7ed-2bd7-41bc-a58d-323d6d5656de")
 	)
 	(bus_entry
+		(at 38.1 45.72)
+		(size 2.54 2.54)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "736e306f-3b19-48ab-9757-e6292fc24bcf")
+	)
+	(bus_entry
 		(at 38.1 86.36)
 		(size 2.54 2.54)
 		(stroke
@@ -1653,16 +1662,6 @@
 			(type default)
 		)
 		(uuid "ffd4dd58-11d2-4294-95e0-fe45507d14e6")
-	)
-	(wire
-		(pts
-			(xy 76.2 137.16) (xy 77.47 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "027dfde6-3ce8-4766-8247-2373f12d7bad")
 	)
 	(wire
 		(pts
@@ -1756,6 +1755,16 @@
 	)
 	(wire
 		(pts
+			(xy 40.64 48.26) (xy 41.91 48.26)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3d5e3e95-61fa-4f59-8d1e-093ee852ea75")
+	)
+	(wire
+		(pts
 			(xy 177.8 88.9) (xy 190.5 88.9)
 		)
 		(stroke
@@ -1763,16 +1772,6 @@
 			(type default)
 		)
 		(uuid "43b53669-064a-4c92-8ca4-03af979461eb")
-	)
-	(wire
-		(pts
-			(xy 85.09 137.16) (xy 95.25 137.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "45989cd1-a264-4bf1-a4aa-fb95625a6844")
 	)
 	(wire
 		(pts
@@ -1833,6 +1832,16 @@
 			(type default)
 		)
 		(uuid "6e0d6089-bb07-40d6-8343-f6cd702d3c0a")
+	)
+	(wire
+		(pts
+			(xy 76.2 137.16) (xy 78.74 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6fffcb4a-8160-4106-be59-d015e645af3e")
 	)
 	(bus
 		(pts
@@ -1974,6 +1983,16 @@
 		)
 		(uuid "abca4f8b-3e29-4e21-8381-f52f5f5df0e6")
 	)
+	(bus
+		(pts
+			(xy 38.1 43.18) (xy 38.1 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ac14e214-e0ee-44d2-95c2-0bd1535ecd72")
+	)
 	(wire
 		(pts
 			(xy 50.8 91.44) (xy 95.25 91.44)
@@ -2023,6 +2042,16 @@
 			(type default)
 		)
 		(uuid "b8168404-0e4d-4df7-978c-36f06383a909")
+	)
+	(wire
+		(pts
+			(xy 86.36 137.16) (xy 95.25 137.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bb4ef634-d987-4adf-ba9a-e50175e71ace")
 	)
 	(wire
 		(pts
@@ -2284,6 +2313,16 @@
 		)
 		(uuid "54ee0cdc-7bea-40ce-a637-19761f4471d4")
 	)
+	(label "SPI1.DAC_~{CS}"
+		(at 41.91 48.26 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "5f2721d9-e01e-4951-8123-bff3a1d046ed")
+	)
 	(label "FDCAN1.RX"
 		(at 93.98 99.06 180)
 		(effects
@@ -2293,6 +2332,16 @@
 			(justify right bottom)
 		)
 		(uuid "876a464e-c3fe-412f-883d-3bed111d2543")
+	)
+	(label "SPI1.DAC_~{CS}"
+		(at 76.2 137.16 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "904f3090-bcc6-436e-8086-c16f7a9f76b4")
 	)
 	(label "FDCAN1.RX"
 		(at 41.91 111.76 0)
@@ -2396,7 +2445,7 @@
 		)
 		(uuid "3345ef4c-8d6f-4ff5-9255-48c7324a5d96")
 	)
-	(hierarchical_label "SPI1{SPI}"
+	(hierarchical_label "SPI1{SPI DAC_~{CS}}"
 		(shape bidirectional)
 		(at 38.1 38.1 180)
 		(effects
@@ -2428,17 +2477,6 @@
 			(justify left)
 		)
 		(uuid "8c243411-dc40-4278-92fa-ad32a0290e76")
-	)
-	(hierarchical_label "DAC_~{CS}"
-		(shape output)
-		(at 76.2 137.16 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "9567d6b8-6e77-4e7f-aba3-10b6369289ce")
 	)
 	(hierarchical_label "Speed"
 		(shape output)
@@ -3314,7 +3352,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_US")
-		(at 81.28 137.16 90)
+		(at 82.55 137.16 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3322,7 +3360,7 @@
 		(dnp no)
 		(uuid "cac01e8d-2b8f-4750-bce8-f1a1192a0a9e")
 		(property "Reference" "R?"
-			(at 81.28 132.715 90)
+			(at 82.55 132.715 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3330,7 +3368,7 @@
 			)
 		)
 		(property "Value" "22"
-			(at 81.28 134.62 90)
+			(at 82.55 134.62 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3338,7 +3376,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 81.534 136.144 90)
+			(at 82.804 136.144 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3347,7 +3385,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 81.28 137.16 0)
+			(at 82.55 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3356,7 +3394,7 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
-			(at 81.28 137.16 0)
+			(at 82.55 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
