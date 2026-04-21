@@ -22,6 +22,7 @@
 \#auto_saved_files\#
 _autosave*
 
+hw/build
+mech/gcode
 sw/cal/cal
 sw/usbcom/usbcom
-mech/gcode
