@@ -5,10 +5,10 @@ Automotive electronic device that drives up to six analog gauges using data from
 
 ## Contents
 
-- [Hardware](hw) KiCad files for the PCB.
-- [Firmware](fw) that runs on the PIC microcontroller.
-- [Software](sw) for flashing calibration files onto the device.
-- [Documentation](doc) including the [report](doc/report/report.pdf).
+- `hw/` — Hardware; KiCad files for the PCB.
+- `fw/` — Firmare that runs on the PIC microcontroller.
+- `sw/` — Software for flashing calibration files onto the device.
+- `doc/` — Documentation.
 
 
 ## Features
